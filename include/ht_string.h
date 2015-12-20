@@ -18,6 +18,10 @@
 #include <sstream>
 #include <vector>
 
+#ifndef HT_BUFSIZE
+#define HT_BUFSIZE 1024
+#endif
+
 namespace Hatchit {
 
     namespace Core {
