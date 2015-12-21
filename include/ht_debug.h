@@ -51,7 +51,7 @@ namespace Hatchit {
             #ifdef HT_SYS_WINDOWS
                 //Call Win32 debug output to pump message to
                 //Visual Studio console
-                OutputDebugString(s_buffer);
+                OutputDebugStringA(s_buffer);
             #endif
 
             std::cerr << s_buffer;

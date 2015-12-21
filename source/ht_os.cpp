@@ -44,7 +44,7 @@ namespace Hatchit {
             //convert path
             std::string _path = os_path(path);
             #ifdef HT_SYS_WINDOWS
-                DWORD dwAttrib = GetFileAttributes(_path.c_str());
+                DWORD dwAttrib = GetFileAttributesA(_path.c_str());
                 return (dwAttrib != INVALID_FILE_ATTRIBUTES &&
                         (dwAttrib & FILE_ATTRIBUTE_DIRECTORY));
             #elif defined(HT_SYS_LINUX)
@@ -79,7 +79,7 @@ namespace Hatchit {
             //remove trailing slash for now
             dir = path.substr(0, path.size() - 1);
 
-            uint32_t back_slash = 0;
+            size_t back_slash = 0;
             char c_slash;
             #ifdef HT_SYS_WINDOWS
                 c_slash = '\\';
@@ -99,7 +99,7 @@ namespace Hatchit {
         {
             #ifdef HT_SYS_WINDOWS
                 char path[MAX_PATH];
-                GetModuleFileName(NULL, path, MAX_PATH);
+                GetModuleFileNameA(NULL, path, MAX_PATH);
                 return os_dir(path);
             #else
                 char arg1[20];
