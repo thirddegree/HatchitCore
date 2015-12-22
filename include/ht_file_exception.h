@@ -12,22 +12,30 @@
 **
 **/
 
+#pragma once
+
+#include <ht_platform.h>
 #include <ht_string.h>
-#include <ht_types.h>
+#include <exception>
 
 namespace Hatchit {
 
     namespace Core {
 
-        void str_replaceAll(std::string& input, const std::string& from, const std::string& to)
+        class HT_API FileException : public std::exception
         {
-            size_t pos = 0;
-            while ((pos = input.find(from, pos)) != std::string::npos) {
-                input.replace(pos, from.length(), to);
-                pos += to.length();
-            }
-        }
+        public:
+            FileException(std::string file, int error);
 
+            ~FileException(void);
+
+            virtual const char* what() const override;
+
+        private:
+            std::string m_errorString;
+            std::string m_whatString;
+        };
+    
     }
 
 }

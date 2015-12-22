@@ -12,21 +12,24 @@
 **
 **/
 
-#include <ht_string.h>
-#include <ht_types.h>
+#pragma once
+
+#include <ht_platform.h>
 
 namespace Hatchit {
 
     namespace Core {
 
-        void str_replaceAll(std::string& input, const std::string& from, const std::string& to)
+        class HT_API INonCopy
         {
-            size_t pos = 0;
-            while ((pos = input.find(from, pos)) != std::string::npos) {
-                input.replace(pos, from.length(), to);
-                pos += to.length();
-            }
-        }
+        protected:
+            INonCopy() { }
+            ~INonCopy() { }
+
+        private:
+            INonCopy(const INonCopy&);
+            const INonCopy& operator=(const INonCopy&);
+        };
 
     }
 
