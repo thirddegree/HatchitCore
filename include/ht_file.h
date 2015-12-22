@@ -33,7 +33,7 @@ namespace Hatchit {
             virtual std::string Path(void)                                  override;
             virtual std::string BaseName(void)                              override;
             virtual void        Open(std::string path, FileMode mode)       override;
-            virtual bool        Seek(long offset, FileSeek mode)          override;
+            virtual bool        Seek(long offset, FileSeek mode)            override;
             virtual size_t      Read(BYTE* out, size_t len)                 override;
             virtual size_t      Write(BYTE* in, size_t len)                 override;
             virtual bool        Close(void)                                 override;
@@ -51,7 +51,7 @@ namespace Hatchit {
             size_t      m_size;
             FILE*       m_handle;
 
-        public:
+        private:
             static std::string GetExtension(const std::string& path, bool wd = true);
             static std::string GetName(const std::string& path, bool we = true);
         };

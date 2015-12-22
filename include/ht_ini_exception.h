@@ -12,32 +12,24 @@
 **
 **/
 
-#pragma once
-
 #include <ht_platform.h>
-
-/** \file ht_noncopy.h
-* Noncopy Interface
-
-* This file contains the interface definition
-* for noncopyable classes
-*/
+#include <ht_string.h>
+#include <exception>
 
 namespace Hatchit {
 
     namespace Core {
 
-        class HT_API INonCopy
+        class HT_API INIException : public std::exception
         {
-        protected:
-            INonCopy() { }
-            ~INonCopy() { }
+        public:
+            INIException(std::string name, int error);
+
+            const char* what() const NOEXCEPT override;
 
         private:
-            INonCopy(const INonCopy&);
-            const INonCopy& operator=(const INonCopy&);
+            std::string m_error;
         };
 
     }
-
 }
