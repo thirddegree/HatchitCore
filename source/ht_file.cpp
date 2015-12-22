@@ -14,6 +14,10 @@
 
 #include <ht_file.h>
 
+#ifdef HT_SYS_LINUX
+#include <sys/stat.h>
+#endif
+
 namespace Hatchit {
 
     namespace Core {
@@ -187,7 +191,7 @@ namespace Hatchit {
                 //Need to grab size from stat struct in order to allow for
                 //files > 2GB in size
                 struct stat st;
-                stat(m_filePath.c_str(), &st);
+                stat(m_path.c_str(), &st);
                 m_size = st.st_size;
             #else
                 WIN32_FILE_ATTRIBUTE_DATA fad;

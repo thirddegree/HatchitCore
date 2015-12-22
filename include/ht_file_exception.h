@@ -29,13 +29,13 @@ namespace Hatchit {
 
             ~FileException(void);
 
-            virtual const char* what() const override;
+            virtual const char* what() const NOEXCEPT override;
 
         private:
             std::string m_errorString;
             std::string m_whatString;
         };
-    
+
     }
 
 }

@@ -72,6 +72,14 @@
     #define HT_API
 #endif
 
+#ifndef _MSC_VER
+#define NOEXCEPT noexcept
+#elif _MSC_VER >= 1900
+#define NOEXCEPT noexcept
+#else
+#define NOEXCEPT 
+#endif
+
 //////////////////////////////
 // BYTE typedef
 //////////////////////////////

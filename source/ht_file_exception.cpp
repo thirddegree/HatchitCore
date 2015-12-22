@@ -14,6 +14,10 @@
 
 #include <ht_file_exception.h>
 
+#ifdef HT_SYS_LINUX
+#include <cstring>
+#endif
+
 namespace Hatchit {
 
     namespace Core {
@@ -36,7 +40,7 @@ namespace Hatchit {
 
         }
 
-        const char* FileException::what() const
+        const char* FileException::what() const NOEXCEPT
         {
             return m_whatString.c_str();
         }
