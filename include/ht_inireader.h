@@ -30,7 +30,7 @@ namespace Hatchit {
 
             void Load(File* file);
 
-            
+            bool Empty();
 
             template <typename T>
             T GetValue(std::string section, std::string name, T default_val);
@@ -44,6 +44,16 @@ namespace Hatchit {
             static int              ValueHandler(void* user, const char* section, const char* name, const char* value);
         };
 
+        template <>
+        inline std::string INIReader::GetValue(std::string section, std::string name, std::string default_val)
+        {
+            std::string value_str = Get(section, name);
+
+            if (value_str.empty())
+                return default_val;
+            else
+                return value_str;
+        }
 
         template <>
         inline bool INIReader::GetValue(std::string section, std::string name, bool default_val)

@@ -30,6 +30,11 @@ namespace Hatchit {
                 throw INIException(file->Name(), error);
         }
 
+        bool INIReader::Empty()
+        {
+            return m_values.empty();
+        }
+
         std::string INIReader::Get(std::string section, std::string name)
         {
             std::string key = MakeKey(section, name);
