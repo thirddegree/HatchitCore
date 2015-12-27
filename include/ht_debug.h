@@ -23,6 +23,14 @@
 #include <cstdarg>
 #endif
 
+#ifndef HT_STRINGIFY
+#define HT_STRINGIFY(x) #x
+#endif
+
+#ifndef HT_SFY_
+#define HT_SFY_(x) HT_STRINGIFY(x)
+#endif
+
 namespace Hatchit {
 
     namespace Core {
