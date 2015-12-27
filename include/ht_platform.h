@@ -37,7 +37,7 @@
 #endif
 
 /////////////////////////////////////////////////////////////
-// Defined portable API import/export macros
+// Define portable API import/export macros
 /////////////////////////////////////////////////////////////
 
 #if !defined(HT_STATIC)
@@ -71,3 +71,16 @@
     //static build doesn't need import/export macros
     #define HT_API
 #endif
+
+#ifndef _MSC_VER
+#define NOEXCEPT noexcept
+#elif _MSC_VER >= 1900
+#define NOEXCEPT noexcept
+#else
+#define NOEXCEPT 
+#endif
+
+//////////////////////////////
+// BYTE typedef
+//////////////////////////////
+typedef unsigned char BYTE;

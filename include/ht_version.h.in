@@ -1,0 +1,3 @@
+#define HatchitEngine_VERSION_MAJOR @HatchitEngine_VERSION_MAJOR@
+#define HatchitEngine_VERSION_MINOR @HatchitEngine_VERSION_MINOR@
+#define HatchitEngine_VERSION_BUILD @HatchitEngine_VERSION_BUILD@
