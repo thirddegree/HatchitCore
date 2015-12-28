@@ -13,6 +13,7 @@
 **/
 
 #include <ht_inireader.h>
+#include <ht_debug.h>
 
 namespace Hatchit {
 
@@ -28,6 +29,15 @@ namespace Hatchit {
             int error = ini_parse_file(file->Handle(), ValueHandler, this);
             if (error != 0)
                 throw INIException(file->Name(), error);
+
+#ifdef _DEBUG
+            /*Print loaded values to output window*/
+            DebugPrintF("[%s]:\n", file->Name().c_str());
+            for (auto val : m_values)
+            {
+                DebugPrintF("%s : %s\n", val.first.c_str(), val.second.c_str());
+            }
+#endif
         }
 
         bool INIReader::Empty()
