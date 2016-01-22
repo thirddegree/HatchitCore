@@ -27,23 +27,23 @@ using namespace Hatchit::Core;
 TEST(INITest, Serialize)
 {
     File file;
-    file.Open(os_exec_dir() + "test.ini", FileMode::WriteBinary);
-    INIWriter writer;
-    writer.SetValue("TEST", "iVal", 600);
-    writer.SetValue("TEST", "bVal", true);
-    writer.SetValue("TEST", "fVal", 2.5f);
-    writer.SetValue("TEST", "dVal", 35.5);
 
-    writer.Write(&file);
-
-    file.Close();
     try
     {
 
+        file.Open(os_exec_dir() + "test.ini", FileMode::WriteBinary);
+        INIWriter writer;
+        writer.SetValue("TEST", "iVal", 600);
+        writer.SetValue("TEST", "bVal", true);
+        writer.SetValue("TEST", "fVal", 2.5f);
+        writer.SetValue("TEST", "dVal", 35.5);
+
+        writer.Write(&file);
+
+        file.Close();
 
 
-
-        /*file.Open(os_exec_dir() + "test.ini", FileMode::ReadText);
+        file.Open(os_exec_dir() + "test.ini", FileMode::ReadText);
 
         INIReader reader;
         reader.Load(&file);
@@ -56,7 +56,7 @@ TEST(INITest, Serialize)
         EXPECT_EQ(600, iValue);
         EXPECT_EQ(true, bValue);
         EXPECT_EQ(2.5f, fValue);
-        EXPECT_EQ(35.5, dValue);*/
+        EXPECT_EQ(35.5, dValue);
     }
     catch(std::exception& e)
     {
