@@ -74,7 +74,7 @@ namespace Hatchit {
                     #ifdef HT_SYS_WINDOWS
                         fopen_s(&m_handle, m_path.c_str(), "w");
                     #else
-                        m_handle = fopen(m_path.c_str(), "w");
+                        m_handle = fopen(m_path.c_str(), "w+");
                     #endif
                 } break;
 
@@ -137,10 +137,9 @@ namespace Hatchit {
 
             _len = fwrite(in, sizeof(BYTE), len, m_handle);
 
-            int err = errno;
-            if (err > 0)
-                throw FileException(m_path, err);
-
+            if(_len != len)
+                throw FileException(m_path, errno);
+                
             return _len;
         }
 
