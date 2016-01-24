@@ -4,8 +4,8 @@ set(BUILD_TEST FALSE CACHE BOOL "Build the google test project")
 
 project(HatchitCore)
 
-file(GLOB HATCHIT_CORE_HEADERS "include/*.h" "thirdparty/inih/*.h")
-file(GLOB HATCHIT_CORE_SOURCE "source/*.cpp" "thirdparty/inih/*.c")
+file(GLOB HATCHIT_CORE_HEADERS "include/*.h" "/include/linux/*.h" "thirdparty/inih/*.h")
+file(GLOB HATCHIT_CORE_SOURCE "source/*.cpp" "source/linux/*.cpp" "thirdparty/inih/*.c")
 
 #C++ 11
 if(UNIX)
@@ -39,7 +39,7 @@ if(BUILD_TEST)
 	file(GLOB TEST_SOURCE "test/*.cpp")
 
 	include_directories(${GTEST_INCLUDE_DIRS})
-	include_directories("include" "thirdparty/inih")
+	include_directories("include" "include/linux" "thirdparty/inih")
 
 	add_executable(test_bin ${TEST_SOURCE})
 	target_link_libraries(test_bin ${GTEST_BOTH_LIBRARIES})
