@@ -44,7 +44,7 @@ if(BUILD_TEST)
 	add_executable(test_bin ${TEST_SOURCE})
 	target_link_libraries(test_bin ${GTEST_BOTH_LIBRARIES})
 	target_link_libraries(test_bin ${CMAKE_THREAD_LIBS_INIT})
-	target_link_libraries(test_bin HatchitCore)
+	target_link_libraries(test_bin HatchitCore rt)
 
 	enable_testing()
 	add_test(HatchitCore test_bin)
