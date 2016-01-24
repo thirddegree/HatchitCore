@@ -49,16 +49,6 @@ namespace Hatchit {
             timespec m_paused;
             bool     m_stopped;
             double   m_deltaTime;
-            /*__int64 m_base;
-            __int64 m_start;
-            __int64 m_current;
-            __int64 m_previous;
-            __int64 m_stop;
-            __int64 m_paused;
-            bool    m_stopped;
-
-            double        m_secPerTick;
-            double        m_deltaTime;*/
         };
 
     }
