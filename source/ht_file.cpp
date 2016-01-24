@@ -124,9 +124,8 @@ namespace Hatchit {
 
             _len = fread(out, sizeof(BYTE), len, m_handle);
 
-            int err = errno;
-            if (err > 0)
-                throw FileException(m_path, err);
+            if (_len != len)
+                throw FileException(m_path, errno);
 
             return _len;
         }
