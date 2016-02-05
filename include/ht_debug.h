@@ -31,6 +31,32 @@
 #define HT_SFY_(x) HT_STRINGIFY(x)
 #endif
 
+#ifndef HT_SFY_FUNC
+#define HT_SFY_FUNC HT_SFY_(__FUNCTION__)
+#endif
+
+#ifndef HT_SFY_LINE
+#define HT_SFY_LINE HT_SFY_(__LINE__)
+#endif
+#ifndef HT_SFY_FILE
+#define HT_SFY_FILE HT_SFY_(__FILE__)
+#endif
+
+#ifndef HT_LOG_FILE
+#define HT_LOG_FILE "FILE: " HT_SFY_FILE
+#endif
+#ifndef HT_LOG_LINE
+#define HT_LOG_LINE "LINE: " HT_SFY_LINE
+#endif
+
+#ifndef HT_LOG_FUNC
+#define HT_LOG_FUNC "FUNC: " __FUNCTION__
+#endif
+
+#ifndef HT_LOG_PREFIX
+#define HT_LOG_PREFIX HT_LOG_FILE "\n" HT_LOG_FUNC "\n" HT_LOG_LINE "\n"
+#endif
+
 namespace Hatchit {
 
     namespace Core {

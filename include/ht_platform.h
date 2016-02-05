@@ -63,6 +63,13 @@
             //GCC 4 has unique keywords for showing/hiding symbols
             //the same keyword is used for both import and export
             #define HT_API __attribute__((__visibility__("default")))
+            
+            //Define MSVC compatible __forceinline keyword
+            //for use with GCC compiler.
+            #ifndef __forceinline
+            #define __forceinline __attribute__((always_inline))
+            #endif
+
         #else
             #define HT_API
         #endif
