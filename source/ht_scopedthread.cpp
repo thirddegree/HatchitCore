@@ -14,6 +14,7 @@
 
 #include <ht_scopedthread.h>
 #include <exception>
+#include <stdexcept>
 
 namespace Hatchit {
 
