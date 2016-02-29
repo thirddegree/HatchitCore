@@ -7,11 +7,13 @@ project(HatchitCore)
 if(WIN32)
     # We need to set this when building on Windows
     add_definitions(-DHT_NONCLIENT_BUILD)
-    set(HATCHIT_CORE_SYS_HEADERS "include/windows/*.h")
-    set(HATCHIT_CORE_SYS_SOURCE  "source/windows/*.cpp")
+    set(HATCHIT_CORE_SYS_HEADERS     "include/windows/*.h")
+    set(HATCHIT_CORE_SYS_HEADERS_DIR "include/windows")
+    set(HATCHIT_CORE_SYS_SOURCE      "source/windows/*.cpp")
 else()
-    set(HATCHIT_CORE_SYS_HEADERS "include/linux/*.h")
-    set(HATCHIT_CORE_SYS_SOURCE "source/linux/*.cpp")
+    set(HATCHIT_CORE_SYS_HEADERS     "include/linux/*.h")
+    set(HATCHIT_CORE_SYS_HEADERS_DIR "include/linux")
+    set(HATCHIT_CORE_SYS_SOURCE      "source/linux/*.cpp")
 endif()
 
 file(GLOB HATCHIT_CORE_HEADERS
@@ -19,6 +21,12 @@ file(GLOB HATCHIT_CORE_HEADERS
     ${HATCHIT_CORE_SYS_HEADERS}
     "thirdparty/inih/*.h"
     "thirdparty/cppformat/cppformat/*.h"
+)
+file(GLOB HATCHIT_CORE_HEADERS_DIRS
+    "include"
+    ${HATCHIT_CORE_SYS_HEADERS_DIR}
+    "thirdparty/inih"
+    "thirdparty/cppformat/cppformat"
 )
 file(GLOB HATCHIT_CORE_SOURCE
     "source/*.cpp"
@@ -34,6 +42,7 @@ endif(UNIX)
 
 include_directories("include")
 include_directories(SYSTEM)
+include_directories(${HATCHIT_CORE_HEADERS_DIRS})
 
 source_group("Headers" FILES ${HATCHIT_CORE_HEADERS})
 add_library(HatchitCore SHARED ${HATCHIT_CORE_HEADERS} ${HATCHIT_CORE_SOURCE})
@@ -58,19 +67,7 @@ if(BUILD_TEST)
 
 	file(GLOB TEST_SOURCE "test/*.cpp")
 
-    # General include directories
-    file(GLOB TEST_INCLUDE_DIRS "include" "thirdparty/inih" "thirdparty/cppformat/cppformat")
-
-    # System include directories
-    if(WIN32)
-        set(TEST_INCLUDE_SYS_DIRS "include/windows")
-    else()
-        set(TEST_INCLUDE_SYS_DIRS "include/linux")
-    endif()
-
 	include_directories(${GTEST_INCLUDE_DIRS})
-    include_directories(${TEST_INCLUDE_DIRS})
-    include_directories(${TEST_INCLUDE_SYS_DIRS})
 
 	add_executable(test_bin ${TEST_SOURCE})
 	target_link_libraries(test_bin ${GTEST_BOTH_LIBRARIES})
