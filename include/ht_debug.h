@@ -18,6 +18,7 @@
 #include <ht_string.h>
 #include <iostream>
 #include <iomanip>
+#include <format.h>
 
 #ifdef HT_SYS_LINUX
 #include <cstdarg>
