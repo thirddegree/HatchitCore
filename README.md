@@ -4,11 +4,11 @@ Core Utilities library for Hatchit 3D Game Engine
 
 [![Build Status](https://travis-ci.org/thirddegree/HatchitCore.svg?branch=master)](https://travis-ci.org/thirddegree/HatchitCore)
 
-### Build instructions
+## Build instructions
 
-Building is simple. You just need CMake and a C++ compiler
+### Linux
 
-On Linux it's as simple as
+Simply install CMake and a C++ compiler. Then follow these commands:
 
 ```
 mkdir build
@@ -17,10 +17,13 @@ cmake ..
 make
 ```
 
-On Windows you'll probably want to run the CMake GUI to make a Visual Studio
-project
+### Windows
 
-### Building tests
+On Window's you'll just need CMake and a C++ compiler as well. However,
+when selecting the generator in CMake, make sure to use the 64-bit target!
+(E.g. "Visual Studio 14 2015 Win64")
+
+## Building tests
 
 Building tests works best on Linux. Travis CI is used to automate tests whenever
 you push to the repo.
