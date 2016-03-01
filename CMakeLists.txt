@@ -1,4 +1,4 @@
-cmake_minimum_required (VERSION 2.8.7)
+cmake_minimum_required(VERSION 2.8.7)
 
 set(BUILD_TEST FALSE CACHE BOOL "Build the Google test project")
 
@@ -33,9 +33,9 @@ file(GLOB HATCHIT_CORE_SOURCE
     "thirdparty/cppformat/cppformat/*.cc"
 )
 
-#C++ 11
+# C++ 11 and 64-bit on Linux
 if(UNIX)
-	set(CMAKE_CXX_FLAGS "-std=c++11 -g ${CMAKE_CXX_FLAGS}")
+    set(CMAKE_CXX_FLAGS "-std=c++11 -g -m64 ${CMAKE_CXX_FLAGS}")
 endif(UNIX)
 
 include_directories("include")
@@ -52,36 +52,36 @@ endif()
 
 # Need to link some basic libraries
 if(UNIX)
-	target_link_libraries(HatchitCore m)
+    target_link_libraries(HatchitCore m)
 endif(UNIX)
 
 set_property(TARGET HatchitCore PROPERTY FOLDER "lib")
 
 install(TARGETS HatchitCore
-		LIBRARY DESTINATION ${PROJECT_BINARY_DIR}
-		ARCHIVE DESTINATION ${PROJECT_BINARY_DIR})
+        LIBRARY DESTINATION ${PROJECT_BINARY_DIR}
+        ARCHIVE DESTINATION ${PROJECT_BINARY_DIR})
 
 # Test project
 if(BUILD_TEST)
-	project(HatchitCoreTest)
+    project(HatchitCoreTest)
 
-	find_package(GTest REQUIRED)
-	find_package(Threads REQUIRED)
+    find_package(GTest REQUIRED)
+    find_package(Threads REQUIRED)
 
-	file(GLOB TEST_SOURCE "test/*.cpp")
+    file(GLOB TEST_SOURCE "test/*.cpp")
 
-	include_directories(${GTEST_INCLUDE_DIRS})
+    include_directories(${GTEST_INCLUDE_DIRS})
 
-	add_executable(test_bin ${TEST_SOURCE})
-	target_link_libraries(test_bin ${GTEST_BOTH_LIBRARIES})
-	target_link_libraries(test_bin ${CMAKE_THREAD_LIBS_INIT})
+    add_executable(test_bin ${TEST_SOURCE})
+    target_link_libraries(test_bin ${GTEST_BOTH_LIBRARIES})
+    target_link_libraries(test_bin ${CMAKE_THREAD_LIBS_INIT})
 
     if(WIN32)
         target_link_libraries(test_bin HatchitCore)
     else()
-	   target_link_libraries(test_bin HatchitCore rt)
+        target_link_libraries(test_bin HatchitCore rt)
     endif()
 
-	enable_testing()
-	add_test(HatchitCore test_bin)
+    enable_testing()
+    add_test(HatchitCore test_bin)
 endif(BUILD_TEST)
