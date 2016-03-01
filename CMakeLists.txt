@@ -5,8 +5,6 @@ set(BUILD_TEST FALSE CACHE BOOL "Build the Google test project")
 project(HatchitCore)
 
 if(WIN32)
-    # We need to set this when building on Windows
-    add_definitions(-DHT_NONCLIENT_BUILD)
     set(HATCHIT_CORE_SYS_HEADERS     "include/windows/*.h")
     set(HATCHIT_CORE_SYS_HEADERS_DIR "include/windows")
     set(HATCHIT_CORE_SYS_SOURCE      "source/windows/*.cpp")
@@ -47,7 +45,12 @@ include_directories(${HATCHIT_CORE_HEADERS_DIRS})
 source_group("Headers" FILES ${HATCHIT_CORE_HEADERS})
 add_library(HatchitCore SHARED ${HATCHIT_CORE_HEADERS} ${HATCHIT_CORE_SOURCE})
 
-#Need to link some basic libraries
+if(WIN32)
+    # We need to set this when building on Windows
+    target_compile_definitions(HatchitCore PRIVATE HT_NONCLIENT_BUILD)
+endif()
+
+# Need to link some basic libraries
 if(UNIX)
 	target_link_libraries(HatchitCore m)
 endif(UNIX)
