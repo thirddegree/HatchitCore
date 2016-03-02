@@ -47,12 +47,10 @@
             #ifndef HT_API
             #define HT_API __declspec(dllexport)
             #endif
-            #define FMT_EXPORT
         #else
             #ifndef HT_API
             #define HT_API __declspec(dllimport)
             #endif
-            #define FMT_SHARED
         #endif
 
         //Visual C++ compiler warning C4251 disable

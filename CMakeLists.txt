@@ -46,8 +46,9 @@ source_group("Headers" FILES ${HATCHIT_CORE_HEADERS})
 add_library(HatchitCore SHARED ${HATCHIT_CORE_HEADERS} ${HATCHIT_CORE_SOURCE})
 
 if(WIN32)
-    # We need to set this when building on Windows
+    # We need to define some things when building on Windows
     target_compile_definitions(HatchitCore PRIVATE HT_NONCLIENT_BUILD)
+    target_compile_definitions(HatchitCore PRIVATE FMT_EXPORT)
 endif()
 
 # Need to link some basic libraries
