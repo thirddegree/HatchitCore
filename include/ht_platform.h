@@ -56,7 +56,7 @@
         //Visual C++ compiler warning C4251 disable
         #ifdef _MSC_VER
         #pragma warning(disable : 4251)
-		#pragma warning(disable : 4275)
+        #pragma warning(disable : 4275)
         #endif
 
     #else //Linux and MAC OSX
