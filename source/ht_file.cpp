@@ -54,9 +54,9 @@ namespace Hatchit {
                 case FileMode::ReadText:
                 {
                     #ifdef HT_SYS_WINDOWS
-                        fopen_s(&m_handle, m_path.c_str(), "r");
+                        fopen_s(&m_handle, m_path.c_str(), "rt");
                     #else
-                        m_handle = fopen(m_path.c_str(), "r");
+                        m_handle = fopen(m_path.c_str(), "rt");
                     #endif
                 } break;
 
@@ -124,7 +124,7 @@ namespace Hatchit {
 
             _len = fread(out, sizeof(BYTE), len, m_handle);
 
-            if (_len != len)
+            if (_len == 0)
                 throw FileException(m_path, errno);
 
             return _len;

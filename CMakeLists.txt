@@ -1,51 +1,88 @@
-cmake_minimum_required (VERSION 2.8.7)
+cmake_minimum_required(VERSION 2.8.7)
 
-set(BUILD_TEST FALSE CACHE BOOL "Build the google test project")
+set(BUILD_TEST FALSE CACHE BOOL "Build the Google test project")
 
 project(HatchitCore)
 
-file(GLOB HATCHIT_CORE_HEADERS "include/*.h" "/include/linux/*.h" "thirdparty/inih/*.h")
-file(GLOB HATCHIT_CORE_SOURCE "source/*.cpp" "source/linux/*.cpp" "thirdparty/inih/*.c")
+if(WIN32)
+    set(HATCHIT_CORE_SYS_HEADERS     "include/windows/*.h")
+    set(HATCHIT_CORE_SYS_HEADERS_DIR "include/windows")
+    set(HATCHIT_CORE_SYS_SOURCE      "source/windows/*.cpp")
+else()
+    set(HATCHIT_CORE_SYS_HEADERS     "include/linux/*.h")
+    set(HATCHIT_CORE_SYS_HEADERS_DIR "include/linux")
+    set(HATCHIT_CORE_SYS_SOURCE      "source/linux/*.cpp")
+endif()
 
-#C++ 11
+file(GLOB HATCHIT_CORE_HEADERS
+    "include/*.h"
+    ${HATCHIT_CORE_SYS_HEADERS}
+    "thirdparty/inih/*.h"
+    "thirdparty/cppformat/cppformat/*.h"
+)
+file(GLOB HATCHIT_CORE_HEADERS_DIRS
+    "include"
+    ${HATCHIT_CORE_SYS_HEADERS_DIR}
+    "thirdparty/inih"
+    "thirdparty/cppformat/cppformat"
+)
+file(GLOB HATCHIT_CORE_SOURCE
+    "source/*.cpp"
+    ${HATCHIT_CORE_SYS_SOURCE}
+    "thirdparty/inih/*.c"
+    "thirdparty/cppformat/cppformat/*.cc"
+)
+
+# C++ 11 and 64-bit on Linux
 if(UNIX)
-	set(CMAKE_CXX_FLAGS "-std=c++11 -g ${CMAKE_CXX_FLAGS}")
+    set(CMAKE_CXX_FLAGS "-std=c++11 -g -m64 ${CMAKE_CXX_FLAGS}")
 endif(UNIX)
 
 include_directories("include")
 include_directories(SYSTEM)
+include_directories(${HATCHIT_CORE_HEADERS_DIRS})
 
 source_group("Headers" FILES ${HATCHIT_CORE_HEADERS})
 add_library(HatchitCore SHARED ${HATCHIT_CORE_HEADERS} ${HATCHIT_CORE_SOURCE})
 
-#Need to link some basic libraries
+if(WIN32)
+    # We need to define some things when building on Windows
+    target_compile_definitions(HatchitCore PRIVATE HT_NONCLIENT_BUILD)
+    target_compile_definitions(HatchitCore PRIVATE FMT_EXPORT)
+endif()
+
+# Need to link some basic libraries
 if(UNIX)
-	target_link_libraries(HatchitCore m)
+    target_link_libraries(HatchitCore m)
 endif(UNIX)
 
 set_property(TARGET HatchitCore PROPERTY FOLDER "lib")
 
 install(TARGETS HatchitCore
-		LIBRARY DESTINATION ${PROJECT_BINARY_DIR}
-		ARCHIVE DESTINATION ${PROJECT_BINARY_DIR})
+        LIBRARY DESTINATION ${PROJECT_BINARY_DIR}
+        ARCHIVE DESTINATION ${PROJECT_BINARY_DIR})
 
 # Test project
 if(BUILD_TEST)
-	project(HatchitCoreTest)
+    project(HatchitCoreTest)
 
-	find_package(GTest REQUIRED)
-	find_package(Threads REQUIRED)
+    find_package(GTest REQUIRED)
+    find_package(Threads REQUIRED)
 
-	file(GLOB TEST_SOURCE "test/*.cpp")
+    file(GLOB TEST_SOURCE "test/*.cpp")
 
-	include_directories(${GTEST_INCLUDE_DIRS})
-	include_directories("include" "include/linux" "thirdparty/inih")
+    include_directories(${GTEST_INCLUDE_DIRS})
 
-	add_executable(test_bin ${TEST_SOURCE})
-	target_link_libraries(test_bin ${GTEST_BOTH_LIBRARIES})
-	target_link_libraries(test_bin ${CMAKE_THREAD_LIBS_INIT})
-	target_link_libraries(test_bin HatchitCore rt)
+    add_executable(test_bin ${TEST_SOURCE})
+    target_link_libraries(test_bin ${GTEST_BOTH_LIBRARIES})
+    target_link_libraries(test_bin ${CMAKE_THREAD_LIBS_INIT})
 
-	enable_testing()
-	add_test(HatchitCore test_bin)
+    if(WIN32)
+        target_link_libraries(test_bin HatchitCore)
+    else()
+        target_link_libraries(test_bin HatchitCore rt)
+    endif()
+
+    enable_testing()
+    add_test(HatchitCore test_bin)
 endif(BUILD_TEST)

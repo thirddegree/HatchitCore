@@ -56,6 +56,7 @@
         //Visual C++ compiler warning C4251 disable
         #ifdef _MSC_VER
         #pragma warning(disable : 4251)
+        #pragma warning(disable : 4275)
         #endif
 
     #else //Linux and MAC OSX
@@ -63,6 +64,13 @@
             //GCC 4 has unique keywords for showing/hiding symbols
             //the same keyword is used for both import and export
             #define HT_API __attribute__((__visibility__("default")))
+            
+            //Define MSVC compatible __forceinline keyword
+            //for use with GCC compiler.
+            #ifndef __forceinline
+            #define __forceinline __attribute__((always_inline))
+            #endif
+
         #else
             #define HT_API
         #endif
