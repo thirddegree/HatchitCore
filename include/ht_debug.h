@@ -68,7 +68,8 @@ namespace Hatchit {
         *  @param format The format string.
         *  @param args The argument list used with format string.
         */
-        template<class ... Args> inline std::string DebugSprintF(const char* format, const Args& ... args)
+        template<class ... Args> 
+        inline std::string DebugSprintF(const char* format, const Args& ... args)
         {
             return fmt::sprintf( format, args ... );
         }
@@ -82,7 +83,8 @@ namespace Hatchit {
         *  @param format The format string.
         *  @param args The argument list used with format string.
         */
-        template<class ... Args> inline int DebugPrintF(const char* format, const Args& ... args)
+        template<class ... Args> 
+        inline int DebugPrintF(const char* format, const Args& ... args)
         {
             std::string message = fmt::sprintf( format, args ... );
 
