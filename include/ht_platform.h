@@ -23,8 +23,15 @@
     #define HT_SYS_WINDOWS
     #define WIN32_LEAN_AND_MEAN
     #include <windows.h>
+    #include <winapifamily.h>
     #ifndef NOMINMAX
     #define NOMINMAX
+    #endif
+
+    #if defined(WINAPI_FAMILY) && WINAPI_FAMILY == WINAPI_FAMILY_PC_APP
+        /*include headers for Universal Windows PC Application*/
+        #include <wrl.h>
+        #include <concrt.h>
     #endif
 #elif defined(__linux__)
     //Linux platform
