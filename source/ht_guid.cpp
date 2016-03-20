@@ -125,7 +125,7 @@ namespace Hatchit {
          * \param out The value to output to.
          * \return True if the mapping was successful, false if not.
          */
-        static __forceinline bool MapHexToDec(char hex, uint8_t& out)
+        static inline bool MapHexToDec(char hex, uint8_t& out)
         {
             if (hex >= '0' && hex <= '9') { out = hex - '0';      return true; }
             if (hex >= 'a' && hex <= 'f') { out = hex - 'a' + 10; return true; }
