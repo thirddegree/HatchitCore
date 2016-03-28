@@ -44,9 +44,10 @@ namespace Hatchit {
             //convert path
             std::string _path = os_path(path);
             #ifdef HT_SYS_WINDOWS
-                DWORD dwAttrib = GetFileAttributesA(_path.c_str());
-                return (dwAttrib != INVALID_FILE_ATTRIBUTES &&
-                        (dwAttrib & FILE_ATTRIBUTE_DIRECTORY));
+                WIN32_FILE_ATTRIBUTE_DATA info;
+                GetFileAttributesExA(_path.c_str(), GetFileExInfoStandard, &info);
+                return (info.dwFileAttributes != INVALID_FILE_ATTRIBUTES &&
+                        (info.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY));
             #elif defined(HT_SYS_LINUX)
                 struct stat info;
                 stat(_path.c_str(), &info);
