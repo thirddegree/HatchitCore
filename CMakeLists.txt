@@ -19,12 +19,14 @@ file(GLOB HATCHIT_CORE_HEADERS
     ${HATCHIT_CORE_SYS_HEADERS}
     "thirdparty/inih/*.h"
     "thirdparty/cppformat/cppformat/*.h"
+    "thirdparty/json/src/*.hpp"
 )
 file(GLOB HATCHIT_CORE_HEADERS_DIRS
     "include"
     ${HATCHIT_CORE_SYS_HEADERS_DIR}
     "thirdparty/inih"
     "thirdparty/cppformat/cppformat"
+    "thirdparty/json/src"
 )
 file(GLOB HATCHIT_CORE_SOURCE
     "source/*.cpp"

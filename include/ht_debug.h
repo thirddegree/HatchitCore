@@ -54,6 +54,14 @@
 #define HT_LOG_PREFIX HT_LOG_FILE "\n" HT_LOG_FUNC "\n" HT_LOG_LINE "\n"
 #endif
 
+#ifndef HT_DEBUG_PRINTF
+    #if defined(DEBUG) || defined(_DEBUG)
+        #define HT_DEBUG_PRINTF(fmt_string, ...) Hatchit::Core::DebugPrintF(fmt_string, __VA_ARGS__);
+    #else
+        #define HT_DEBUG_PRINTF(fmt_string, ...)
+    #endif
+#endif
+
 namespace Hatchit {
 
     namespace Core {
