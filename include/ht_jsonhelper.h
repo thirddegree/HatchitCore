@@ -71,12 +71,22 @@ namespace Hatchit {
          */
         #define JsonExtractString(json, name, out) _JsonExtractValue<std::string>(json, &JSON::is_string, name, out)
 
+		 /**
+		 * \brief Attempts to extract a float from a JSON object.
+		 *
+		 * \param json The JSON object.
+		 * \param name The name of the float to retrieve.
+		 * \param out The output float.
+		 * \return True if the extraction was successful, false if not.
+		 */
+		#define JsonExtractFloat(json, name, out) _JsonExtractValue<float>(json, &JSON::is_number_float, name, out)
+
         /**
          * \brief Attempts to extract a double from a JSON object.
          *
          * \param json The JSON object.
          * \param name The name of the double to retrieve.
-         * \param out The output string.
+         * \param out The output double.
          * \return True if the extraction was successful, false if not.
          */
         #define JsonExtractDouble(json, name, out) _JsonExtractValue<double>(json, &JSON::is_number_float, name, out)
@@ -86,10 +96,30 @@ namespace Hatchit {
          *
          * \param json The JSON object.
          * \param name The name of the float to retrieve.
-         * \param out The output string.
+         * \param out The output bool.
          * \return True if the extraction was successful, false if not.
          */
         #define JsonExtractBool(json, name, out) _JsonExtractValue<bool>(json, &JSON::is_boolean, name, out)
+
+		 /**
+		 * \brief Attempts to extract a int32 from a JSON object.
+		 *
+		 * \param json The JSON object.
+		 * \param name The name of the int32 to retrieve.
+		 * \param out The output int32.
+		 * \return True if the extraction was successful, false if not.
+		 */
+		#define JsonExtractInt32(json, name, out) _JsonExtractValue<int32_t>(json, &JSON::is_number_integer, name, out)
+
+		 /**
+		 * \brief Attempts to extract a uint32 from a JSON object.
+		 *
+		 * \param json The JSON object.
+		 * \param name The name of the uint32 to retrieve.
+		 * \param out The output uint32.
+		 * \return True if the extraction was successful, false if not.
+		 */
+		#define JsonExtractUInt32(json, name, out) _JsonExtractValue<uint32_t>(json, &JSON::is_number_integer, name, out)
 
         /**
          * \brief Attempts to extract an int64 from a JSON object.
@@ -121,8 +151,20 @@ namespace Hatchit {
          */
         static __forceinline bool JsonExtractGuid(const JSON& json, const std::string& name, Guid& out)
         {
-            std::string guidText;
+			std::string guidText;
             return JsonExtractString(json, name, guidText) && Guid::Parse(guidText, out);
+        }
+
+		/**
+         * \brief Attempts to extract a Guid from a JSON object.
+         *
+         * \param name The string representing the Guid.
+         * \param out The output Guid.
+         * \return True if the extraction was successful, false if not.
+         */
+        static __forceinline bool JsonExtractGuid(const std::string& name, Guid& out)
+        {
+            return Guid::Parse(name, out);
         }
 
 #else
