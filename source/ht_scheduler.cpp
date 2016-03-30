@@ -20,37 +20,37 @@ namespace Hatchit {
 
     namespace Core {
 
-        uint32_t Scheduler::m_runningThreads = 0;
-        uint32_t Scheduler::m_maxThreads = 0;
-        
-        std::queue<IJob*> Scheduler::m_jobs = {};
-
         Scheduler::Scheduler() 
         {
             m_runningThreads = 0;
             m_maxThreads = 0;
         }
+
         Scheduler::~Scheduler() {}
 
         void Scheduler::Initialize() 
         {
-            m_maxThreads = std::thread::hardware_concurrency();
+            Scheduler& _instance = Scheduler::instance();
+
+            _instance.m_maxThreads = std::thread::hardware_concurrency();
         }
 
         void Scheduler::RunJobs()
         {
-            m_runningThreads = 0;
-            while (m_jobs.size() > 0)
+            Scheduler& _instance = Scheduler::instance();
+
+            _instance.m_runningThreads = 0;
+            while (_instance.m_jobs.size() > 0)
             {
-                if (m_runningThreads == m_maxThreads)
+                if (_instance.m_runningThreads == _instance.m_maxThreads)
                     continue;
 
-                m_runningThreads++;
-                std::cout << m_runningThreads << " : ";
+                _instance.m_runningThreads++;
+                std::cout << _instance.m_runningThreads << " : ";
 
                 //Get the next job's pointer and then pop it off
-                IJob* nextJob = m_jobs.front();
-                m_jobs.pop();
+                IJob* nextJob = _instance.m_jobs.front();
+                _instance.m_jobs.pop();
 
                 std::thread jobThread = nextJob->GetThread();
                 jobThread.detach();
@@ -62,12 +62,16 @@ namespace Hatchit {
 
         void Scheduler::addJob(IJob* job)
         {
-            m_jobs.push(job);
+            Scheduler& _instance = Scheduler::instance();
+
+            _instance.m_jobs.push(job);
         }
 
         void Scheduler::threadEnded() 
         {
-            m_runningThreads--;
+            Scheduler& _instance = Scheduler::instance();
+
+            _instance.m_runningThreads--;
         }
     }
 

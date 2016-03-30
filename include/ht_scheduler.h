@@ -62,13 +62,12 @@ namespace Hatchit {
             std::function<void()> m_function;
         };
 
-        template class HT_API std::queue<IJob*>;
-
         class HT_API Scheduler : public Singleton<Scheduler>
         {       
 
         public:
             Scheduler();
+
             ~Scheduler();
 
             static void Initialize();
@@ -84,10 +83,9 @@ namespace Hatchit {
             static void RunJobs();
 
         private:
-
-            static uint32_t m_runningThreads;
-            static uint32_t m_maxThreads;
-            static std::queue<IJob*> m_jobs;
+            uint32_t m_runningThreads;
+            uint32_t m_maxThreads;
+            std::queue<IJob*> m_jobs;
 
             static void addJob(IJob* job);
             static void threadEnded();

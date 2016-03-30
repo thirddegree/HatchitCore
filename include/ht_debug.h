@@ -56,7 +56,7 @@
 
 #ifndef HT_DEBUG_PRINTF
     #if defined(DEBUG) || defined(_DEBUG)
-        #define HT_DEBUG_PRINTF(fmt_string, ...) Hatchit::Core::DebugPrintF(fmt_string, __VA_ARGS__);
+        #define HT_DEBUG_PRINTF(fmt_string, ...) Hatchit::Core::DebugPrintF(fmt_string, ## __VA_ARGS__);
     #else
         #define HT_DEBUG_PRINTF(fmt_string, ...)
     #endif
