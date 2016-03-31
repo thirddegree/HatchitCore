@@ -31,11 +31,14 @@ namespace Hatchit {
         {
         protected:
             INonCopy() { }
-            ~INonCopy() { }
+            virtual ~INonCopy() { }
 
-        private:
-            INonCopy(const INonCopy&);
-            const INonCopy& operator=(const INonCopy&);
+			INonCopy(const INonCopy&) = delete;
+			INonCopy(INonCopy&&) = default;
+
+			INonCopy& operator=(const INonCopy&) = delete;
+			INonCopy& operator=(INonCopy&&) = default;
+            
         };
 
     }
