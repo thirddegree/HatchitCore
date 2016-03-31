@@ -16,6 +16,7 @@
 
 #include <ht_platform.h>
 #include <stdint.h>
+#include <memory>   // For std::shared_ptr
 #include <string>
 
 namespace Hatchit {
@@ -31,8 +32,15 @@ namespace Hatchit {
         class HT_API Guid
         {
             uint8_t m_uuid[16];
+            uint64_t m_hashCode;
+            std::string m_originalString;
 
         public:
+            /**
+             * \brief The empty Guid.
+             */
+            static const Guid Empty;
+
             /**
              * \brief Creates a new Guid.
              */
@@ -58,11 +66,25 @@ namespace Hatchit {
             ~Guid();
 
             /**
-             * \brief Hashes this Guid.
+             * \brief Gets this Guid's hash code.
              *
              * Provides a 64-bit unsigned integer hash representation of this Guid.
              */
-            uint64_t Hash() const;
+            uint64_t GetHashCode() const;
+
+            /**
+             * \brief Gets this Guid's original string, if there is one.
+             *
+             * \return The original string, if it exists.
+             */
+            std::string GetOriginalString() const;
+
+            /**
+             * \brief Checks to see if this Guid is originally from a string.
+             *
+             * \return True if this Guid is based off of a string, false if not.
+             */
+            bool IsFromString() const;
 
             /**
              * \brief Gets the textual representation of this Guid.
@@ -102,6 +124,14 @@ namespace Hatchit {
 
         public:
             /**
+             * \brief Creates a Guid from a string by hashing the string.
+             *
+             * \param text The text to create a Guid from.
+             * \return The Guid based off of the given text.
+             */
+            static Guid FromString(const std::string& text);
+
+            /**
             * \brief Attempts to parse a Guid from its textual representation.
             *
             * \param text The text to parse.
@@ -126,7 +156,7 @@ namespace std {
     {
         inline size_t operator()(const Hatchit::Core::Guid& guid) const
         {
-            return guid.Hash();
+            return guid.GetHashCode();
         }
     };
 
