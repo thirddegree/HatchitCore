@@ -112,6 +112,17 @@ namespace Hatchit {
 
             return "";
         }
+
+		char os_path_delimeter()
+		{
+			char delimeter;
+#ifdef HT_SYS_WINDOWS
+			delimeter = '\\';
+#else
+			delimeter = '/';
+#endif
+			return delimeter;
+		}
     }
 
 }
