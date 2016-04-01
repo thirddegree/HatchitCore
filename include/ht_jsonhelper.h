@@ -20,6 +20,9 @@
 #  include <ht_debug.h>
 #endif
 
+// Uncomment the following line to disable JSON type checking in release mode
+// #define HT_DISABLE_JSON_CHECKS
+
 namespace Hatchit {
 
     namespace Core {
@@ -117,6 +120,16 @@ namespace Hatchit {
          * \param out The output string.
          * \return True if the extraction was successful, false if not.
          */
+        #define JsonExtractFloat(json, name, out) Hatchit::Core::_JsonExtractValue<float>(json, &JSON::is_number_float, name, out)
+
+        /**
+         * \brief Attempts to extract a float from a JSON object.
+         *
+         * \param json The JSON object.
+         * \param name The name of the float to retrieve.
+         * \param out The output string.
+         * \return True if the extraction was successful, false if not.
+         */
         #define JsonExtractBool(json, name, out) Hatchit::Core::_JsonExtractValue<bool>(json, &JSON::is_boolean, name, out)
 
         /**
@@ -138,6 +151,26 @@ namespace Hatchit {
          * \return True if the extraction was successful, false if not.
          */
         #define JsonExtractUint64(json, name, out) Hatchit::Core::_JsonExtractValue<uint64_t>(json, &JSON::is_number_unsigned, name, out)
+
+        /**
+         * \brief Attempts to extract an int32 from a JSON object.
+         *
+         * \param json The JSON object.
+         * \param name The name of the int32 to retrieve.
+         * \param out The output string.
+         * \return True if the extraction was successful, false if not.
+         */
+        #define JsonExtractInt32(json, name, out) Hatchit::Core::_JsonExtractValue<int32_t>(json, &JSON::is_number_integer, name, out)
+
+        /**
+         * \brief Attempts to extract a uint32 from a JSON object.
+         *
+         * \param json The JSON object.
+         * \param name The name of the uint32 to retrieve.
+         * \param out The output string.
+         * \return True if the extraction was successful, false if not.
+         */
+        #define JsonExtractUint32(json, name, out) Hatchit::Core::_JsonExtractValue<uint32_t>(json, &JSON::is_number_unsigned, name, out)
 
         /**
          * \brief Attempts to extract a Guid from a JSON object.
