@@ -31,7 +31,10 @@ namespace Hatchit
 			{
 				Assets,
 				Models,
+                Materials,
 				Pipelines,
+                RenderPasses,
+                RenderTargets,
 				Textures,
 				Shaders,
 				Scenes,
