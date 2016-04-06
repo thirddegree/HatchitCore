@@ -50,6 +50,9 @@ namespace Hatchit
 
             Handle& operator=(const Handle& rhs)
             {
+                if (rhs.m_refCount)
+                    ++(*rhs.m_refCount);
+
                 if (m_refCount && !--(*m_refCount))
                 {
                     //Delete object
@@ -58,9 +61,7 @@ namespace Hatchit
                 m_ptr = rhs.m_ptr;
                 m_refCount = rhs.m_refCount;
                 m_name = rhs.m_name;
-                if (m_refCount)
-                    ++(*m_refCount);
-
+                
                 return *this;
             }
 
