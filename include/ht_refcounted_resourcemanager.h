@@ -37,7 +37,7 @@ namespace Hatchit
             {
                 //resource not found.  Must allocate
                 ResourceType* resource = new ResourceType(name);
-                _instance.m_resources.insert(std::make_pair(name, resource))
+                _instance.m_resources.insert(std::make_pair(name, resource));
             }
 
             return reinterpret_cast<ResourceType*>(_instance.m_resources[name]);

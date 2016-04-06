@@ -11,20 +11,80 @@ namespace Hatchit
     namespace Core
     {
         template<typename VarType>
-        class HT_API Handle
-        {
-        public:
-            Handle() = default;
-            Handle(const Handle& rhs);
-            Handle(Handle&& rhs) = default;
-            ~Handle();
-            Handle& operator=(const Handle& rhs);
-            Handle& operator=(Handle&& rhs);
+        class RefCounted;
 
-            VarType* operator->() const;
+        template<typename VarType>
+        class Handle
+        {
+        private:
+
+            VarType* m_ptr;
+            uint32_t* m_refCount;
+            const std::string* m_name;
+
+        public:
+            Handle()
+                : m_ptr(),
+                m_refCount(),
+                m_name() {};
+
+            Handle(const Handle& rhs)
+                : m_ptr(rhs.m_ptr),
+                m_refCount(rhs.m_refCount),
+                m_name(rhs.m_name)
+            {
+                if (m_refCount)
+                    ++(*m_refCount);
+            }
+
+            Handle(Handle&& rhs) = default;
+
+            ~Handle()
+            {
+                if (m_refCount && !--(*m_refCount))
+                {
+                    //Delete object
+                    RefCountedResourceManager::ReleaseRawPointer<VarType>(*m_name);
+                }
+            }
+
+            Handle& operator=(const Handle& rhs)
+            {
+                if (m_refCount && !--(*m_refCount))
+                {
+                    //Delete object
+                    RefCountedResourceManager::ReleaseRawPointer<VarType>(*m_name);
+                }
+                m_ptr = rhs.m_ptr;
+                m_refCount = rhs.m_refCount;
+                m_name = rhs.m_name;
+                if (m_refCount)
+                    ++(*m_refCount);
+
+                return *this;
+            }
+
+            Handle& operator=(Handle&& rhs)
+            {
+                if (m_refCount && !--(*m_refCount))
+                {
+                    //Delete object
+                    RefCountedResourceManager::ReleaseRawPointer<VarType>(*m_name);
+                }
+                m_ptr = std::move(rhs.m_ptr);
+                m_refCount = std::move(rhs.m_refCount);
+                m_name = std::move(rhs.m_name);
+
+                return *this;
+            }
+
+            VarType* operator->() const
+            {
+                return m_ptr;
+            }
 
             template<typename NewResourceType>
-            Handle<NewResourceType> CastHandle() const
+            Handle<NewResourceType> DynamicCastHandle() const
             {
                 NewResourceType* newPtr = dynamic_cast<NewResourceType*>(m_ptr);
                 if (newPtr)
@@ -33,18 +93,38 @@ namespace Hatchit
                     return Handle<NewResourceType>();
             }
 
-            bool IsValid() const;
+            template<typename NewResourceType>
+            Handle<NewResourceType> StaticCastHandle() const
+            {
+                NewResourceType* newPtr = static_cast<NewResourceType*>(m_ptr);
+                uint32_t* newRefCount = m_refCount;
+                const std::string* newName = m_name;
+                return Handle<NewResourceType>(newPtr, newRefCount, newName);
+            }
+
+            bool IsValid() const
+            {
+                return m_ptr != nullptr;
+            }
 
         private:
-            friend class RefCounted;
-            Handle(VarType* varPtr, uint32_t* refCounter, const std::string* m_name);
-            VarType* m_ptr;
-            uint32_t* m_refCount;
-            const std::string* m_name;
+            friend class RefCounted<VarType>;
+
+            template<typename NewVarType>
+            friend class Handle;
+
+            Handle(VarType* varPtr, uint32_t* refCounter, const std::string* name)
+                : m_ptr(varPtr),
+                m_refCount(refCounter),
+                m_name(name)
+            {
+                if (m_refCount)
+                    ++(*m_refCount);
+            }
         };
 
-
-        class HT_API RefCounted : public INonCopy
+        template<typename VarType>
+        class RefCounted : public INonCopy
         {
         public:
             RefCounted() = default;
@@ -53,8 +133,7 @@ namespace Hatchit
 
             RefCounted& operator=(RefCounted&&) = default;
 
-            template<typename VarType>
-            static typename std::enable_if<std::is_base_of<RefCounted, VarType>::value, Handle<VarType>>::type GetHandle(const std::string& name)
+            static Handle<VarType> GetHandle(const std::string& name)
             {
                 VarType* var = RefCountedResourceManager::GetRawPointer<VarType>(name);
                 if (var)
@@ -62,88 +141,17 @@ namespace Hatchit
                 else
                     return Handle<VarType>();
             }
+            
         protected:
             friend class RefCountedResourceManager;
-            RefCounted(std::string name);
+
+            RefCounted(std::string name)
+                : m_name(std::move(name)),
+                m_refCount(0U) {}
+
         private:
             uint32_t m_refCount;
             const std::string m_name;
         };
-
-
-
-
-
-        //TODO: Put inside an inline file
-        template<typename VarType>
-        Handle<VarType>::Handle(const Handle<VarType>& rhs)
-            : m_ptr(rhs.m_ptr),
-            m_refCount(rhs.m_refCount),
-            m_name(rhs.m_name)
-        {
-            if (m_refCount)
-                ++(*m_refCount);
-        }
-
-        template<typename VarType>
-        Handle<VarType>::~Handle()
-        {
-            if (m_refCount && !--(*m_refCount))
-            {
-                //Delete object
-                RefCountedResourceManager::ReleaseRawPointer<VarType>(*m_name);
-            }
-        }
-
-        template<typename VarType>
-        Handle<VarType>& Handle<VarType>::operator=(const Handle<VarType>& rhs)
-        {
-            if (m_refCount && !--(*m_refCount))
-            {
-                //Delete object
-                RefCountedResourceManager::ReleaseRawPointer<VarType>(*m_name);
-            }
-            m_ptr = rhs.m_ptr;
-            m_refCount = rhs.m_refCount;
-            m_name = rhs.m_name;
-            if (m_refCount)
-                ++(*m_refCount);
-        }
-
-        template<typename VarType>
-        Handle<VarType>& Handle<VarType>::operator=(Handle<VarType>&& rhs)
-        {
-            if (m_refCount && !--(*m_refCount))
-            {
-                //Delete object
-                RefCountedResourceManager::ReleaseRawPoitner<VarType>(*m_name);
-            }
-            m_ptr = std::move(rhs.m_ptr);
-            m_refCount = std::move(rhs.m_refCount);
-            m_name = std::move(rhs.m_name);
-        }
-
-        template<typename VarType>
-        VarType* Handle<VarType>::operator->()
-        {
-            return m_ptr;
-        }
-
-        template<typename VarType>
-        bool Handle<VarType>::IsValid()
-        {
-            return m_ptr != nullptr;
-        }
-
-        template<typename VarType>
-        Handle<VarType>::Handle(VarType* varPtr, uint32_t* refCount, const std::string* name)
-            : m_ptr(varPtr),
-            m_refCount(refCount),
-            m_name(name)
-        {
-            if (m_refCount)
-                ++(*m_refCount);
-        }
-
     }
 }
