@@ -30,6 +30,8 @@ namespace Hatchit
             if (name.empty())
                 return nullptr;
 
+            name += typeid(ResourceType).raw_name();
+
             RefCountedResourceManager& _instance = RefCountedResourceManager::GetInstance();
 
             std::map<std::string, void*>::iterator it = _instance.m_resources.find(name);
