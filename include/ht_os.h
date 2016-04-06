@@ -62,6 +62,11 @@ namespace Hatchit {
 		*/
         HT_API std::string      os_exec_dir();
 
+		/*! \brief Function returns the path delimeter character
+		*
+		*/
+		HT_API char				os_path_delimeter();
+
     }
 
 } 

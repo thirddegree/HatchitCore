@@ -280,6 +280,8 @@ namespace Hatchit {
                 }
             }
 
+            out.m_hashCode = GetFnv1aHash(out.m_uuid, 16);
+
             return true;
         }
 

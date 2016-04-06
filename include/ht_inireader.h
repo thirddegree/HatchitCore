@@ -12,6 +12,8 @@
 **
 **/
 
+#pragma once
+
 #include <ht_platform.h>
 #include <ht_file.h>
 #include <ht_ini_exception.h>

@@ -12,6 +12,8 @@
 **
 **/
 
+#pragma once
+
 #include <ht_platform.h>
 #include <ht_string.h>
 #include <exception>
