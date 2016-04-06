@@ -37,7 +37,15 @@ namespace Hatchit
                     ++(*m_refCount);
             }
 
-            Handle(Handle&& rhs) = default;
+            Handle(Handle&& rhs) :
+                m_ptr(rhs.m_ptr),
+                m_refCount(rhs.m_refCount),
+                m_name(rhs.m_name)
+            {
+                rhs.m_ptr = nullptr;
+                rhs.m_refCount = nullptr;
+                rhs.m_name = nullptr;
+            }
 
             ~Handle()
             {
@@ -50,6 +58,9 @@ namespace Hatchit
 
             Handle& operator=(const Handle& rhs)
             {
+                if (rhs.m_refCount)
+                    ++(*rhs.m_refCount);
+
                 if (m_refCount && !--(*m_refCount))
                 {
                     //Delete object
@@ -58,8 +69,6 @@ namespace Hatchit
                 m_ptr = rhs.m_ptr;
                 m_refCount = rhs.m_refCount;
                 m_name = rhs.m_name;
-                if (m_refCount)
-                    ++(*m_refCount);
 
                 return *this;
             }
@@ -74,6 +83,10 @@ namespace Hatchit
                 m_ptr = std::move(rhs.m_ptr);
                 m_refCount = std::move(rhs.m_refCount);
                 m_name = std::move(rhs.m_name);
+
+                rhs.m_ptr = nullptr;
+                rhs.m_refCount = nullptr;
+                rhs.m_name = nullptr;
 
                 return *this;
             }
