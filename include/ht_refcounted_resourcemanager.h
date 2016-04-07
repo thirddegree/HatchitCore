@@ -51,10 +51,13 @@ namespace Hatchit
         {
             RefCountedResourceManager& _instance = RefCountedResourceManager::GetInstance();
 
-            std::map<std::string, void*>::iterator it = _instance.m_resources.find(name);
+            //Create a typed name so two different types can use the same name
+            std::string typedName = name + typeid(ResourceType).raw_name();
+
+            std::map<std::string, void*>::iterator it = _instance.m_resources.find(typedName);
             if (it != _instance.m_resources.end())
             {
-                delete (reinterpret_cast<ResourceType*>(_instance.m_resources[name]));
+                delete (reinterpret_cast<ResourceType*>(_instance.m_resources[typedName]));
 
                 _instance.m_resources.erase(it);
             }
