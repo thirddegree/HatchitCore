@@ -2,6 +2,7 @@
 
 #include <map>
 #include <string>
+#include <typeinfo>
 #include <ht_platform.h>
 #include <ht_singleton.h>
 
