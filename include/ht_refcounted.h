@@ -96,6 +96,23 @@ namespace Hatchit
                 return m_ptr;
             }
 
+            bool operator>(const Handle<VarType>& rhs) const
+            {
+                return m_ptr > rhs.m_ptr;
+            }
+            bool operator<(const Handle<VarType>& rhs) const
+            {
+                return m_ptr < rhs.m_ptr;
+            }
+            bool operator==(const Handle<VarType>& rhs) const
+            {
+                return m_ptr == rhs.m_ptr;
+            }
+            bool operator!=(const Handle<VarType>& rhs) const
+            {
+                return m_ptr != rhs.m_ptr;
+            }
+
             template<typename NewResourceType>
             Handle<NewResourceType> DynamicCastHandle() const
             {
