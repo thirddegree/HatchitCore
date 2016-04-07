@@ -32,7 +32,7 @@ namespace Hatchit
                 return nullptr;
 
             //Create a typed name so two different types can use the same name
-            std::string typedName = name + typeid(ResourceType).raw_name();
+            std::string typedName = name + std::to_string(typeid(ResourceType).hash_code());
 
             RefCountedResourceManager& _instance = RefCountedResourceManager::GetInstance();
 
@@ -53,7 +53,7 @@ namespace Hatchit
             RefCountedResourceManager& _instance = RefCountedResourceManager::GetInstance();
 
             //Create a typed name so two different types can use the same name
-            std::string typedName = name + typeid(ResourceType).raw_name();
+            std::string typedName = name + std::to_string(typeid(ResourceType).hash_code());
 
             std::map<std::string, void*>::iterator it = _instance.m_resources.find(typedName);
             if (it != _instance.m_resources.end())
