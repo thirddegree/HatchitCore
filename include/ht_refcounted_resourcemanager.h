@@ -30,19 +30,20 @@ namespace Hatchit
             if (name.empty())
                 return nullptr;
 
-            name += typeid(ResourceType).raw_name();
+            //Create a typed name so two different types can use the same name
+            std::string typedName = name + typeid(ResourceType).raw_name();
 
             RefCountedResourceManager& _instance = RefCountedResourceManager::GetInstance();
 
-            std::map<std::string, void*>::iterator it = _instance.m_resources.find(name);
+            std::map<std::string, void*>::iterator it = _instance.m_resources.find(typedName);
             if (it == _instance.m_resources.end())
             {
                 //resource not found.  Must allocate
-                ResourceType* resource = new ResourceType(name);
-                _instance.m_resources.insert(std::make_pair(name, resource));
+                ResourceType* resource = new ResourceType(name); //Give the untyped name to the constructor so we can work with the original filename
+                _instance.m_resources.insert(std::make_pair(typedName, resource));
             }
 
-            return reinterpret_cast<ResourceType*>(_instance.m_resources[name]);
+            return reinterpret_cast<ResourceType*>(_instance.m_resources[typedName]);
         }
 
         template<typename ResourceType>
