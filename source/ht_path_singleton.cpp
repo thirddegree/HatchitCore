@@ -34,6 +34,7 @@ namespace Hatchit
             _instance.m_paths.insert(std::make_pair(Directory::Pipelines, _AssetPath + os_path("Pipelines/")));
             _instance.m_paths.insert(std::make_pair(Directory::RenderPasses, _AssetPath + os_path("RenderPasses/")));
             _instance.m_paths.insert(std::make_pair(Directory::RenderTargets, _AssetPath + os_path("RenderTargets/")));
+			_instance.m_paths.insert(std::make_pair(Directory::Samplers, _AssetPath + os_path("Samplers/")));
             _instance.m_paths.insert(std::make_pair(Directory::Scenes, _AssetPath + os_path("Scenes/")));
             _instance.m_paths.insert(std::make_pair(Directory::Scripts, _AssetPath + os_path("Scripts/")));
             _instance.m_paths.insert(std::make_pair(Directory::Shaders, _AssetPath + os_path("Shaders/")));
