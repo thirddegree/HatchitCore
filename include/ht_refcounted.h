@@ -186,11 +186,6 @@ namespace Hatchit
                 else
                     return Handle<VarType>();
             }
-
-            static Handle<VarType> GetHandleFromFileName(std::string fileName)
-            {
-                return GetHandle(fileName, fileName);
-            }
             
         protected:
             friend class RefCountedResourceManager;
