@@ -153,7 +153,7 @@ namespace Hatchit
 
             void Release()
             {
-                if (m_refCount && !--(m_refCount))
+                if (m_refCount && !--(*m_refCount))
                 {
                     //Delete referenced counter
                     RefCountedResourceManager::ReleaseRawPointer<VarType>(*m_name);
