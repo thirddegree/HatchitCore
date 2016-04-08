@@ -16,7 +16,7 @@
 
 #include <map>
 #include <string>
-#include <assert.h>
+#include <typeinfo>
 #include <ht_platform.h>
 #include <ht_singleton.h>
 
