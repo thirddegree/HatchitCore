@@ -151,6 +151,19 @@ namespace Hatchit
                 return m_ptr != nullptr;
             }
 
+            void Release()
+            {
+                if (m_refCount && !--(m_refCount))
+                {
+                    //Delete referenced counter
+                    RefCountedResourceManager::ReleaseRawPointer<VarType>(*m_name);
+                }
+
+                m_ptr = nullptr;
+                m_refCount = nullptr;
+                m_name = nullptr;
+            }
+
         private:
             friend class RefCounted<VarType>;
 
