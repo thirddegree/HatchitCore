@@ -163,13 +163,19 @@ namespace Hatchit
 
             RefCounted& operator=(RefCounted&&) = default;
 
-            static Handle<VarType> GetHandle(const std::string& name)
+            template<typename... Args>
+            static Handle<VarType> GetHandle(std::string ID, Args&&... args)
             {
-                VarType* var = RefCountedResourceManager::GetRawPointer<VarType>(name);
+                VarType* var = RefCountedResourceManager::GetRawPointer<VarType, Args...>(std::move(ID), std::forward<Args>(args)...);
                 if (var)
                     return Handle<VarType>(var, &(var->m_refCount), &(var->m_name));
                 else
                     return Handle<VarType>();
+            }
+
+            static Handle<VarType> GetHandleFromFileName(std::string fileName)
+            {
+                return GetHandle(fileName, fileName);
             }
             
         protected:
