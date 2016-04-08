@@ -1,3 +1,17 @@
+/**
+**    Hatchit Engine
+**    Copyright(c) 2015 Third-Degree
+**
+**    GNU Lesser General Public License
+**    This file may be used under the terms of the GNU Lesser
+**    General Public License version 3 as published by the Free
+**    Software Foundation and appearing in the file LICENSE.LGPLv3 included
+**    in the packaging of this file. Please review the following information
+**    to ensure the GNU Lesser General Public License requirements
+**    will be met: https://www.gnu.org/licenses/lgpl.html
+**
+**/
+
 #pragma once
 
 #include <stdint.h>
@@ -96,6 +110,23 @@ namespace Hatchit
                 return m_ptr;
             }
 
+            bool operator>(const Handle<VarType>& rhs) const
+            {
+                return m_ptr > rhs.m_ptr;
+            }
+            bool operator<(const Handle<VarType>& rhs) const
+            {
+                return m_ptr < rhs.m_ptr;
+            }
+            bool operator==(const Handle<VarType>& rhs) const
+            {
+                return m_ptr == rhs.m_ptr;
+            }
+            bool operator!=(const Handle<VarType>& rhs) const
+            {
+                return m_ptr != rhs.m_ptr;
+            }
+
             template<typename NewResourceType>
             Handle<NewResourceType> DynamicCastHandle() const
             {
@@ -146,13 +177,19 @@ namespace Hatchit
 
             RefCounted& operator=(RefCounted&&) = default;
 
-            static Handle<VarType> GetHandle(const std::string& name)
+            template<typename... Args>
+            static Handle<VarType> GetHandle(std::string ID, Args&&... args)
             {
-                VarType* var = RefCountedResourceManager::GetRawPointer<VarType>(name);
+                VarType* var = RefCountedResourceManager::GetRawPointer<VarType, Args...>(std::move(ID), std::forward<Args>(args)...);
                 if (var)
                     return Handle<VarType>(var, &(var->m_refCount), &(var->m_name));
                 else
                     return Handle<VarType>();
+            }
+
+            static Handle<VarType> GetHandleFromFileName(std::string fileName)
+            {
+                return GetHandle(fileName, fileName);
             }
             
         protected:
