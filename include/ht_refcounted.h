@@ -19,6 +19,7 @@
 #include <ht_platform.h>
 #include <ht_noncopy.h>
 #include <ht_refcounted_resourcemanager.h>
+#include <ht_string.h>
 
 namespace Hatchit
 {
@@ -72,6 +73,7 @@ namespace Hatchit
 
             Handle& operator=(const Handle& rhs)
             {
+                
                 if (rhs.m_refCount)
                     ++(*rhs.m_refCount);
 
@@ -89,6 +91,7 @@ namespace Hatchit
 
             Handle& operator=(Handle&& rhs)
             {
+                
                 if (m_refCount && !--(*m_refCount))
                 {
                     //Delete object
@@ -198,11 +201,6 @@ namespace Hatchit
                     return Handle<VarType>(var, &(var->m_refCount), &(var->m_name));
                 else
                     return Handle<VarType>();
-            }
-
-            static Handle<VarType> GetHandleFromFileName(std::string fileName)
-            {
-                return GetHandle(fileName, fileName);
             }
             
         protected:

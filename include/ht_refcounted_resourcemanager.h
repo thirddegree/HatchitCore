@@ -59,7 +59,12 @@ namespace Hatchit
             if (it == _instance.m_resources.end())
             {
                 //resource not found.  Must allocate
-                ResourceType* resource = new ResourceType(name, std::forward<Args>(arguments)...);
+                ResourceType* resource = new ResourceType(name);
+                if (!resource->Initialize(std::forward<Args>(arguments)...))
+                {
+                    delete resource;
+                    return nullptr;
+                }
                 _instance.m_resources.insert(std::make_pair(name, resource));
             }
 
