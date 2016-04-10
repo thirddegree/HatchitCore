@@ -131,7 +131,7 @@ namespace Hatchit
             }
 
             template<typename NewResourceType>
-            Handle<NewResourceType> DynamicCastHandle() const
+            inline Handle<NewResourceType> DynamicCastHandle() const
             {
                 NewResourceType* newPtr = dynamic_cast<NewResourceType*>(m_ptr);
                 if (newPtr)
@@ -141,7 +141,7 @@ namespace Hatchit
             }
 
             template<typename NewResourceType>
-            Handle<NewResourceType> StaticCastHandle() const
+            inline Handle<NewResourceType> StaticCastHandle() const
             {
                 NewResourceType* newPtr = static_cast<NewResourceType*>(m_ptr);
                 uint32_t* newRefCount = m_refCount;

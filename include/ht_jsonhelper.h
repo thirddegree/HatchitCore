@@ -180,7 +180,7 @@ namespace Hatchit {
          * \param out The output Guid.
          * \return True if the extraction was successful, false if not.
          */
-        static __forceinline bool _JsonExtractGuid(const JSON& json, const std::string& name, Guid& out)
+        static bool _JsonExtractGuid(const JSON& json, const std::string& name, Guid& out)
         {
             std::string guidText;
             return JsonExtractString(json, name, guidText) && Guid::Parse(guidText, out);
