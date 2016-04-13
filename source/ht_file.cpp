@@ -13,6 +13,7 @@
 **/
 
 #include <ht_file.h>
+#include <ht_os.h>
 
 #include <ht_file_exception.h>
 
