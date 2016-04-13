@@ -48,7 +48,7 @@ namespace Hatchit {
             virtual std::string Name(void) = 0;
             virtual std::string Path(void) = 0;
             virtual std::string BaseName(void) = 0;
-            virtual void        Open(std::string path, FileMode mode) = 0;
+            virtual void        Open(const std::string& path, FileMode mode) = 0;
             virtual bool        Seek(long offset, FileSeek mode) = 0;
             virtual bool        Close(void) = 0;
             virtual size_t      Read(BYTE* out, size_t len) = 0;
