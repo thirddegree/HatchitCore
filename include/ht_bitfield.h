@@ -14,78 +14,112 @@
 
 #pragma once
 
-#include <type_traits>
+#include <type_traits> //For: std::conditional, std::is_unsigned
 
 namespace Hatchit
 {
     namespace Core
     {
+        /**
+        * \class BitFlag
+        * \ingroup HatchitCore
+        * \brief A class that represents a single bit flag
+        *
+        * Class stores a single bit flag that may be used for testing flags
+        * in the BitField class.
+        * 
+        */
         class BitFlag
         {
-            int i;
         public:
-            constexpr inline BitFlag(long pI) : i(static_cast<int>(pI)) {}
-            constexpr inline BitFlag(unsigned long pI) : i(static_cast<int>(static_cast<long>(pI))) {}
-            constexpr inline BitFlag(int pI) : i(pI) {}
-            constexpr inline BitFlag(unsigned int pI) : i(static_cast<int>(pI)) {}
-            constexpr inline BitFlag(short pS) : i(static_cast<int>(pS)) {}
-            constexpr inline BitFlag(unsigned short pS) : i(static_cast<int>(static_cast<short>(pS))) {}
+            
+            constexpr BitFlag(long pI);
+            constexpr BitFlag(unsigned long pI);
+            constexpr BitFlag(int pI);
+            constexpr BitFlag(unsigned int pI);
+            constexpr BitFlag(short pS);
+            constexpr BitFlag(unsigned short pS);
+            constexpr operator int() const;
+            constexpr operator unsigned int() const;
 
-            constexpr inline operator int() const { return i; }
-            constexpr inline operator unsigned int() const { return static_cast<unsigned int>(i); }
+        private:
+            int i;
         };
 
+        /**
+        * \class BitField<typename Enum>
+        * \ingroup HatchitCore
+        * \brief A class that represents an array of bitflags for a given enum
+        *
+        * Class stores marked bits for a given enum in a bit array, or bit field.
+        */
         template<typename Enum>
         class BitField
         {
             static_assert(sizeof(Enum) <= sizeof(int), "Underlying type of BitField is size of int.  Enums larger than an int will cause overflow.");
 
         public:
-            using  BitfieldType = typename std::conditional<std::is_unsigned<Enum>::value, unsigned int, signed int>::type;
+
+            /**
+            \typedef BitField<Enum>::BitfieldType
+            \brief Internal type used in bitfield
+
+            The internal type that is used in the bitfield, determined based
+            on the internal type of the Enum.  If the enum is unsigned, then
+            the internal type is also unsigned.  Will always be size of int.
+            **/
+            using BitfieldType = typename std::conditional<std::is_unsigned<Enum>::value, unsigned int, signed int>::type;
+
+            /**
+            \typedef BitField<Enum>::EnumType
+            \brief Enum given from template parameter
+
+            The enum given from the template parameter.
+            **/
             using EnumType = Enum;
+
+            constexpr BitField(EnumType e);
+            constexpr BitField(BitfieldType val = 0);
+            constexpr BitField(BitFlag b);
+
+            constexpr operator BitfieldType() const;
+
+            BitField& operator&=(int mask);
+            BitField& operator&=(unsigned int mask);
+            BitField& operator&=(Enum mask);
+            BitField& operator&=(BitField mask);
+            BitField& operator|=(int mask);
+            BitField& operator|=(unsigned int mask);
+            BitField& operator|=(Enum mask);
+            BitField& operator|=(BitField mask);
+            BitField& operator^=(int mask);
+            BitField& operator^=(unsigned int mask);
+            BitField& operator^=(Enum mask);
+            BitField& operator^=(BitField mask);
+
+            constexpr BitField operator&(int mask) const;
+            constexpr BitField operator&(unsigned int mask) const;
+            constexpr BitField operator&(Enum mask) const;
+            constexpr BitField operator&(BitField mask) const;
+            constexpr BitField operator|(int mask) const;
+            constexpr BitField operator|(unsigned int mask) const;
+            constexpr BitField operator|(Enum mask) const;
+            constexpr BitField operator|(BitField mask) const;
+            constexpr BitField operator^(int mask) const;
+            constexpr BitField operator^(unsigned int mask) const;
+            constexpr BitField operator^(Enum mask) const;
+            constexpr BitField operator^(BitField mask) const;
+
+            constexpr BitField operator~() const;
+
+            constexpr bool operator!() const;
+
+            constexpr bool TestFlag(Enum flag) const;
 
         private:
             BitfieldType i;
-
-        public:
-
-            constexpr inline BitField(EnumType e) : i(BitfieldType(e)) {}
-            constexpr inline BitField(BitfieldType = 0) : i(0) {}
-            constexpr inline BitField(BitFlag b) : i(b) {}
-
-            inline BitField& operator&=(int mask) { i &= mask; return *this; }
-            inline BitField& operator&=(unsigned int mask) { i &= mask; return *this; }
-            inline BitField& operator&=(Enum mask) { i &= BitfieldType(mask); return *this; }
-            inline BitField& operator&=(BitField b) { i &= b.i; return *this; }
-            inline BitField& operator|=(int mask) { i |= mask; return *this; }
-            inline BitField& operator|=(unsigned int mask) { i |= mask; return *this; }
-            inline BitField& operator|=(Enum mask) { i |= BitfieldType(mask); return *this; }
-            inline BitField& operator|=(BitField b) { i |= b.i; return *this; }
-            inline BitField& operator^=(int mask) { i ^= mask; return *this; }
-            inline BitField& operator^=(unsigned int mask) { i ^= mask; return *this; }
-            inline BitField& operator^=(Enum mask) { i ^= BitfieldType(mask); return *this; }
-            inline BitField& operator^=(BitField b) { i ^= b.i; return *this; }
-
-            constexpr inline operator BitfieldType() const { return i; }
-
-            constexpr inline BitField operator&(int mask) const { return BitField(BitFlag(i & mask)); }
-            constexpr inline BitField operator&(unsigned int mask) const { return BitField(BitFlag(i & mask)); }
-            constexpr inline BitField operator&(Enum mask) const { return BitField(BitFlag(i & BitfieldType(mask))); }
-            constexpr inline BitField operator&(BitField mask) const { return BitField(BitFlag(i & mask.i)); }
-            constexpr inline BitField operator|(int mask) const { return BitField(BitFlag(i | mask)); }
-            constexpr inline BitField operator|(unsigned int mask) const { return BitField(BitFlag(i | mask)); }
-            constexpr inline BitField operator|(Enum mask) const { return BitField(BitFlag(i | BitfieldType(mask))); }
-            constexpr inline BitField operator|(BitField mask) const { return BitField(BitFlag(i | mask.i)); }
-            constexpr inline BitField operator^(int mask) const { return BitField(BitFlag(i ^ mask)); }
-            constexpr inline BitField operator^(unsigned int mask) const { return BitField(BitFlag(i ^ mask)); }
-            constexpr inline BitField operator^(Enum mask) const { return BitField(BitFlag(i ^ BitfieldType(mask))); }
-            constexpr inline BitField operator^(BitField mask) const { return BitField(BitFlag(i ^ mask.i)); }
-
-            constexpr inline BitField operator~() const { return BitField(BitFlag(~i)); }
-
-            constexpr inline bool operator!() const { return !i; }
-
-            constexpr inline bool TestFlag(Enum flag) const { return (i & BitfieldType(flag)) == BitfieldType(flag) && (BitfieldType(flag) != 0 || i == BitfieldType(flag)); }
         };
     }
 }
+
+#include <ht_bitfield.inl>
