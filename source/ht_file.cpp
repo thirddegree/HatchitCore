@@ -13,6 +13,7 @@
 **/
 
 #include <ht_file.h>
+#include <ht_os.h>
 
 #ifdef HT_SYS_LINUX
 #include <sys/stat.h>

@@ -14,10 +14,11 @@
 
 #pragma once
 
-#include <ht_platform.h>
-#include <ht_string.h>
-#include <ht_os.h>
-#include <ht_noncopy.h>
+#include <ht_platform.h> //HT_API
+#include <string> //std::string typedef
+#include <cstddef> //size_t typedef
+#include <cstdio> //FILE typedef
+#include <ht_noncopy.h> //INonCopy
 
 namespace Hatchit {
 
