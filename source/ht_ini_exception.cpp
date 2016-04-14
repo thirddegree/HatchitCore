@@ -14,10 +14,23 @@
 
 #include <ht_ini_exception.h>
 
+#include <sstream> //std::stringstream
+
 namespace Hatchit {
 
     namespace Core {
 
+        /**
+        \fn INIException::INIException
+        \brief Creates exception with name and description of error.
+
+        Creates an exception with given name and a description of the
+        error based on the given error code.
+        Valid codes:
+            > 0: Parse line error.
+            -1: Could not open file.
+            default: Memory allocation error.
+        **/
         INIException::INIException(std::string name, int error)
         {
             std::stringstream ss;
@@ -32,11 +45,16 @@ namespace Hatchit {
             m_error = ss.str();
         }
 
+        /**
+        \fn INIException::what() const noexcept
+        \brief Gives error string.
+
+        Gives error string containing a brief description of
+        the error.
+        **/
         const char* INIException::what() const NOEXCEPT
         {
             return m_error.c_str();
         }
-
     }
-
 }
