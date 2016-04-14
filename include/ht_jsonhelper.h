@@ -52,15 +52,20 @@ namespace Hatchit {
         static inline bool _JsonExtractValue(const JSON& json, JsonVerifyFunc verify, const std::string& name, T& out)
         {
             auto  search = json.find(name);
-            auto& object = *search;
-
-            if (search == json.end() || !(object.*verify)())
+            if (search == json.end())
             {
-                HT_DEBUG_PRINTF("[JSON] Failed to extract '%s' from object as desired type.\n", name);
+                HT_DEBUG_PRINTF("[JSON] Failed to extract '%s' from object.\n", name);
                 return false;
             }
 
-            out = search->get<T>();
+            const JSON& obj = *search;
+            if (!(obj.*verify)())
+            {
+                HT_DEBUG_PRINTF("[JSON] Failed to verify type of '%s' extracted from object.\n", name);
+                return false;
+            }
+
+            out = obj.get<T>();
             return true;
         }
 
@@ -180,7 +185,7 @@ namespace Hatchit {
          * \param out The output Guid.
          * \return True if the extraction was successful, false if not.
          */
-        static __forceinline bool _JsonExtractGuid(const JSON& json, const std::string& name, Guid& out)
+        static bool _JsonExtractGuid(const JSON& json, const std::string& name, Guid& out)
         {
             std::string guidText;
             return JsonExtractString(json, name, guidText) && Guid::Parse(guidText, out);

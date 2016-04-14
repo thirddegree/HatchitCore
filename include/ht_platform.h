@@ -75,7 +75,7 @@
             //Define MSVC compatible __forceinline keyword
             //for use with GCC compiler.
             #ifndef __forceinline
-            #define __forceinline __attribute__((always_inline))
+            #define __forceinline //__attribute__((always_inline))
             #endif
 
         #else

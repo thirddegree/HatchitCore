@@ -1,3 +1,17 @@
+/**
+**    Hatchit Engine
+**    Copyright(c) 2015 Third-Degree
+**
+**    GNU Lesser General Public License
+**    This file may be used under the terms of the GNU Lesser
+**    General Public License version 3 as published by the Free
+**    Software Foundation and appearing in the file LICENSE.LGPLv3 included
+**    in the packaging of this file. Please review the following information
+**    to ensure the GNU Lesser General Public License requirements
+**    will be met: https://www.gnu.org/licenses/lgpl.html
+**
+**/
+
 #include <ht_guid.h>
 #include <chrono>
 #include <random>
@@ -9,42 +23,45 @@ namespace Hatchit {
 
     namespace Core {
 
-        /**
-         * \brief Defines a simple Guid helper.
-         */
-        struct GuidHelper
+        namespace
         {
-            static GuidHelper s_Instance;
-
-            std::mt19937_64 m_mersenneTwister;
-            std::uniform_int_distribution<uint32_t> m_distribution;
-
             /**
-             * \brief Creates a new Guid helper.
+             * \brief Defines a simple Guid helper.
              */
-            GuidHelper()
-                : m_distribution(0, 255)
+            struct GuidHelper
             {
-                using Clock = std::chrono::high_resolution_clock;
-                using TimePoint = Clock::time_point;
+                static GuidHelper s_Instance;
 
-                // We need to seed the PRNG, so let's use a high-resolution time since the epoch
-                TimePoint epoch;
-                TimePoint now = Clock::now();
-                auto duration = now - epoch;
-                m_mersenneTwister.seed(static_cast<uint64_t>(duration.count()));
-            }
+                std::mt19937_64 m_mersenneTwister;
+                std::uniform_int_distribution<uint32_t> m_distribution;
 
-            /**
-             * \brief Generates a high-quality random byte.
-             */
-            static inline uint8_t GenerateByte()
-            {
-                return static_cast<uint8_t>(s_Instance.m_distribution(s_Instance.m_mersenneTwister));
-            }
-        };
+                /**
+                 * \brief Creates a new Guid helper.
+                 */
+                GuidHelper()
+                    : m_distribution(0, 255)
+                {
+                    using Clock = std::chrono::high_resolution_clock;
+                    using TimePoint = Clock::time_point;
 
-        GuidHelper GuidHelper::s_Instance;
+                    // We need to seed the PRNG, so let's use a high-resolution time since the epoch
+                    TimePoint epoch;
+                    TimePoint now = Clock::now();
+                    auto duration = now - epoch;
+                    m_mersenneTwister.seed(static_cast<uint64_t>(duration.count()));
+                }
+
+                /**
+                 * \brief Generates a high-quality random byte.
+                 */
+                static inline uint8_t GenerateByte()
+                {
+                    return static_cast<uint8_t>(s_Instance.m_distribution(s_Instance.m_mersenneTwister));
+                }
+            };
+
+            GuidHelper GuidHelper::s_Instance;
+        }
 
         /**
          * \brief Performs an FNV-1a hash on the given buffer.
@@ -91,7 +108,126 @@ namespace Hatchit {
             return a;
         }
 
+        /**
+        * \brief Maps a hexadecimal character to its decimal equivalent.
+        *
+        * \param hex The hexadecimal character.
+        * \param out The value to output to.
+        * \return True if the mapping was successful, false if not.
+        */
+        static inline bool MapHexToDec(char hex, uint8_t& out)
+        {
+            if (hex >= '0' && hex <= '9') { out = hex - '0';      return true; }
+            if (hex >= 'a' && hex <= 'f') { out = hex - 'a' + 10; return true; }
+            if (hex >= 'A' && hex <= 'F') { out = hex - 'A' + 10; return true; }
+            return false;
+        }
+
+        /**
+        * \brief Parses a byte from text.
+        *
+        * \param text The text to parse from.
+        * \param position The position in the text to parse from.
+        * \param out The output byte.
+        * \return True if parsing was successful, false if not.
+        */
+        static inline bool ParseByte(const std::string& text, size_t position, uint8_t& out)
+        {
+            if (position + 1 < text.length())
+            {
+                // Map the first and second character to their respective characters
+                uint8_t first = 0, second = 0;
+                if (MapHexToDec(text[position], first) && MapHexToDec(text[position + 1], second))
+                {
+                    out = first * 16 + second;
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        //ALL Static Methods
+        /**
+        * \brief Creates a Guid from a string by hashing the string.
+        *
+        * \param text The text to create a Guid from.
+        * \return The Guid based off of the given text.
+        */
+        Guid Guid::FromString(const std::string& text)
+        {
+            // If the text is empty, then return an empty Guid
+            if (text.empty())
+            {
+                return Guid::Empty;
+            }
+
+            // To do this, we'll hash the first half and the second half of the string
+            // and then copy the bytes over (will be 16 total bytes)
+            size_t half = text.length() / 2;
+            uint64_t firstHash = GetFnv1aHash(text.c_str(), half);
+            uint64_t secondHash = GetFnv1aHash(text.c_str() + half, text.length() - half);
+
+            Guid guid;
+            memcpy(guid.m_uuid, &firstHash, 8);
+            memcpy(guid.m_uuid + 8, &secondHash, 8);
+            guid.m_hashCode = GetFnv1aHash(guid.m_uuid, 16);
+            guid.m_originalString = text;
+
+            return guid;
+        }
+
+        /**
+        * \brief Attempts to parse a Guid from its textual representation.
+        *
+        * \param text The text to parse.
+        * \param out The Guid to fill with information.
+        * \return True if parsing was successful, false if not.
+        */
+        bool Guid::Parse(const std::string& text, Guid& out)
+        {
+            if (text.length() != 38)
+            {
+                return false;
+            }
+
+            if (text[0] != '{' && text[37] != '}')
+            {
+                return false;
+            }
+
+            // 01234567890123456789012345678901234567
+            // {xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx}
+            size_t offs = 1;
+            for (size_t index = 0; index < 16; ++index)
+            {
+                size_t position = offs + index * 2;
+                switch (text[position])
+                {
+                case '-':
+                    ++offs;
+                    --index;
+                    break;
+                default:
+                    uint8_t byte = 0;
+                    if (!ParseByte(text, position, byte))
+                    {
+                        return false;
+                    }
+                    out.m_uuid[index] = byte;
+                    break;
+                }
+            }
+
+            out.m_hashCode = GetFnv1aHash(out.m_uuid, 16);
+
+            return true;
+        }
+
         // Declare the empty Guid
+
+        /**
+        * \brief The empty Guid.
+        */
         const Guid Guid::Empty = CreateEmptyGuid();
 
         /**
@@ -141,34 +277,7 @@ namespace Hatchit {
             }
         }
 
-        /**
-         * \brief Creates a Guid from a string by hashing the string.
-         *
-         * \param text The text to create a Guid from.
-         * \return The Guid based off of the given text.
-         */
-        Guid Guid::FromString(const std::string& text)
-        {
-            // If the text is empty, then return an empty Guid
-            if (text.empty())
-            {
-                return Guid::Empty;
-            }
-
-            // To do this, we'll hash the first half and the second half of the string
-            // and then copy the bytes over (will be 16 total bytes)
-            size_t half = text.length() / 2;
-            uint64_t firstHash = GetFnv1aHash(text.c_str(), half);
-            uint64_t secondHash = GetFnv1aHash(text.c_str() + half, text.length() - half);
-
-            Guid guid;
-            memcpy(guid.m_uuid, &firstHash, 8);
-            memcpy(guid.m_uuid + 8, &secondHash, 8);
-            guid.m_hashCode = GetFnv1aHash(guid.m_uuid, 16);
-            guid.m_originalString = text;
-
-            return guid;
-        }
+       //Public Methods
 
         /**
          * \brief Hashes this Guid.
@@ -198,91 +307,6 @@ namespace Hatchit {
         bool Guid::IsFromString() const
         {
             return !m_originalString.empty();
-        }
-
-        /**
-         * \brief Maps a hexadecimal character to its decimal equivalent.
-         *
-         * \param hex The hexadecimal character.
-         * \param out The value to output to.
-         * \return True if the mapping was successful, false if not.
-         */
-        static inline bool MapHexToDec(char hex, uint8_t& out)
-        {
-            if (hex >= '0' && hex <= '9') { out = hex - '0';      return true; }
-            if (hex >= 'a' && hex <= 'f') { out = hex - 'a' + 10; return true; }
-            if (hex >= 'A' && hex <= 'F') { out = hex - 'A' + 10; return true; }
-            return false;
-        }
-
-        /**
-         * \brief Parses a byte from text.
-         *
-         * \param text The text to parse from.
-         * \param position The position in the text to parse from.
-         * \param out The output byte.
-         * \return True if parsing was successful, false if not.
-         */
-        static inline bool ParseByte(const std::string& text, size_t position, uint8_t& out)
-        {
-            if (position + 1 < text.length())
-            {
-                // Map the first and second character to their respective characters
-                uint8_t first = 0, second = 0;
-                if (MapHexToDec(text[position], first) && MapHexToDec(text[position + 1], second))
-                {
-                    out = first * 16 + second;
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        /**
-         * \brief Attempts to parse a Guid from its textual representation.
-         *
-         * \param text The text to parse.
-         * \param out The Guid to fill with information.
-         * \return True if parsing was successful, false if not.
-         */
-        bool Guid::Parse(const std::string& text, Guid& out)
-        {
-            if (text.length() != 38)
-            {
-                return false;
-            }
-
-            if (text[0] != '{' && text[37] != '}')
-            {
-                return false;
-            }
-
-            // 01234567890123456789012345678901234567
-            // {xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx}
-            size_t offs = 1;
-            for (size_t index = 0; index < 16; ++index)
-            {
-                size_t position = offs + index * 2;
-                switch (text[position])
-                {
-                    case '-':
-                        ++offs;
-                        --index;
-                        break;
-                    default:
-                        uint8_t byte = 0;
-                        if (!ParseByte(text, position, byte))
-                        {
-                            return false;
-                        }
-                        out.m_uuid[index] = byte;
-                        break;
-                }
-            }
-
-            out.m_hashCode = GetFnv1aHash(out.m_uuid, 16);
-
-            return true;
         }
 
         /**

@@ -36,6 +36,7 @@ namespace Hatchit
                 RenderPasses,
                 RenderTargets,
 				Textures,
+				Samplers,
 				Shaders,
 				Scenes,
 				Scripts

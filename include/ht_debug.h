@@ -14,10 +14,15 @@
 
 #pragma once
 
+//Header includes
+#include <string>
+
+//Inline includes
 #include <ht_platform.h>
-#include <ht_string.h>
 #include <iostream>
-#include <iomanip>
+#if defined(HT_SYS_WINDOWS)
+#include <debugapi.h>
+#endif
 #include <format.h>
 
 #ifndef HT_STRINGIFY
@@ -66,45 +71,12 @@ namespace Hatchit {
 
     namespace Core {
 
-
-        /*! \brief Function takes a formatted string and arguments to format into a string.
-        *
-        *
-        *  This debug utility function takes in a user format string and
-        *  a variable argument list, then prints the formatted string result
-        *  to the console.
-        *  @param format The format string.
-        *  @param args The argument list used with format string.
-        */
         template<class ... Args> 
-        inline std::string DebugSprintF(const char* format, const Args& ... args)
-        {
-            return fmt::sprintf( format, args ... );
-        }
+        std::string DebugSprintF(const char* format, const Args& ... args);
 
-        /*! \brief Function takes a formatted string and arguments to print.
-        *
-        *
-        *  This debug utility function takes in a user format string and
-        *  a variable argument list, then prints the formatted string result
-        *  to the console.
-        *  @param format The format string.
-        *  @param args The argument list used with format string.
-        */
         template<class ... Args> 
-        inline int DebugPrintF(const char* format, const Args& ... args)
-        {
-            std::string message = fmt::sprintf( format, args ... );
-
-            #if defined(HT_SYS_WINDOWS)
-                OutputDebugStringA( message.c_str() );
-            #endif
-
-            std::cerr << message.c_str();
-
-            return static_cast<int>(message.length());
-        }
-
+        size_t DebugPrintF(const char* format, const Args& ... args);
     }
-
 }
+
+#include <ht_debug.inl>

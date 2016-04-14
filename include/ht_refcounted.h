@@ -1,3 +1,17 @@
+/**
+**    Hatchit Engine
+**    Copyright(c) 2015 Third-Degree
+**
+**    GNU Lesser General Public License
+**    This file may be used under the terms of the GNU Lesser
+**    General Public License version 3 as published by the Free
+**    Software Foundation and appearing in the file LICENSE.LGPLv3 included
+**    in the packaging of this file. Please review the following information
+**    to ensure the GNU Lesser General Public License requirements
+**    will be met: https://www.gnu.org/licenses/lgpl.html
+**
+**/
+
 #pragma once
 
 #include <stdint.h>
@@ -5,6 +19,7 @@
 #include <ht_platform.h>
 #include <ht_noncopy.h>
 #include <ht_refcounted_resourcemanager.h>
+#include <ht_string.h>
 
 namespace Hatchit
 {
@@ -58,6 +73,7 @@ namespace Hatchit
 
             Handle& operator=(const Handle& rhs)
             {
+                
                 if (rhs.m_refCount)
                     ++(*rhs.m_refCount);
 
@@ -75,6 +91,7 @@ namespace Hatchit
 
             Handle& operator=(Handle&& rhs)
             {
+                
                 if (m_refCount && !--(*m_refCount))
                 {
                     //Delete object
@@ -96,8 +113,25 @@ namespace Hatchit
                 return m_ptr;
             }
 
+            bool operator>(const Handle<VarType>& rhs) const
+            {
+                return m_ptr > rhs.m_ptr;
+            }
+            bool operator<(const Handle<VarType>& rhs) const
+            {
+                return m_ptr < rhs.m_ptr;
+            }
+            bool operator==(const Handle<VarType>& rhs) const
+            {
+                return m_ptr == rhs.m_ptr;
+            }
+            bool operator!=(const Handle<VarType>& rhs) const
+            {
+                return m_ptr != rhs.m_ptr;
+            }
+
             template<typename NewResourceType>
-            Handle<NewResourceType> DynamicCastHandle() const
+            inline Handle<NewResourceType> DynamicCastHandle() const
             {
                 NewResourceType* newPtr = dynamic_cast<NewResourceType*>(m_ptr);
                 if (newPtr)
@@ -107,7 +141,7 @@ namespace Hatchit
             }
 
             template<typename NewResourceType>
-            Handle<NewResourceType> StaticCastHandle() const
+            inline Handle<NewResourceType> StaticCastHandle() const
             {
                 NewResourceType* newPtr = static_cast<NewResourceType*>(m_ptr);
                 uint32_t* newRefCount = m_refCount;
@@ -118,6 +152,19 @@ namespace Hatchit
             bool IsValid() const
             {
                 return m_ptr != nullptr;
+            }
+
+            void Release()
+            {
+                if (m_refCount && !--(*m_refCount))
+                {
+                    //Delete referenced counter
+                    RefCountedResourceManager::ReleaseRawPointer<VarType>(*m_name);
+                }
+
+                m_ptr = nullptr;
+                m_refCount = nullptr;
+                m_name = nullptr;
             }
 
         private:
@@ -146,9 +193,10 @@ namespace Hatchit
 
             RefCounted& operator=(RefCounted&&) = default;
 
-            static Handle<VarType> GetHandle(const std::string& name)
+            template<typename... Args>
+            static Handle<VarType> GetHandle(std::string ID, Args&&... args)
             {
-                VarType* var = RefCountedResourceManager::GetRawPointer<VarType>(name);
+                VarType* var = RefCountedResourceManager::GetRawPointer<VarType, Args...>(std::move(ID), std::forward<Args>(args)...);
                 if (var)
                     return Handle<VarType>(var, &(var->m_refCount), &(var->m_name));
                 else

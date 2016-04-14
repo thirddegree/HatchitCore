@@ -1,6 +1,6 @@
 /**
 **    Hatchit Engine
-**    Copyright(c) 2015 Third-Degree
+**    Copyright(c) 2016 Third-Degree
 **
 **    GNU Lesser General Public License
 **    This file may be used under the terms of the GNU Lesser
@@ -12,15 +12,14 @@
 **
 **/
 
-#include <ht_refcounted_resourcemanager.h>
+#pragma once
 
-namespace Hatchit
+#include <ht_guid.h>
+
+namespace std
 {
-    namespace Core
+    inline size_t hash<Hatchit::Core::Guid>::operator()(const Hatchit::Core::Guid& guid) const
     {
-        RefCountedResourceManager& RefCountedResourceManager::GetInstance()
-        {
-            return RefCountedResourceManager::instance();
-        }
+        return guid.GetHashCode();
     }
 }

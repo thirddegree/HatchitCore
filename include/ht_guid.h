@@ -14,131 +14,66 @@
 
 #pragma once
 
-#include <ht_platform.h>
-#include <stdint.h>
-#include <memory>   // For std::shared_ptr
-#include <string>
+//Header includes
+#include <ht_platform.h> //HT_API
+#include <stdint.h> //uint8_t & uint64_t typedef
+#include <string> //std::string typedef
 
-namespace Hatchit {
-
-    namespace Core {
+namespace Hatchit
+{
+    namespace Core
+    {
 
         /**
          * \class Guid
-         * \ingroup HatchitGame
+         * \ingroup HatchitCore
          *
          * \brief Defines a simple globally-unique identifier.
          */
         class HT_API Guid
         {
+        public:
+            //Static Methods
+            static Guid FromString(const std::string& text);
+
+            static bool Parse(const std::string& text, Guid& out);
+
+            //Static Variables
+            static const Guid Empty;
+
+
+            Guid();
+
+            Guid(const Guid& other);
+
+            Guid(Guid&& other);
+
+            ~Guid();
+
+            //Public Methods
+
+            uint64_t GetHashCode() const;
+
+            std::string GetOriginalString() const;
+
+            bool IsFromString() const;
+
+            std::string ToString() const;
+
+            bool operator==(const Guid& other) const;
+
+            bool operator!=(const Guid& other) const;
+
+            Guid& operator=(const Guid& other);
+
+            Guid& operator=(Guid&& other);
+
+
+        private:
+            //Private Variables
             uint8_t m_uuid[16];
             uint64_t m_hashCode;
             std::string m_originalString;
-
-        public:
-            /**
-             * \brief The empty Guid.
-             */
-            static const Guid Empty;
-
-            /**
-             * \brief Creates a new Guid.
-             */
-            Guid();
-
-            /**
-             * \brief Copies one Guid's information into this Guid.
-             *
-             * \param other The other Guid.
-             */
-            Guid(const Guid& other);
-
-            /**
-             * \brief Moves one Guid's information into this Guid.
-             *
-             * \param other The other Guid.
-             */
-            Guid(Guid&& other);
-
-            /**
-             * \brief Destroys this Guid.
-             */
-            ~Guid();
-
-            /**
-             * \brief Gets this Guid's hash code.
-             *
-             * Provides a 64-bit unsigned integer hash representation of this Guid.
-             */
-            uint64_t GetHashCode() const;
-
-            /**
-             * \brief Gets this Guid's original string, if there is one.
-             *
-             * \return The original string, if it exists.
-             */
-            std::string GetOriginalString() const;
-
-            /**
-             * \brief Checks to see if this Guid is originally from a string.
-             *
-             * \return True if this Guid is based off of a string, false if not.
-             */
-            bool IsFromString() const;
-
-            /**
-             * \brief Gets the textual representation of this Guid.
-             *
-             * Returns the textual representation of this Guid, in the form
-             * of {xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx}.
-             */
-            std::string ToString() const;
-
-            /**
-             * \brief Checks to see if this Guid is the same as another.
-             *
-             * \param other The other Guid.
-             */
-            bool operator==(const Guid& other) const;
-
-            /**
-             * \brief Checks to see if this Guid is not the same as another.
-             *
-             * \param other The other Guid.
-             */
-            bool operator!=(const Guid& other) const;
-
-            /**
-             * \brief Copies one Guid's information into this Guid.
-             *
-             * \param other The other Guid.
-             */
-            Guid& operator=(const Guid& other);
-
-            /**
-             * \brief Moves one Guid's information into this Guid.
-             *
-             * \param other The other Guid.
-             */
-            Guid& operator=(Guid&& other);
-
-        public:
-            /**
-             * \brief Creates a Guid from a string by hashing the string.
-             *
-             * \param text The text to create a Guid from.
-             * \return The Guid based off of the given text.
-             */
-            static Guid FromString(const std::string& text);
-
-            /**
-            * \brief Attempts to parse a Guid from its textual representation.
-            *
-            * \param text The text to parse.
-            * \param out The Guid to fill with information.
-            * \return True if parsing was successful, false if not.
-            */
-            static bool Parse(const std::string& text, Guid& out);
         };
 
     }
@@ -154,10 +89,8 @@ namespace std {
      */
     template<> struct hash<Hatchit::Core::Guid>
     {
-        inline size_t operator()(const Hatchit::Core::Guid& guid) const
-        {
-            return guid.GetHashCode();
-        }
+        size_t operator()(const Hatchit::Core::Guid& guid) const;
     };
-
 }
+
+#include <ht_guid.inl>
