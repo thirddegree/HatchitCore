@@ -14,9 +14,9 @@
 
 #pragma once
 
-#include <ht_platform.h>
-#include <ht_string.h>
-#include <exception>
+#include <ht_platform.h> //HT_API
+#include <string> //std::string
+#include <exception> //std::exception
 
 namespace Hatchit {
 
@@ -27,7 +27,7 @@ namespace Hatchit {
         public:
             FileException(std::string file, int error);
 
-            ~FileException(void);
+            virtual ~FileException(void);
 
             virtual const char* what() const NOEXCEPT override;
 
