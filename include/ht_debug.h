@@ -75,7 +75,7 @@ namespace Hatchit {
         std::string DebugSprintF(const char* format, const Args& ... args);
 
         template<class ... Args> 
-        int DebugPrintF(const char* format, const Args& ... args);
+        size_t DebugPrintF(const char* format, const Args& ... args);
     }
 }
 

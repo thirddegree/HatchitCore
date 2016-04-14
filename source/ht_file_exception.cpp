@@ -53,7 +53,7 @@ namespace Hatchit {
         FileException::~FileException() = default;
 
         /**
-        \fn FileException::what()
+        \fn const char* FileException::what()
         \brief Gives description of file exception
 
         This function returns a C-Style string of a description for the exception.

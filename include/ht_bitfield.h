@@ -14,6 +14,7 @@
 
 #pragma once
 
+//Header includes
 #include <type_traits> //For: std::conditional, std::is_unsigned
 
 namespace Hatchit
@@ -39,6 +40,8 @@ namespace Hatchit
             constexpr BitFlag(unsigned int pI);
             constexpr BitFlag(short pS);
             constexpr BitFlag(unsigned short pS);
+
+            //Operators
             constexpr operator int() const;
             constexpr operator unsigned int() const;
 
@@ -82,6 +85,8 @@ namespace Hatchit
             constexpr BitField(BitfieldType val = 0);
             constexpr BitField(BitFlag b);
 
+            //Operators
+
             constexpr operator BitfieldType() const;
 
             BitField& operator&=(int mask);
@@ -113,6 +118,8 @@ namespace Hatchit
             constexpr BitField operator~() const;
 
             constexpr bool operator!() const;
+
+            //Functions
 
             constexpr bool TestFlag(Enum flag) const;
 

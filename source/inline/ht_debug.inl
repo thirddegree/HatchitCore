@@ -6,7 +6,8 @@ namespace Hatchit
 {
     namespace Core
     {
-        /*! \brief Function takes a formatted string and arguments to format into a string.
+        /*! \fn std::string DebugSprintF(const char* format, const Args& ... args) 
+        * \brief Function takes a formatted string and arguments to format into a string.
         *
         *
         *  This debug utility function takes in a user format string and
@@ -21,7 +22,8 @@ namespace Hatchit
             return fmt::sprintf(format, args ...);
         }
 
-        /*! \brief Function takes a formatted string and arguments to print.
+        /*! \fn size_t DebugPrintF(const char* format, const Args& ... args) 
+        * \brief Function takes a formatted string and arguments to print.
         *
         *
         *  This debug utility function takes in a user format string and
@@ -31,7 +33,7 @@ namespace Hatchit
         *  @param args The argument list used with format string.
         */
         template<class ... Args>
-        inline int DebugPrintF(const char* format, const Args& ... args)
+        inline size_t DebugPrintF(const char* format, const Args& ... args)
         {
             std::string message = fmt::sprintf(format, args ...);
 
@@ -41,7 +43,7 @@ namespace Hatchit
 
             std::cerr << message.c_str();
 
-            return static_cast<int>(message.length());
+            return message.length();
         }
     }
 }

@@ -145,7 +145,7 @@ namespace Hatchit
 
 
         /**
-        \fn BitField<Enum>::operator&=(int)
+        \fn BitField<Enum>& BitField<Enum>::operator&=(int)
         \brief Assigns bitfield to result of bitfield & mask
 
         Performs bitwise AND between bitfield and given value.  Result is
@@ -156,7 +156,7 @@ namespace Hatchit
         inline BitField<Enum>& BitField<Enum>::operator&=(int mask) { i &= mask; return *this; }
 
         /**
-        \fn BitField<Enum>::operator&=(unsigned int)
+        \fn BitField<Enum>& BitField<Enum>::operator&=(unsigned int)
         \brief Assigns bitfield to result of bitfield & mask
 
         Performs bitwise AND between bitfield and given value.  Result is
@@ -167,7 +167,7 @@ namespace Hatchit
         inline BitField<Enum>& BitField<Enum>::operator&=(unsigned int mask) { i &= mask; return *this; }
 
         /**
-        \fn BitField<Enum>::operator&=(Enum)
+        \fn BitField<Enum>&  BitField<Enum>::operator&=(Enum)
         \brief Assigns bitfield to result of bitfield & enum
 
         Performs bitwise AND between bitfield and given enum.  Result is
@@ -178,7 +178,7 @@ namespace Hatchit
         inline BitField<Enum>& BitField<Enum>::operator&=(Enum mask) { i &= BitfieldType(mask); return *this; }
 
         /**
-        \fn BitField<Enum>::operator&=(BitField rhs)
+        \fn BitField<Enum>  BitField<Enum>::operator&=(BitField rhs)
         \brief Assigns bitfield to result of bitfield & \a rhs bitfield
 
         Performs bitwise AND between two bitfields.  Result is
@@ -189,7 +189,7 @@ namespace Hatchit
         inline BitField<Enum>& BitField<Enum>::operator&=(BitField<Enum> b) { i &= b.i; return *this; }
 
         /**
-        \fn BitField<Enum>::operator|=(int)
+        \fn BitField<Enum>&  BitField<Enum>::operator|=(int)
         \brief Assigns bitfield to result of bitfield | mask
 
         Performs bitwise OR between bitfield and given value.  Result is
@@ -199,7 +199,7 @@ namespace Hatchit
         template<typename Enum>
         inline BitField<Enum>& BitField<Enum>::operator|=(int mask) { i |= mask; return *this; }
         /**
-        \fn BitField<Enum>::operator|=(unsigned int)
+        \fn BitField<Enum>&  BitField<Enum>::operator|=(unsigned int)
         \brief Assigns bitfield to result of bitfield | mask
 
         Performs bitwise OR between bitfield and given value.  Result is
@@ -210,7 +210,7 @@ namespace Hatchit
         inline BitField<Enum>& BitField<Enum>::operator|=(unsigned int mask) { i |= mask; return *this; }
 
         /**
-        \fn BitField<Enum>::operator|=(Enum)
+        \fn BitField<Enum>&  BitField<Enum>::operator|=(Enum)
         \brief Assigns bitfield to result of bitfield | Enum
 
         Performs bitwise OR between bitfield and given enum.  Result is
@@ -221,7 +221,7 @@ namespace Hatchit
         inline BitField<Enum>& BitField<Enum>::operator|=(Enum mask) { i |= BitfieldType(mask); return *this; }
 
         /**
-        \fn BitField<Enum>::operator|=(BitField)
+        \fn BitField<Enum>&  BitField<Enum>::operator|=(BitField)
         \brief Assigns bitfield to result of bitfield | \a rhs bitfield.
 
         Performs bitwise OR between two bitfields.  Result is
@@ -232,7 +232,7 @@ namespace Hatchit
         inline BitField<Enum>& BitField<Enum>::operator|=(BitField<Enum> b) { i |= b.i; return *this; }
 
         /**
-        \fn BitField<Enum>::operator^=(int)
+        \fn BitField<Enum>&  BitField<Enum>::operator^=(int)
         \brief Assigns bitfield to result of bitfield ^ mask
 
         Performs bitwise XOR between bitfield and given value.  Result is
@@ -243,7 +243,7 @@ namespace Hatchit
         inline BitField<Enum>& BitField<Enum>::operator^=(int mask) { i ^= mask; return *this; }
 
         /**
-        \fn BitField<Enum>::operator^=(unsigned int)
+        \fn BitField<Enum>&  BitField<Enum>::operator^=(unsigned int)
         \brief Assigns bitfield to result of bitfield ^ mask
 
         Performs bitwise XOR between bitfield and given value.  Result is
@@ -254,7 +254,7 @@ namespace Hatchit
         inline BitField<Enum>& BitField<Enum>::operator^=(unsigned int mask) { i ^= mask; return *this; }
 
         /**
-        \fn BitField<Enum>::operator^=(Enum)
+        \fn BitField<Enum>&  BitField<Enum>::operator^=(Enum)
         \brief Assigns bitfield to result of bitfield ^ mask
 
         Performs bitwise XOR between bitfield and given enum.  Result is
@@ -265,7 +265,7 @@ namespace Hatchit
         inline BitField<Enum>& BitField<Enum>::operator^=(Enum mask) { i ^= BitfieldType(mask); return *this; }
 
         /**
-        \fn BitField<Enum>::operator^=(BitField)
+        \fn BitField<Enum>&  BitField<Enum>::operator^=(BitField)
         \brief Assigns bitfield to result of bitfield ^ \a rhs bitfield
 
         Performs bitwise XOR between two bitfields.  Result is
@@ -277,7 +277,7 @@ namespace Hatchit
 
 
         /**
-        \fn BitField<Enum>::operator&(int) const
+        \fn BitField<Enum> BitField<Enum>::operator&(int) const
         \brief Computes bitwise AND between bitfield and mask
 
         Computes bitwise AND between bitfield and mask.  Returns as new bitfield
@@ -287,7 +287,7 @@ namespace Hatchit
         constexpr inline BitField<Enum> BitField<Enum>::operator&(int mask) const { return BitField(BitFlag(i & mask)); }
 
         /**
-        \fn BitField<Enum>::operator&(unsigned int) const
+        \fn BitField<Enum> BitField<Enum>::operator&(unsigned int) const
         \brief Computes bitwise AND between bitfield and mask
 
         Computes bitwise AND between bitfield and mask.  Returns as new bitfield
@@ -297,7 +297,7 @@ namespace Hatchit
         constexpr inline BitField<Enum> BitField<Enum>::operator&(unsigned int mask) const { return BitField<Enum>(BitFlag(i & mask)); }
 
         /**
-        \fn BitField<Enum>::operator&(Enum) const
+        \fn BitField<Enum> BitField<Enum>::operator&(Enum) const
         \brief Computes bitwise AND between bitfield and enum
 
         Computes bitwise AND between bitfield and enum.  Returns as new bitfield
@@ -307,7 +307,7 @@ namespace Hatchit
         constexpr inline BitField<Enum> BitField<Enum>::operator&(Enum mask) const { return BitField<Enum>(BitFlag(i & BitfieldType(mask))); }
 
         /**
-        \fn BitField<Enum>::operator&(BitField<Enum>) const
+        \fn BitField<Enum> BitField<Enum>::operator&(BitField<Enum>) const
         \brief Computes bitwise AND between two bitfields
 
         Computes bitwise AND between two bitfields.  Returns as new bitfield
@@ -317,7 +317,7 @@ namespace Hatchit
         constexpr inline BitField<Enum> BitField<Enum>::operator&(BitField<Enum> mask) const { return BitField<Enum>(BitFlag(i & mask.i)); }
 
         /**
-        \fn BitField<Enum>::operator|(int) const
+        \fn BitField<Enum> BitField<Enum>::operator|(int) const
         \brief Computes bitwise OR between bitfield and mask
 
         Computes bitwise OR between bitfield and mask.  Returns as new bitfield
@@ -327,7 +327,7 @@ namespace Hatchit
         constexpr inline BitField<Enum> BitField<Enum>::operator|(int mask) const { return BitField<Enum>(BitFlag(i | mask)); }
 
         /**
-        \fn BitField<Enum>::operator|(unsigned int) const
+        \fn BitField<Enum> BitField<Enum>::operator|(unsigned int) const
         \brief Computes bitwise OR between bitfield and mask
 
         Computes bitwise OR between bitfield and mask.  Returns as new bitfield
@@ -337,7 +337,7 @@ namespace Hatchit
         constexpr inline BitField<Enum> BitField<Enum>::operator|(unsigned int mask) const { return BitField<Enum>(BitFlag(i | mask)); }
 
         /**
-        \fn BitField<Enum>::operator|(Enum) const
+        \fn BitField<Enum> BitField<Enum>::operator|(Enum) const
         \brief Computes bitwise OR between bitfield and enum
 
         Computes bitwise OR between bitfield and enum.  Returns as new bitfield
@@ -347,7 +347,7 @@ namespace Hatchit
         constexpr inline BitField<Enum> BitField<Enum>::operator|(Enum mask) const { return BitField<Enum>(BitFlag(i | BitfieldType(mask))); }
 
         /**
-        \fn BitField<Enum>::operator|(BitField<Enum>) const
+        \fn BitField<Enum> BitField<Enum>::operator|(BitField<Enum>) const
         \brief Computes bitwise OR between two bitfields
 
         Computes bitwise OR between two bitfields.  Returns as new bitfield
@@ -357,7 +357,7 @@ namespace Hatchit
         constexpr inline BitField<Enum> BitField<Enum>::operator|(BitField<Enum> mask) const { return BitField<Enum>(BitFlag(i | mask.i)); }
 
         /**
-        \fn BitField<Enum>::operator^(int) const
+        \fn BitField<Enum> BitField<Enum>::operator^(int) const
         \brief Computes bitwise XOR between bitfield and mask
 
         Computes bitwise XOR between bitfield and mask.  Returns as new bitfield
@@ -367,7 +367,7 @@ namespace Hatchit
         constexpr inline BitField<Enum> BitField<Enum>::operator^(int mask) const { return BitField<Enum>(BitFlag(i ^ mask)); }
 
         /**
-        \fn BitField<Enum>::operator^(unsigned int) const
+        \fn BitField<Enum> BitField<Enum>::operator^(unsigned int) const
         \brief Computes bitwise XOR between bitfield and mask
 
         Computes bitwise XOR between bitfield and mask.  Returns as new bitfield
@@ -377,7 +377,7 @@ namespace Hatchit
         constexpr inline BitField<Enum> BitField<Enum>::operator^(unsigned int mask) const { return BitField<Enum>(BitFlag(i ^ mask)); }
 
         /**
-        \fn BitField<Enum>::operator^(Enum) const
+        \fn BitField<Enum> BitField<Enum>::operator^(Enum) const
         \brief Computes bitwise XOR between bitfield and enum
 
         Computes bitwise XOR between bitfield and enum.  Returns as new bitfield
@@ -387,7 +387,7 @@ namespace Hatchit
         constexpr inline BitField<Enum> BitField<Enum>::operator^(Enum mask) const { return BitField<Enum>(BitFlag(i ^ BitfieldType(mask))); }
 
         /**
-        \fn BitField<Enum>::operator^(BitField<Enum>) const
+        \fn BitField<Enum> BitField<Enum>::operator^(BitField<Enum>) const
         \brief Computes bitwise XOR between two bitfields
 
         Computes bitwise XOR between two bitfields.  Returns as new bitfield
@@ -397,7 +397,7 @@ namespace Hatchit
         constexpr inline BitField<Enum> BitField<Enum>::operator^(BitField<Enum> mask) const { return BitField<Enum>(BitFlag(i ^ mask.i)); }
 
         /**
-        \fn BitField<Enum>::operator~() const
+        \fn BitField<Enum> BitField<Enum>::operator~() const
         \brief Computes bitwise NOT on bitfield
 
         Computes bitwise NOT on bitfield.  Returns as new bitfield
@@ -408,7 +408,7 @@ namespace Hatchit
 
 
         /**
-        \fn BitField<Enum>::operator~() const
+        \fn bool BitField<Enum>::operator~() const
         \brief Returns whether any flags are marked (1) in bitfield
 
         Returns whether any flags are marked (1) in the bitfield.
@@ -418,7 +418,7 @@ namespace Hatchit
 
 
         /**
-        \fn BitField<Enum>::TestFlag(Enum flag)
+        \fn bool BitField<Enum>::TestFlag(Enum flag) const
         \brief returns whether enum flag is marked in bitfield
 
         Performs test to see if flag is marked (1) in bitfield.

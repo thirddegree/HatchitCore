@@ -13,9 +13,10 @@
 **/
 
 #include <ht_file.h>
-#include <ht_os.h>
 
-#include <ht_file_exception.h>
+#include <ht_os.h> //os_path(std::string)
+#include <ht_file_exception.h> //FileException
+#include <cassert> //Assert statements
 
 #ifdef HT_SYS_LINUX
 #include <sys/stat.h>
@@ -77,7 +78,8 @@ namespace Hatchit
         File::File(void)
             : IFile(),
             m_position(0),
-            m_size(0) {}
+            m_size(0),
+            m_handle(nullptr) {}
 
         /**
         \fn File::~File()
@@ -99,6 +101,10 @@ namespace Hatchit
         **/
         void File::Open(const std::string& path, FileMode mode)
         {
+            //Assert that we do not have a file open before opening a new
+            //file
+            assert(m_handle == nullptr);
+
             m_path = os_path(path);
             m_name = GetName(m_path);
             m_baseName = GetName(m_path, false);
@@ -377,6 +383,7 @@ namespace Hatchit
         \brief Gives the base name of the system file.
 
         This function returns the base name of the system file.
+        The base name of the file is the file name without the extension.
         **/
         std::string File::BaseName(void)
         {

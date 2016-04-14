@@ -14,6 +14,7 @@
 
 #pragma once
 
+//Header includes
 #include <ht_platform.h> //HT_API
 #include <stdint.h> //uint8_t & uint64_t typedef
 #include <string> //std::string typedef
@@ -25,7 +26,7 @@ namespace Hatchit
 
         /**
          * \class Guid
-         * \ingroup HatchitGame
+         * \ingroup HatchitCore
          *
          * \brief Defines a simple globally-unique identifier.
          */

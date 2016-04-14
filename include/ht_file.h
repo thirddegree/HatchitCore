@@ -17,10 +17,9 @@
 //Header includes
 #include <ht_platform.h> //HT_API
 #include <ht_file_interface.h> //IFile
-#include <string> //std::string
-#include <cstddef> //size_t
-#include <cstdio> //FILE type
-                  //Could be forward declared as typedef FILE _iobuf
+#include <string> //std::string typedef
+#include <cstddef> //size_t typedef
+#include <cstdio> //FILE typedef
 
 
 namespace Hatchit {
