@@ -14,8 +14,8 @@
 
 #pragma once
 
-#include <ht_platform.h>
-#include <ht_string.h>
+#include <ht_platform.h> //HT_API
+#include <string> //std::string typedef
 
 /** \file ht_os.h
 * Operating System Utilities
@@ -24,48 +24,22 @@
 * and each function is defined to be cross platform.
 */
 
-namespace Hatchit {
+namespace Hatchit
+{
+    namespace Core
+    {
 
+        HT_API void os_mkdir(const std::string& path);
 
-    namespace Core {
+        HT_API bool os_isdir(const std::string& path);
 
-		/*! \brief Function creates a directory on disk
-		*
-		*  Creates a directory on the file system with specified path
-		*  @param path directory path
-		*/
-        HT_API void             os_mkdir(const std::string& path);
+        HT_API std::string os_path(const std::string& path);
 
-		/*! \brief Function checks is specified path is a directory
-		*
-		*  Returns true or false is specified path is a directory
-		*  @param path directory path
-		*/
-        HT_API bool             os_isdir(const std::string& path);
+        HT_API std::string os_dir(const std::string& path, bool wt = true);
 
-		/*! \brief Function returns os standard path
-		*
-		*  Returns specified path with correct path delimeters
-		*  @param path the system path
-		*/
-        HT_API std::string      os_path(const std::string& path);
+        HT_API std::string os_exec_dir();
 
-		/*! \brief Function returns the parent directory of a path
-		*
-		*  @param path system path
-		*  @param wt   should include trailing slash
-		*/
-        HT_API std::string      os_dir(const std::string& path, bool wt = true);
-
-		/*! \brief Function returns the current executable directory
-		*
-		*/
-        HT_API std::string      os_exec_dir();
-
-		/*! \brief Function returns the path delimeter character
-		*
-		*/
-		HT_API char				os_path_delimeter();
+		HT_API char	os_path_delimeter();
 
     }
 

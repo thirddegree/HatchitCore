@@ -13,10 +13,20 @@
 **/
 
 #include <ht_os.h>
-#include <ht_types.h>
+
+#include <ht_platform.h> //HT_SYS_WINDOWS
+#include <string> //std::string
+#include <ht_string.h> //str_replaceAll()
 
 #ifdef HT_SYS_WINDOWS
-#include <direct.h>
+#include <direct.h> //_mkdir(const char*)
+#include <fileapi.h>    //GetFileAttributesExA()
+                        //INVALID_FILE_ATTRIBUTES
+
+#include <WinBase.h>    //WIN32_FILE_ATTRIBUTE_DATA
+                        //GetModuleFileNameA()
+
+#include <winnt.h> //FILE_ATTRIBUTE_DIRECTORY
 #endif
 
 #ifdef HT_SYS_LINUX
@@ -26,10 +36,15 @@
 #include <linux/limits.h>
 #endif
 
-namespace Hatchit {
-
-    namespace Core {
-
+namespace Hatchit
+{
+    namespace Core
+    {
+        /*! \brief Function creates a directory on disk
+        *
+        *  Creates a directory on the file system with specified path
+        *  @param path directory path
+        */
         void os_mkdir(const std::string& path)
         {
             #ifdef HT_SYS_WINDOWS
@@ -39,6 +54,11 @@ namespace Hatchit {
             #endif
         }
 
+        /*! \brief Function checks is specified path is a directory
+        *
+        *  Returns true or false is specified path is a directory
+        *  @param path directory path
+        */
         bool os_isdir(const std::string& path)
         {
             //convert path
@@ -57,6 +77,11 @@ namespace Hatchit {
             return false;
         }
 
+        /*! \brief Function returns os standard path
+        *
+        *  Returns specified path with correct path delimeters
+        *  @param path the system path
+        */
         std::string os_path(const std::string& path)
         {
             std::string temp = path;
@@ -70,6 +95,11 @@ namespace Hatchit {
             return temp;
         }
 
+        /*! \brief Function returns the parent directory of a path
+        *
+        *  @param path system path
+        *  @param wt   should include trailing slash
+        */
         std::string os_dir(const std::string& path, bool wt)
         {
             if(path.empty())
@@ -96,6 +126,9 @@ namespace Hatchit {
             return dir;
         }
 
+        /*! \brief Function returns the current executable directory
+        *
+        */
         std::string os_exec_dir()
         {
             #ifdef HT_SYS_WINDOWS
@@ -113,6 +146,9 @@ namespace Hatchit {
             return "";
         }
 
+        /*! \brief Function returns the path delimeter character
+        *
+        */
 		char os_path_delimeter()
 		{
 			char delimeter;
