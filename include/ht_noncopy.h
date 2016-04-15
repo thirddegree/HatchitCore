@@ -41,11 +41,11 @@ namespace Hatchit
             INonCopy();
             virtual ~INonCopy();
 
-			INonCopy(const INonCopy&) = delete;
-			INonCopy(INonCopy&&);
+            INonCopy(const INonCopy&) = delete;
+            INonCopy(INonCopy&&);
 
-			INonCopy& operator=(const INonCopy&) = delete;
-			INonCopy& operator=(INonCopy&&);
+            INonCopy& operator=(const INonCopy&) = delete;
+            INonCopy& operator=(INonCopy&&);
         };
     }
 }
