@@ -149,16 +149,16 @@ namespace Hatchit
         /*! \brief Function returns the path delimeter character
         *
         */
-		char os_path_delimeter()
-		{
-			char delimeter;
+        char os_path_delimeter()
+        {
+            char delimeter;
 #ifdef HT_SYS_WINDOWS
-			delimeter = '\\';
+            delimeter = '\\';
 #else
-			delimeter = '/';
+            delimeter = '/';
 #endif
-			return delimeter;
-		}
+            return delimeter;
+        }
     }
 
 }
