@@ -49,5 +49,3 @@ namespace Hatchit
         };
     }
 }
-
-#include <ht_noncopy.inl>
