@@ -14,22 +14,29 @@
 
 #pragma once
 
-#include <stdint.h>
-#include <string>
-#include <ht_platform.h>
-#include <ht_noncopy.h>
+#include <stdint.h> //uint32_t typedef
+#include <string> //const std::string typedef
+#include <ht_platform.h> //HT_API
+#include <ht_noncopy.h> //INonCopy interface
 #include <ht_refcounted_resourcemanager.h>
 #include <ht_string.h>
 
+//Forward declaractions
 namespace Hatchit
 {
     namespace Core
     {
         template<typename VarType>
         class RefCounted;
+    }
+}
 
+namespace Hatchit
+{
+    namespace Core
+    {
         template<typename VarType>
-        class Handle
+        class HT_API Handle
         {
         private:
 
@@ -38,10 +45,7 @@ namespace Hatchit
             const std::string* m_name;
 
         public:
-            Handle()
-                : m_ptr(),
-                m_refCount(),
-                m_name() {};
+            Handle();
 
             Handle(const Handle& rhs)
                 : m_ptr(rhs.m_ptr),
@@ -184,7 +188,7 @@ namespace Hatchit
         };
 
         template<typename VarType>
-        class RefCounted : public INonCopy
+        class HT_API RefCounted : public INonCopy
         {
         public:
             RefCounted() = default;
@@ -216,3 +220,5 @@ namespace Hatchit
         };
     }
 }
+
+#include <ht_refcounted.inl>
