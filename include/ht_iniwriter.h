@@ -22,11 +22,14 @@ namespace Hatchit {
 
     namespace Core {
 
+        class INIReader;
+
         class HT_API INIWriter
         {
             typedef std::vector<std::pair<std::string, std::string> > ValuePairList;
         public:
             INIWriter(void);
+            INIWriter(INIReader& reader);
 
             void Write(File* file);
 

@@ -35,7 +35,11 @@ namespace Hatchit {
             DebugPrintF("[%s]:\n", file->Name().c_str());
             for (auto val : m_values)
             {
-                DebugPrintF("%s : %s\n", val.first.c_str(), val.second.c_str());
+                for (auto pair : val.second)
+                {
+                    DebugPrintF("%s : %s=%s\n", val.first.c_str(),
+                        pair.first, pair.second);
+                }
             }
 #endif
         }
@@ -47,9 +51,16 @@ namespace Hatchit {
 
         std::string INIReader::Get(std::string section, std::string name)
         {
-            std::string key = MakeKey(section, name);
+            //std::string key = MakeKey(section, name);
 
-            return m_values.count(key) ? m_values[key] : "";
+            auto vector = m_values[section];
+            for (auto pair : vector)
+            {
+                if (pair.first == name)
+                    return pair.second;
+            }
+
+            return "";
         }
 
         std::string INIReader::MakeKey(std::string section, std::string name)
@@ -65,10 +76,14 @@ namespace Hatchit {
         int INIReader::ValueHandler(void* user, const char* section, const char* name, const char* value)
         {
             INIReader* reader = (INIReader*)user;
-            std::string key = MakeKey(section, name);
-            if (reader->m_values[key].size() > 0)
-                reader->m_values[key] += "\n";
-            reader->m_values[key] += value;
+            std::pair<std::string, std::string> valuePair = std::make_pair(name, value);
+            auto it = std::find(reader->m_values[section].begin(), reader->m_values[section].end(),
+                valuePair);
+            if (it == reader->m_values[section].end())
+            {
+                //Pair is a new value in file
+                reader->m_values[section].push_back(valuePair);
+            }
 
             return 1;
         }

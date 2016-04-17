@@ -27,6 +27,7 @@ namespace Hatchit {
 
         class HT_API INIReader
         {
+            typedef std::vector<std::pair<std::string, std::string> > ValuePairList;
         public:
             INIReader(void);
 
@@ -38,12 +39,15 @@ namespace Hatchit {
             T GetValue(std::string section, std::string name, T default_val);
 
         private:
-            int                                 m_error;
-            std::map<std::string, std::string>  m_values;
+            int                                   m_error;
+            std::map<std::string, ValuePairList>  m_values;
 
             std::string Get(std::string section, std::string name);
             static std::string      MakeKey(std::string section, std::string name);
             static int              ValueHandler(void* user, const char* section, const char* name, const char* value);
+
+
+            friend class INIWriter;
         };
 
         template <>

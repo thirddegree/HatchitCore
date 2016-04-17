@@ -13,6 +13,7 @@
 **/
 
 #include <ht_iniwriter.h>
+#include <ht_inireader.h>
 
 namespace Hatchit {
 
@@ -23,14 +24,23 @@ namespace Hatchit {
 
         }
 
+        INIWriter::INIWriter(INIReader& reader)
+        {
+            //Copy over all values contained in reader object
+            m_values = reader.m_values;
+        }
+
 
         void INIWriter::Write(File* file)
         {
-            if (!file)
+            if (!file || m_values.size() <= 0)
                 return;
-
-            for (auto& key : m_values)
+            
+            auto it = m_values.rbegin();
+            for (it; it != m_values.rend(); ++it)
             {
+                auto key = *it;
+
                 //write section
                 std::string section = "[" + key.first + "]\n";
                 file->Write((BYTE*)section.c_str(), section.size());
@@ -44,6 +54,8 @@ namespace Hatchit {
 
                     file->Write((BYTE*)name.c_str(), name.size());
                 }
+
+                file->Write((BYTE*)"\n", strlen("\n"));
             }
         }
     }
