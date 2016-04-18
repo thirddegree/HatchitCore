@@ -16,20 +16,15 @@ namespace Hatchit {
         template<class ... Args>
         void Debug::Log(Debug::LogSeverity severity, const std::string& fmt_message, const Args& ... args)
         {
-            static const std::string s_messagePrefixes[4] =
+            if (!ShouldLogSeverity(severity))
             {
-                std::string("[DEBUG] "),
-                std::string("[INFO]  "),
-                std::string("[WARN]  "),
-                std::string("[ERROR] "),
-            };
-
-            if (ShouldLogSeverity(severity))
-            {
-                std::string message = fmt::sprintf(fmt_message, args ...);
-                std::string prefix = s_messagePrefixes[static_cast<int>(severity)];
-                LogMessage(prefix + message);
+                return;
             }
+
+            std::string message = fmt::sprintf(fmt_message, args ...);
+            message = Debug::CreateLogMessage(severity, message);
+
+            LogMessage(message, true);
         }
 
     }

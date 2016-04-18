@@ -1,18 +1,65 @@
-#include <ht_debug.h>
-#include <iostream>
+#include <ht_debug.h>       // For Debug::*
+#include <iostream>         // For std::cout
+#include <ctime>            // For std::time, std::localtime
 #if defined(HT_SYS_WINDOWS)
-#  include <debugapi.h>
+    #include <debugapi.h>   // For OutputDebugMessageA
 #endif
 
 namespace Hatchit {
 
     namespace Core {
 
+        std::string                     Debug::s_outputFile = "debug.log";
+        Debug::LogCallback              Debug::s_logCallback;
+        std::unique_ptr<std::ofstream>  Debug::s_outputStream;
+        bool                            Debug::s_canLogToFile = false;
+        const std::string               Debug::s_severityStrings[4] =
+        {
+            std::string("[DEBUG]"),
+            std::string("[INFO] "),
+            std::string("[WARN] "),
+            std::string("[ERROR]"),
+        };
 #if defined(_DEBUG) || defined(DEBUG)
-        Debug::LogSeverity Debug::m_severityThreshold = Debug::LogSeverity::Debug;
+        Debug::LogSeverity              Debug::s_severityThreshold = Debug::LogSeverity::Debug;
 #else
-        Debug::LogSeverity Debug::m_severityThreshold = Debug::LogSeverity::Info;
+        Debug::LogSeverity              Debug::s_severityThreshold = Debug::LogSeverity::Info;
 #endif
+
+        /**
+         * \brief Creates a full log message, including severity and a timestamp.
+         *
+         * \param severity The message severity.
+         * \param message The formatted user message.
+         * \return The full log message.
+         */
+        std::string Debug::CreateLogMessage(Debug::LogSeverity severity, std::string message)
+        {
+            return fmt::sprintf("%s %s %s", GenerateTimestamp(), s_severityStrings[static_cast<int>(severity)], message);
+        }
+
+        /**
+         * \brief Generates a timestamp.
+         *
+         * \return The timestamp.
+         */
+        std::string Debug::GenerateTimestamp()
+        {
+            std::time_t time_epoch = std::time(nullptr);
+            tm*         time_local = std::localtime(&time_epoch);
+
+            return fmt::sprintf("[%02d:%02d:%02d]", time_local->tm_hour, time_local->tm_min, time_local->tm_sec);
+        }
+
+        /**
+         * \brief Gets the file name of the output file.
+         *
+         * \return The output file name.
+         */
+        std::string Debug::GetOutputFileName()
+        {
+            return s_outputFile;
+        }
 
         /**
          * \brief Gets the current severity threshold.
@@ -22,21 +69,113 @@ namespace Hatchit {
          */
         Debug::LogSeverity Debug::GetSeverityThreshold()
         {
-            return m_severityThreshold;
+            return s_severityThreshold;
+        }
+
+        /**
+         * \brief Initializes the output stream.
+         */
+        void Debug::InitializeOutputStream()
+        {
+            bool canLog = true;
+
+            // Create the stream
+            if (!s_outputStream)
+            {
+                s_outputStream = std::make_unique<std::ofstream>();
+                if (!s_outputStream)
+                {
+                    LogMessage(CreateLogMessage(LogSeverity::Error, "Failed to allocate output file stream.\n"), false);
+                    canLog = false;
+                }
+            }
+
+            // Open the file
+            if (s_outputStream)
+            {
+                s_outputStream->open(s_outputFile, std::ios::app | std::ios::binary);
+                if (!s_outputStream->is_open())
+                {
+                    // We need to use LogMessage instead of Log here so that we don't try to open the file again
+                    LogMessage(CreateLogMessage(LogSeverity::Error, "Failed to open output file '" + s_outputFile + "'.\n"), false);
+                    canLog = false;
+                }
+            }
+
+            s_canLogToFile = canLog;
+
+            // If we can log to the file, add some kind of separator
+            if (canLog)
+            {
+                std::time_t time_epoch = std::time(nullptr);
+                tm*         time_local = std::localtime(&time_epoch);
+                std::string separator = fmt::sprintf(
+                    "------- LOG FILE OPENED ON %02d/%02d/%d -------\n",
+                    time_local->tm_mon + 1,
+                    time_local->tm_mday,
+                    time_local->tm_year + 1900);
+                LogMessage(CreateLogMessage(LogSeverity::Info, separator), false);
+            }
         }
 
         /**
          * \brief Logs the given message.
          *
-         * \param message The message to log.
+         * \param message The formatted message.
+         * \param tryOpenFile True to try to open the output file, false to not.
          */
-        void Debug::LogMessage(const std::string& message)
+        void Debug::LogMessage(const std::string& message, bool tryOpenFile)
         {
+            // If we should try to open the file then, well, try to open it
+            if (tryOpenFile && !s_canLogToFile)
+            {
+                InitializeOutputStream();
+            }
+
 #if defined(HT_SYS_WINDOWS)
+            // Output to the Visual Studio debug window
             OutputDebugStringA(message.c_str());
 #endif
 
-            std::cerr << message.c_str();
+            // Output to the console and file
+            std::cout << message.c_str();
+            if (s_canLogToFile)
+            {
+                (*s_outputStream) << message.c_str();
+            }
+
+            // Invoke the callback
+            if (s_logCallback)
+            {
+                s_logCallback(message);
+            }
+        }
+
+        /**
+         * \brief Sets the callback for whenever a message is logged.
+         *
+         * \param callback The new callback.
+         */
+        void Debug::SetLogCallback(LogCallback callback)
+        {
+            s_logCallback = callback;
+        }
+
+        /**
+         * \brief Sets the file name of the output file.
+         * \warning This function will not do anything after the first time something is logged.
+         *
+         * \param fname The new file name.
+         */
+        void Debug::SetOutputFileName(const std::string& fname)
+        {
+            if (s_outputStream && s_outputStream->is_open())
+            {
+                Log(LogSeverity::Error, "Cannot specify new file name after logging has begun.\n");
+                return;
+            }
+
+            s_outputFile = fname;
         }
 
         /**
@@ -46,7 +185,7 @@ namespace Hatchit {
          */
         void Debug::SetSeverityThreshold(Debug::LogSeverity threshold)
         {
-            m_severityThreshold = threshold;
+            s_severityThreshold = threshold;
         }
 
         /**
@@ -57,7 +196,7 @@ namespace Hatchit {
          */
         bool Debug::ShouldLogSeverity(Debug::LogSeverity severity)
         {
-            return static_cast<int>(severity) >= static_cast<int>(m_severityThreshold);
+            return static_cast<int>(severity) >= static_cast<int>(s_severityThreshold);
         }
 
     }

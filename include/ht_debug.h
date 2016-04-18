@@ -14,34 +14,37 @@
 
 #pragma once
 
-#include <string>
-#include <fstream>
-#include <ht_platform.h>
-#include <format.h>
+#include <string>           // For std::string
+#include <fstream>          // For std::ofstream
+#include <memory>           // For std::unique_ptr
+#include <functional>       // For std::function
+#include <ht_platform.h>    // For HT_API
+#include <format.h>         // For fmt::sprintf
 
-
-#ifndef HT_STRINGIFY
-#  define HT_STRINGIFY(x) #x
+#if !defined(HT_STRINGIFY)
+    #define HT_STRINGIFY(x) #x
 #endif
 
-#ifndef HT_SFY_
-#  define HT_SFY_(x) HT_STRINGIFY(x)
+#if !defined(HT_SFY_)
+    #define HT_SFY_(x) HT_STRINGIFY(x)
 #endif
 
-#ifndef HT_INFO_PRINTF
-#  define HT_INFO_PRINTF(message, ...) Hatchit::Core::Debug::Log(Hatchit::Core::Debug::LogSeverity::Info, message, __VA_ARGS__)
+#if !defined(HT_DEBUG_PRINTF) && (defined(_DEBUG) || defined(DEBUG))
+    #define HT_DEBUG_PRINTF(message, ...) Hatchit::Core::Debug::Log(Hatchit::Core::Debug::LogSeverity::Debug, message, __VA_ARGS__)
+#else
+    #define HT_DEBUG_PRINTF(message, ...)
 #endif
 
-#ifndef HT_DEBUG_PRINTF
-#  define HT_DEBUG_PRINTF(message, ...) Hatchit::Core::Debug::Log(Hatchit::Core::Debug::LogSeverity::Debug, message, __VA_ARGS__)
+#if !defined(HT_INFO_PRINTF)
+    #define HT_INFO_PRINTF(message, ...) Hatchit::Core::Debug::Log(Hatchit::Core::Debug::LogSeverity::Info, message, __VA_ARGS__)
 #endif
 
-#ifndef HT_WARNING_PRINTF
-#  define HT_WARNING_PRINTF(message, ...) Hatchit::Core::Debug::Log(Hatchit::Core::Debug::LogSeverity::Warning, message, __VA_ARGS__)
+#if !defined(HT_WARNING_PRINTF)
+    #define HT_WARNING_PRINTF(message, ...) Hatchit::Core::Debug::Log(Hatchit::Core::Debug::LogSeverity::Warning, message, __VA_ARGS__)
 #endif
 
-#ifndef HT_ERROR_PRINTF
-#  define HT_ERROR_PRINTF(message, ...) Hatchit::Core::Debug::Log(Hatchit::Core::Debug::LogSeverity::Error, message, __VA_ARGS__)
+#if !defined(HT_ERROR_PRINTF)
+    #define HT_ERROR_PRINTF(message, ...) Hatchit::Core::Debug::Log(Hatchit::Core::Debug::LogSeverity::Error, message, __VA_ARGS__)
 #endif
 
 namespace Hatchit {
@@ -66,13 +69,25 @@ namespace Hatchit {
             };
 
             /**
+             * \brief The type used for registering log callbacks.
+             */
+            using LogCallback = std::function<void(const std::string&)>;
+
+            /**
+             * \brief Gets the file name of the output file.
+             *
+             * \return The output file name.
+             */
+            static std::string GetOutputFileName();
+
+            /**
              * \brief Gets the current severity threshold.
              *
              * If a message is logged with a severity lower than the current severity
              * threshold, then it will not be output for end-users to see.
              */
             static Debug::LogSeverity GetSeverityThreshold();
-            
+
             /**
              * \brief Logs a message with the given severity.
              *
@@ -84,6 +99,21 @@ namespace Hatchit {
             static void Log(Debug::LogSeverity severity, const std::string& fmt_message, const Args& ... args);
 
             /**
+             * \brief Sets the callback for whenever a message is logged.
+             *
+             * \param callback The new callback.
+             */
+            static void SetLogCallback(LogCallback callback);
+
+            /**
+             * \brief Sets the file name of the output file.
+             * \warning This function will not do anything after the first time something is logged.
+             *
+             * \param fname The new file name.
+             */
+            static void SetOutputFileName(const std::string& fname);
+
+            /**
              * \brief Sets the current severity threshold.
              *
              * \param threshold The new severity threshold.
@@ -92,11 +122,33 @@ namespace Hatchit {
 
         private:
             /**
+             * \brief Creates a full log message, including severity and a timestamp.
+             *
+             * \param severity The message severity.
+             * \param message The formatted user message.
+             * \return The full log message.
+             */
+            static std::string CreateLogMessage(Debug::LogSeverity severity, std::string message);
+
+            /**
+             * \brief Generates a timestamp.
+             *
+             * \return The timestamp.
+             */
+            static std::string GenerateTimestamp();
+
+            /**
+             * \brief Initializes the output stream.
+             */
+            static void InitializeOutputStream();
+
+            /**
              * \brief Logs the given message.
              *
-             * \param message The message to log.
+             * \param message The formatted message.
+             * \param tryOpenFile True to try to open the output file, false to not.
              */
-            static void LogMessage(const std::string& message);
+            static void LogMessage(const std::string& message, bool tryOpenFile);
 
             /**
              * \brief Checks the given severity level and determines whether
@@ -106,7 +158,12 @@ namespace Hatchit {
              */
             static bool ShouldLogSeverity(Debug::LogSeverity severity);
 
-            static Debug::LogSeverity m_severityThreshold;
+            static const std::string s_severityStrings[4];
+            static LogCallback s_logCallback;
+            static std::string s_outputFile;
+            static std::unique_ptr<std::ofstream> s_outputStream;
+            static Debug::LogSeverity s_severityThreshold;
+            static bool s_canLogToFile;
         };
 
     }
