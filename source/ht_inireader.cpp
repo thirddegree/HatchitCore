@@ -32,10 +32,10 @@ namespace Hatchit {
 
 #ifdef _DEBUG
             /*Print loaded values to output window*/
-            DebugPrintF("[%s]:\n", file->Name().c_str());
+            HT_DEBUG_PRINTF("[%s]:\n", file->Name().c_str());
             for (auto val : m_values)
             {
-                DebugPrintF("%s : %s\n", val.first.c_str(), val.second.c_str());
+                HT_DEBUG_PRINTF("%s : %s\n", val.first.c_str(), val.second.c_str());
             }
 #endif
         }
