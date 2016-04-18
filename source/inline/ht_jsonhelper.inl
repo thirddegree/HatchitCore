@@ -89,6 +89,49 @@ namespace Hatchit
         }
 
         /**
+        * \brief Attempts to extract a json object from a JSON object.
+        *
+        * \param json The JSON object.
+        * \param name The name of the object to retrieve.
+        * \param out The output object.
+        * \return True if the extraction was successful, false if not.
+        */
+        template<>
+        inline bool JsonExtract<JSON::object_t>(
+            const JSON& json,
+            const std::string& name,
+            JSON::object_t& out)
+        {
+            return _JsonExtractValue<JSON::object_t>(
+                json,
+                &JSON::is_object,
+                name,
+                out);
+        }
+
+        /**
+        * \brief Attempts to extract a std::vector from a JSON object.
+        * \tparam T A JSON value type.
+        * \param json   The JSON object to examine.
+        * \param key    The key to locate in the JSON object.
+        * \param value  The std::vector to insert into.
+        * \return true if the std::vector could be successfully extracted.
+        */
+        template <typename Container>
+        inline bool JsonExtractContainer(const JSON& json, const std::string& key, Container& value)
+        {
+            JSON::const_iterator iter = json.find(key);
+            if (iter == json.cend() || !iter->is_array())
+            {
+                return false;
+            }
+
+            value = iter->get<Container>();
+
+            return true;
+        }
+
+        /**
         * \brief Attempts to extract a string from a JSON object.
         *
         * \param json The JSON object.
