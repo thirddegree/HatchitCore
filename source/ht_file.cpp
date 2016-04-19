@@ -177,18 +177,17 @@ namespace Hatchit
         Reads the contents of the file and places into buffer \a out.  Length
         of the buffer must be provided by \a len.
 
-        /exception FileException The end of the file has already been reached, or
-        if length given is 0.
+        /exception FileException The end of the file has already been reached.
         **/
         size_t File::Read(BYTE* out, size_t len)
         {
+            if (m_handle.eof())
+            {
+                throw FileException(m_path, EIO);
+            }
+
             m_handle.read(reinterpret_cast<char*>(out), len);
             size_t count = m_handle.gcount();
-
-            //if (count == 0)
-            //{
-            //    throw FileException(m_path, errno);
-            //}
 
             m_position += count;
             return count;
