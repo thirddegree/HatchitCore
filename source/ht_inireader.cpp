@@ -26,7 +26,7 @@ namespace Hatchit {
 
         void INIReader::Load(File* file)
         {
-            int error = ini_parse_file(file->Handle(), ValueHandler, this);
+            int error = ini_parse_stream(StreamReader, file, ValueHandler, this);
             if (error != 0)
                 throw INIException(file->Name(), error);
 
@@ -60,6 +60,16 @@ namespace Hatchit {
             std::transform(key.begin(), key.end(), key.begin(), ::tolower);
 
             return key;
+        }
+
+        char* INIReader::StreamReader(char* str, int len, void* stream)
+        {
+            File* file = static_cast<File*>(stream);
+            size_t count = file->Read(reinterpret_cast<BYTE*>(str), len);
+
+            if (count)
+                return str;
+            return nullptr;
         }
 
         int INIReader::ValueHandler(void* user, const char* section, const char* name, const char* value)
