@@ -27,14 +27,25 @@ namespace Hatchit
 {
     namespace Core
     {
-        class HT_API RefCountedResourceManager : public Singleton<RefCountedResourceManager>
+        /**
+        \class RefCountedResourceManager
+        \ingroup HatchitCore
+        \brief Singleton that manages allocation and freeing of RefCounted resources.
+
+        Singleton that manages allocation and freeing of RefCounted resources
+        via Guid ID.
+        **/
+        class HT_API RefCountedResourceManager 
+            : public Singleton<RefCountedResourceManager>
         {
         public:
             RefCountedResourceManager();
             ~RefCountedResourceManager();
             
             template<typename ResourceType, typename... Args>
-            static ResourceType* GetRawPointer(const Guid& ID, Args&&... arguments);
+            static ResourceType* GetRawPointer(
+                const Guid& ID, 
+                Args&&... arguments);
 
             template<typename ResourceType>
             static void ReleaseRawPointer(const Guid& name);
