@@ -16,8 +16,8 @@
 
 #include <ht_platform.h> //HT_API
 #include <string> //std::string typedef
+#include <fstream> //std::fstream typedef
 #include <cstddef> //size_t typedef
-#include <cstdio> //FILE typedef
 #include <ht_noncopy.h> //INonCopy
 
 namespace Hatchit {
@@ -91,7 +91,7 @@ namespace Hatchit {
 
             Returns the name of the file, i.e. FileName.txt
             **/
-            virtual std::string Name(void) = 0;
+            virtual std::string     Name(void) = 0;
 
             /**
             \fn std::string IFile::Path()
@@ -100,7 +100,7 @@ namespace Hatchit {
             Returns the relative path to the file.
             Path includes file name appended to end.
             **/
-            virtual std::string Path(void) = 0;
+            virtual std::string     Path(void) = 0;
 
             /**
             \fn std::string IFile::BaseName()
@@ -109,7 +109,7 @@ namespace Hatchit {
             Returns the base name of the system file open.  Base
             name is the name of the file without the extension.
             **/
-            virtual std::string BaseName(void) = 0;
+            virtual std::string     BaseName(void) = 0;
 
             /**
             \fn void IFile::Open(const std::string& path, FileMode mode)
@@ -118,7 +118,7 @@ namespace Hatchit {
             Opens the file at the given relative path.  Then populates member data
             with information about the open file.
             **/
-            virtual void        Open(const std::string& path, FileMode mode) = 0;
+            virtual void            Open(const std::string& path, FileMode mode) = 0;
 
             /**
             \fn bool IFile::Seek(long offset, FileSeek mode)
@@ -129,7 +129,7 @@ namespace Hatchit {
             relative to the given FileSeek enum.
             \return Whether seeked position was found and moved to.
             **/
-            virtual bool        Seek(long offset, FileSeek mode) = 0;
+            virtual bool            Seek(long offset, FileSeek mode) = 0;
 
             /**
             \fn bool IFile::Close()
@@ -140,7 +140,7 @@ namespace Hatchit {
             of File objects.
             \return Whether file was successfully closed or not.
             **/
-            virtual bool        Close(void) = 0;
+            virtual bool            Close(void) = 0;
 
             /**
             \fn size_t IFile::Read(BYTE* out, size_t length)
@@ -151,7 +151,7 @@ namespace Hatchit {
             \a length number of bytes
             \return Number of bytes read into byte array.
             **/
-            virtual size_t      Read(BYTE* out, size_t len) = 0;
+            virtual size_t          Read(BYTE* out, size_t len) = 0;
 
             /**
             \fn size_t IFile::Write(BYTE* in, size_t len)
@@ -162,7 +162,7 @@ namespace Hatchit {
             \a len bytes.
             \return Number of bytes written to file.
             **/
-            virtual size_t      Write(BYTE* in, size_t len) = 0;
+            virtual size_t          Write(const BYTE* in, size_t len) = 0;
 
             /**
             \fn size_t IFile::Tell()
@@ -175,7 +175,7 @@ namespace Hatchit {
             but can still be used to return to the same location with 
             IFile::Seek(long offset, FileSeek mode);
             **/
-            virtual size_t      Tell(void) = 0;
+            virtual size_t          Tell(void) = 0;
 
             /**
             \fn size_t IFile::SizeBytes()
@@ -183,7 +183,7 @@ namespace Hatchit {
 
             Gives size of file in bytes.
             **/
-            virtual size_t      SizeBytes(void) = 0;
+            virtual size_t          SizeBytes(void) = 0;
 
             /**
             \fn size_t IFile::SizeKBytes()
@@ -191,7 +191,7 @@ namespace Hatchit {
 
             Gives size of file in kilobytes
             **/
-            virtual size_t      SizeKBytes(void) = 0;
+            virtual size_t          SizeKBytes(void) = 0;
 
             /**
             \fn size_t IFile::Position()
@@ -200,7 +200,7 @@ namespace Hatchit {
             Returns position of stream pointer in file (relative to beginning
             of file).
             **/
-            virtual size_t      Position(void) = 0;
+            virtual size_t          Position(void) = 0;
 
             /**
             \fn FILE* IFile::Handle()
@@ -208,7 +208,7 @@ namespace Hatchit {
 
             Gives file pointer to opened file.
             **/
-            virtual FILE*       Handle() = 0;
+            virtual std::fstream*   Handle() = 0;
         };
 
     }
