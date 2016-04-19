@@ -18,7 +18,7 @@ namespace Hatchit
         template<typename... Args>
         inline Handle<VarType> RefCounted<VarType>::GetHandle(std::string name, Args&&... args)
         {
-            name += typeid(VarType).hash_code();
+            name += std::to_string(typeid(VarType).hash_code());
             Guid ID = Guid::FromString(name);
             VarType* var = RefCountedResourceManager::GetRawPointer<VarType, Args...>(std::move(ID), std::forward<Args>(args)...);
             if (var)

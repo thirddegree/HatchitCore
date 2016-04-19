@@ -230,6 +230,11 @@ namespace Hatchit {
         */
         const Guid Guid::Empty = CreateEmptyGuid();
 
+        Guid Guid::GetEmpty()
+        {
+            return Empty;
+        }
+
         /**
          * \brief Creates a new Guid.
          */

@@ -6,8 +6,8 @@ namespace Hatchit
 {
     namespace Core
     {
-        RefCountedResourceManager::RefCountedResourceManager() : m_resources() {}
-        RefCountedResourceManager::~RefCountedResourceManager()
+        inline RefCountedResourceManager::RefCountedResourceManager() : m_resources() {}
+        inline RefCountedResourceManager::~RefCountedResourceManager()
         {
             assert(m_resources.size() == 0);
         }
@@ -15,7 +15,7 @@ namespace Hatchit
         template<typename ResourceType, typename... Args>
         inline ResourceType* RefCountedResourceManager::GetRawPointer(const Guid& ID, Args&&... arguments)
         {
-            if (ID == Guid::Empty)
+            if (ID == Guid::GetEmpty())
                 return nullptr;
 
             //Create a typed name so two different types can use the same name
@@ -27,7 +27,7 @@ namespace Hatchit
             if (it == _instance.m_resources.end())
             {
                 //resource not found.  Must allocate
-                ResourceType* resource = new ResourceType(name);
+                ResourceType* resource = new ResourceType(ID);
                 if (!resource->Initialize(std::forward<Args>(arguments)...))
                 {
                     delete resource;
