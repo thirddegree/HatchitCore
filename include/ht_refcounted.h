@@ -78,6 +78,7 @@ namespace Hatchit
             template<typename NewResourceType>
             Handle<NewResourceType> StaticCastHandle() const;
 
+
             bool IsValid() const;
             void Release();
 

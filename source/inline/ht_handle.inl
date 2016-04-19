@@ -133,11 +133,15 @@ namespace Hatchit
         template<typename VarType>
         inline void Handle<VarType>::Release()
         {
-            if (m_refCount && !--(*m_refCount))
-            {
-                //Delete referenced counter
-                RefCountedResourceManager::ReleaseRawPointer<VarType>(*m_name);
-            }
+            //For time being, we force release the resource
+            RefCountedResourceManager::ReleaseRawPointer<VarType>(*m_name);
+        
+            //Ideally, we want to return to this solution
+            //if (m_refCount && !--(*m_refCount))
+            //{
+            //    //Delete referenced counter
+            //    RefCountedResourceManager::ReleaseRawPointer<VarType>(*m_name);
+            //}
 
             m_ptr = nullptr;
             m_refCount = nullptr;
