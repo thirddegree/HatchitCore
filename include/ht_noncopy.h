@@ -38,14 +38,14 @@ namespace Hatchit
         class HT_API INonCopy
         {
         protected:
-            INonCopy();
-            virtual ~INonCopy();
+            INonCopy() = default;
+            virtual ~INonCopy() = default;
 
             INonCopy(const INonCopy&) = delete;
-            INonCopy(INonCopy&&);
+            INonCopy(INonCopy&&) = default;
 
             INonCopy& operator=(const INonCopy&) = delete;
-            INonCopy& operator=(INonCopy&&);
+            INonCopy& operator=(INonCopy&&) = default;
         };
     }
 }
