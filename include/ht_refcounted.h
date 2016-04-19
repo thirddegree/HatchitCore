@@ -16,7 +16,7 @@
 
 //Handle Header includes
 #include <stdint.h> //uint32_t typedef
-#include <string> //const std::string typedef
+#include <ht_guid.h>
 #include <ht_platform.h> //HT_API
 
 //Handle Inline includes
@@ -89,12 +89,12 @@ namespace Hatchit
             template<typename NewVarType>
             friend class Handle;
 
-            Handle(VarType* varPtr, uint32_t* refCounter, const std::string* name);
+            Handle(VarType* varPtr, uint32_t* refCounter, const Guid* name);
 
             //Private members
             VarType* m_ptr;
             uint32_t* m_refCount;
-            const std::string* m_name;
+            const Guid* m_ID;
         };
 
         /**
@@ -118,16 +118,16 @@ namespace Hatchit
             RefCounted& operator=(RefCounted&&) = default;
 
             template<typename... Args>
-            static Handle<VarType> GetHandle(std::string ID, Args&&... args);
+            static Handle<VarType> GetHandle(std::string name, Args&&... args);
             
         protected:
             friend class RefCountedResourceManager;
 
-            RefCounted(std::string name);
+            RefCounted(Guid ID);
 
         private:
             uint32_t m_refCount;
-            const std::string m_name;
+            const Guid m_ID;
         };
     }
 }

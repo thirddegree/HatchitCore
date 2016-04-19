@@ -11,7 +11,7 @@ namespace Hatchit
         \brief Creates an invalid handle.
         **/
         template<typename VarType>
-        inline Handle<VarType>::Handle() : m_ptr(), m_refCount(), m_name() {}
+        inline Handle<VarType>::Handle() : m_ptr(), m_refCount(), m_ID() {}
 
         /**
         \fn Handle<T>::Handle(const Handle<T>& rhs)
@@ -21,7 +21,7 @@ namespace Hatchit
         inline Handle<VarType>::Handle(const Handle<VarType>& rhs)
             : m_ptr(rhs.m_ptr),
             m_refCount(rhs.m_refCount),
-            m_name(rhs.m_name)
+            m_ID(rhs.m_ID)
         {
             if (m_refCount)
                 ++(*m_refCount);
@@ -33,13 +33,13 @@ namespace Hatchit
         **/
         template<typename VarType>
         inline Handle<VarType>::Handle(Handle<VarType>&& rhs)
-            : m_ptr(rhs.m_ptr),
-            m_refCount(rhs.m_refCount),
-            m_name(rhs.m_name)
+            : m_ptr(std::move(rhs.m_ptr)),
+            m_refCount(std::move(rhs.m_refCount)),
+            m_ID(std::move(rhs.m_ID))
         {
             rhs.m_ptr = nullptr;
             rhs.m_refCount = nullptr;
-            rhs.m_name = nullptr;
+            rhs.m_ID = nullptr;
         }
 
         /**
@@ -54,7 +54,7 @@ namespace Hatchit
         {
             if (m_refCount && !--(*m_refCount))
             {
-                RefCountedResourceManager::ReleaseRawPointer<VarType>(*m_name);
+                RefCountedResourceManager::ReleaseRawPointer<VarType>(*m_ID);
             }
         }
 
@@ -73,12 +73,12 @@ namespace Hatchit
 
             if (m_refCount && !--(*m_refCount))
             {
-                RefCountedResourceManager::ReleaseRawPointer<VarType>(*m_name);
+                RefCountedResourceManager::ReleaseRawPointer<VarType>(*m_ID);
             }
 
             m_ptr = rhs.m_ptr;
             m_refCount = rhs.m_refCount;
-            m_name = rhs.m_name;
+            m_ID = rhs.m_ID;
 
             return *this;
         }
@@ -96,15 +96,15 @@ namespace Hatchit
         {
             if (m_refCount && !--(*m_refCount))
             {
-                RefCountedResourceManager::ReleaseRawPointer<VarType>(*m_name);
+                RefCountedResourceManager::ReleaseRawPointer<VarType>(*m_ID);
             }
             m_ptr = std::move(rhs.m_ptr);
             m_refCount = std::move(rhs.m_refCount);
-            m_name = std::move(rhs.m_name);
+            m_ID = std::move(rhs.m_ID);
 
             rhs.m_ptr = nullptr;
             rhs.m_refCount = nullptr;
-            rhs.m_name = nullptr;
+            rhs.m_ID = nullptr;
 
             return *this;
         }
@@ -186,7 +186,7 @@ namespace Hatchit
         {
             NewResourceType* newPtr = dynamic_cast<NewResourceType*>(m_ptr);
             if (newPtr)
-                return Handle<NewResourceType>(newPtr, m_refCount, m_name);
+                return Handle<NewResourceType>(newPtr, m_refCount, m_ID);
             else
                 return Handle<NewResourceType>();
         }
@@ -203,7 +203,7 @@ namespace Hatchit
         inline Handle<NewResourceType> Handle<VarType>::StaticCastHandle() const
         {
             NewResourceType* newPtr = static_cast<NewResourceType*>(m_ptr);
-            return Handle<NewResourceType>(newPtr, m_refCount, m_name);
+            return Handle<NewResourceType>(newPtr, m_refCount, m_ID);
         }
 
         /**
@@ -232,18 +232,18 @@ namespace Hatchit
         inline void Handle<VarType>::Release()
         {
             //For time being, we force release the resource
-            RefCountedResourceManager::ReleaseRawPointer<VarType>(*m_name);
+            RefCountedResourceManager::ReleaseRawPointer<VarType>(*m_ID);
         
             //Ideally, we want to return to this solution
             //if (m_refCount && !--(*m_refCount))
             //{
             //    //Delete referenced counter
-            //    RefCountedResourceManager::ReleaseRawPointer<VarType>(*m_name);
+            //    RefCountedResourceManager::ReleaseRawPointer<VarType>(*m_ID);
             //}
 
             m_ptr = nullptr;
             m_refCount = nullptr;
-            m_name = nullptr;
+            m_ID = nullptr;
         }
 
         /**
@@ -259,13 +259,13 @@ namespace Hatchit
         derives from RefCounted.
         **/
         template<typename VarType>
-        inline Handle<VarType>::Handle(VarType* varPtr, uint32_t* refCounter, const std::string* name)
-            : m_ptr(varPtr),
+        inline Handle<VarType>::Handle(VarType* varPtr, uint32_t* refCounter, const Guid* ID)
+            : m_ptr(std::move(varPtr)),
             m_refCount(refCounter),
-            m_name(name)
+            m_ID(std::move(ID))
         {
-            if (m_refCount)
-                ++(*m_refCount);
+            if (refCounter)
+                ++(*refCounter);
         }
     }
 }

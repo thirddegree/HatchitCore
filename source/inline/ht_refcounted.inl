@@ -16,18 +16,20 @@ namespace Hatchit
         **/
         template<typename VarType>
         template<typename... Args>
-        inline Handle<VarType> RefCounted<VarType>::GetHandle(std::string ID, Args&&... args)
+        inline Handle<VarType> RefCounted<VarType>::GetHandle(std::string name, Args&&... args)
         {
+            name += typeid(VarType).hash_code();
+            Guid ID = Guid::FromString(name);
             VarType* var = RefCountedResourceManager::GetRawPointer<VarType, Args...>(std::move(ID), std::forward<Args>(args)...);
             if (var)
-                return Handle<VarType>(var, &(var->m_refCount), &(var->m_name));
+                return Handle<VarType>(var, &(var->m_refCount), &(var->m_ID));
             else
                 return Handle<VarType>();
         }
 
         template<typename VarType>
-        inline RefCounted<VarType>::RefCounted(std::string name)
-            : m_name(std::move(name)),
+        inline RefCounted<VarType>::RefCounted(Guid ID)
+            : m_ID(std::move(ID)),
             m_refCount(0U)
         {}
     }

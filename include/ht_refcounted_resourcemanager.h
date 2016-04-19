@@ -55,7 +55,7 @@ namespace Hatchit
 
             std::map<Guid, void*> m_resources;
         };
-
-        
     }
 }
+
+#include <ht_refcounted_resourcemanager.inl>

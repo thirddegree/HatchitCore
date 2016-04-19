@@ -13,7 +13,7 @@ namespace Hatchit
         }
 
         template<typename ResourceType, typename... Args>
-        ResourceType* RefCountedResourceManager::GetRawPointer(const Guid& ID, Args&&... arguments)
+        inline ResourceType* RefCountedResourceManager::GetRawPointer(const Guid& ID, Args&&... arguments)
         {
             if (ID == Guid::Empty)
                 return nullptr;
@@ -40,7 +40,7 @@ namespace Hatchit
         }
 
         template<typename ResourceType>
-        void RefCountedResourceManager::ReleaseRawPointer(const Guid& ID)
+        inline void RefCountedResourceManager::ReleaseRawPointer(const Guid& ID)
         {
             RefCountedResourceManager& _instance = RefCountedResourceManager::GetInstance();
 
