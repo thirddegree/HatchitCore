@@ -26,6 +26,7 @@
 #include <stdint.h> //uint32_t typedef
 #include <string> //const std::string typedef
 #include <ht_noncopy.h> //INonCopy interface
+#include <ht_platform.h> //HT_API
 
 //RefCounted Inline includes
 #include <ht_refcounted_resourcemanager.h> //GetRawPointer
