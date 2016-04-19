@@ -17,6 +17,7 @@
 //Header includes
 #include <ht_platform.h> //HT_API
 #include <ht_file_interface.h> //IFile
+#include <fstream> //std::fstream typedef
 #include <string> //std::string typedef
 #include <cstddef> //size_t typedef
 
