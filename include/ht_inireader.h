@@ -43,6 +43,7 @@ namespace Hatchit {
 
             std::string Get(std::string section, std::string name);
             static std::string      MakeKey(std::string section, std::string name);
+            static char*            StreamReader(char* str, int len, void* stream);
             static int              ValueHandler(void* user, const char* section, const char* name, const char* value);
         };
 
