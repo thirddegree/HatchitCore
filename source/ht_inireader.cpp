@@ -65,11 +65,34 @@ namespace Hatchit {
         char* INIReader::StreamReader(char* str, int len, void* stream)
         {
             File* file = static_cast<File*>(stream);
-            size_t count = file->Read(reinterpret_cast<BYTE*>(str), len);
+            int pos = 0;
+            bool eof = file->Handle()->eof();
 
-            if (count)
-                return str;
-            return nullptr;
+            // We need to emulate fgets, so we need to read a line or until EOF
+            while (!eof && pos < len - 1)
+            {
+                file->Read(reinterpret_cast<BYTE*>(str + pos), 1);
+
+                if (str[pos] == '\n')
+                {
+                    break;
+                }
+
+                ++pos;
+                eof = file->Handle()->eof();
+            }
+
+            if (eof)
+            {
+                // EOF and nothing to read means we're done
+                if (pos == 0)
+                    return nullptr;
+
+                // If we're at the end of the file, we need to back pos up by 1
+                str[pos - 1] = 0;
+            }
+            str[pos] = 0;
+            return str;
         }
 
         int INIReader::ValueHandler(void* user, const char* section, const char* name, const char* value)

@@ -107,6 +107,7 @@ namespace Hatchit
             m_path = os_path(path);
             m_name = GetName(m_path);
             m_baseName = GetName(m_path, false);
+            m_position = 0;
             m_mode = 0;
 
             switch (mode)
@@ -184,11 +185,12 @@ namespace Hatchit
             m_handle.read(reinterpret_cast<char*>(out), len);
             size_t count = m_handle.gcount();
 
-            if (count == 0)
-            {
-                throw FileException(m_path, errno);
-            }
+            //if (count == 0)
+            //{
+            //    throw FileException(m_path, errno);
+            //}
 
+            m_position += count;
             return count;
         }
 
@@ -211,6 +213,7 @@ namespace Hatchit
                 throw FileException(m_path, errno);
             }
 
+            m_position += len;
             return len;
         }
 
@@ -299,7 +302,7 @@ namespace Hatchit
         **/
         size_t File::Position(void)
         {
-            return Tell();
+            return m_position;
         }
 
         /**
