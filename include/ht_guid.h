@@ -64,6 +64,10 @@ namespace Hatchit
 
             bool operator!=(const Guid& other) const;
 
+            bool operator<(const Guid& other) const;
+
+            bool operator>(const Guid& other) const;
+
             Guid& operator=(const Guid& other);
 
             Guid& operator=(Guid&& other);

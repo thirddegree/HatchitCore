@@ -366,6 +366,28 @@ namespace Hatchit {
         }
 
         /**
+        \fn bool Guid::operator<(const Guid& other) const
+        \brief Comparison function used for sorting
+
+        Provides a consistent comparison function for sorting
+        **/
+        bool Guid::operator<(const Guid& other) const
+        {
+            return m_hashCode < other.m_hashCode;
+        }
+
+        /**
+        \fn bool Guid::operator>(const Guid& other) const
+        \brief Comparison function used for sorting
+
+        Provides a consistent comparison function for sorting.
+        **/
+        bool Guid::operator>(const Guid& other) const
+        {
+            return m_hashCode > other.m_hashCode;
+        }
+
+        /**
          * \brief Copies one Guid's information into this Guid.
          *
          * \param other The other Guid.
