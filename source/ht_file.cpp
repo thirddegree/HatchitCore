@@ -78,8 +78,7 @@ namespace Hatchit
         File::File(void)
             : IFile(),
             m_position(0),
-            m_size(0),
-            m_handle(nullptr) {}
+            m_size(0) {}
 
         /**
         \fn File::~File()
@@ -103,73 +102,52 @@ namespace Hatchit
         {
             //Assert that we do not have a file open before opening a new
             //file
-            assert(m_handle == nullptr);
+            assert(!m_handle.is_open());
 
             m_path = os_path(path);
             m_name = GetName(m_path);
             m_baseName = GetName(m_path, false);
+            m_mode = 0;
 
             switch (mode)
             {
                 case FileMode::ReadBinary:
                 {
-                    #ifdef HT_SYS_WINDOWS
-                        fopen_s(&m_handle, m_path.c_str(), "rb");
-                    #else
-                        m_handle = fopen(m_path.c_str(), "rb");
-                    #endif
+                    m_mode = std::ios::in | std::ios::binary;
                 } break;
 
                 case FileMode::ReadText:
                 {
-                    #ifdef HT_SYS_WINDOWS
-                        fopen_s(&m_handle, m_path.c_str(), "rt");
-                    #else
-                        m_handle = fopen(m_path.c_str(), "rt");
-                    #endif
+                    m_mode = std::ios::in;
                 } break;
 
                 case FileMode::WriteBinary:
                 {
-                    #ifdef HT_SYS_WINDOWS
-                        fopen_s(&m_handle, m_path.c_str(), "wb");
-                    #else
-                        m_handle = fopen(m_path.c_str(), "wb");
-                    #endif
+                    m_mode = std::ios::out | std::ios::binary;
                 } break;
 
                 case FileMode::WriteText:
                 {
-                    #ifdef HT_SYS_WINDOWS
-                        fopen_s(&m_handle, m_path.c_str(), "w");
-                    #else
-                        m_handle = fopen(m_path.c_str(), "w+");
-                    #endif
+                    m_mode = std::ios::out;
                 } break;
 
                 case FileMode::AppendBinary:
                 {
-                    #ifdef HT_SYS_WINDOWS
-                        fopen_s(&m_handle, m_path.c_str(), "ab");
-                    #else
-                        m_handle = fopen(m_path.c_str(), "ab");
-                    #endif
+                    m_mode = std::ios::app | std::ios::binary;
                 } break;
 
                 case FileMode::AppendText:
                 {
-                    #ifdef HT_SYS_WINDOWS
-                        fopen_s(&m_handle, m_path.c_str(), "a");
-                    #else
-                        m_handle = fopen(m_path.c_str(), "a");
-                    #endif
+                    m_mode = std::ios::app;
                 } break;
 
                 default:
                     break;
             }
 
-            if (!m_handle)
+            m_handle.open(m_path, m_mode);
+
+            if (!m_handle.is_open())
                 throw FileException(m_path, errno);
 
         }
@@ -183,15 +161,12 @@ namespace Hatchit
         **/
         bool File::Close(void)
         {
-            int ret = 0;
-            //Close file if handle is active
-            if (m_handle)
+            if (m_handle.is_open())
             {
-                ret = fclose(m_handle);
-                m_handle = nullptr;
+                m_handle.close();
+                return true;
             }
-
-            return (ret <  0) ? false : true;
+            return false;
         }
 
         /**
@@ -206,14 +181,15 @@ namespace Hatchit
         **/
         size_t File::Read(BYTE* out, size_t len)
         {
-            size_t _len = 0;
+            m_handle.read(reinterpret_cast<char*>(out), len);
+            size_t count = m_handle.gcount();
 
-            _len = fread(out, sizeof(BYTE), len, m_handle);
-
-            if (_len == 0)
+            if (count == 0)
+            {
                 throw FileException(m_path, errno);
+            }
 
-            return _len;
+            return count;
         }
 
         /**
@@ -226,16 +202,16 @@ namespace Hatchit
         /exception FileException The file system is not able to write
         the requested number of bytes into the file.
         **/
-        size_t File::Write(BYTE* in, size_t len)
+        size_t File::Write(const BYTE* in, size_t len)
         {
-            size_t _len = 0;
-
-            _len = fwrite(in, sizeof(BYTE), len, m_handle);
-
-            if(_len != len)
+            m_handle.write(reinterpret_cast<const char*>(in), len);
+            
+            if (m_handle.exceptions() & std::ios::badbit)
+            {
                 throw FileException(m_path, errno);
-                
-            return _len;
+            }
+
+            return len;
         }
 
         /**
@@ -253,22 +229,34 @@ namespace Hatchit
         **/
         bool File::Seek(long pos, FileSeek mode)
         {
+            // Get the seek mode
+            unsigned int seekDir = 0;
             switch (mode)
             {
                 case FileSeek::Set:
                 {
-                    fseek(m_handle, pos, SEEK_SET);
+                    seekDir = std::ios::beg;
                 } break;
 
                 case FileSeek::Current:
                 {
-                    fseek(m_handle, pos, SEEK_CUR);
+                    seekDir = std::ios::cur;
                 } break;
 
                 case FileSeek::End:
                 {
-                    fseek(m_handle, pos, SEEK_END);
+                    seekDir = std::ios::end;
                 } break;
+            }
+
+            // Call the correct seek method based on our open mode
+            if ((m_mode & std::ios::out) || (m_mode & std::ios::app))
+            {
+                m_handle.seekp(pos, seekDir);
+            }
+            else
+            {
+                m_handle.seekg(pos, seekDir);
             }
 
             m_position = Tell();
@@ -293,7 +281,11 @@ namespace Hatchit
         **/
         size_t File::Tell(void)
         {
-            return ftell(m_handle);
+            if ((m_mode & std::ios::out) || (m_mode & std::ios::app))
+            {
+                return m_handle.tellp();
+            }
+            return m_handle.tellg();
         }
 
         /**
@@ -307,7 +299,7 @@ namespace Hatchit
         **/
         size_t File::Position(void)
         {
-            return m_position;
+            return Tell();
         }
 
         /**
@@ -396,9 +388,9 @@ namespace Hatchit
 
         This function returns a handle to the system file.
         **/
-        FILE* File::Handle(void)
+        std::fstream* File::Handle(void)
         {
-            return m_handle;
+            return &m_handle;
         }
     }
 }
