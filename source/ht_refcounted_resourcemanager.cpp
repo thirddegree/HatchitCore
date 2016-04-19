@@ -18,6 +18,13 @@ namespace Hatchit
 {
     namespace Core
     {
+        /**
+        \fn RefCountedResourceManager& RefCountedResourceManager::GetInstance()
+        \brief Returns singleton instance to RefCountedResourceManager.
+
+        Returns singleton instance to RefCountedResourceManager.  This function
+        allows the instance to be localized to Core dll instead of calling dll.
+        **/
         RefCountedResourceManager& RefCountedResourceManager::GetInstance()
         {
             return RefCountedResourceManager::instance();
