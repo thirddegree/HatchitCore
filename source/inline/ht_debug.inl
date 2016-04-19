@@ -2,48 +2,30 @@
 
 #include <ht_debug.h>
 
-namespace Hatchit
-{
-    namespace Core
-    {
-        /*! \fn std::string DebugSprintF(const char* format, const Args& ... args) 
-        * \brief Function takes a formatted string and arguments to format into a string.
-        *
-        *
-        *  This debug utility function takes in a user format string and
-        *  a variable argument list, then prints the formatted string result
-        *  to the console.
-        *  @param format The format string.
-        *  @param args The argument list used with format string.
-        */
+namespace Hatchit {
+
+    namespace Core {
+
+        /**
+         * \brief Logs a message with the given severity.
+         *
+         * \brief severity The message's severity.
+         * \brief fmt_message The message that is to be formatted.
+         * \brief args The arguments to format the message with.
+         */
         template<class ... Args>
-        inline std::string DebugSprintF(const char* format, const Args& ... args)
+        void Debug::Log(Debug::LogSeverity severity, const std::string& fmt_message, const Args& ... args)
         {
-            return fmt::sprintf(format, args ...);
+            if (!ShouldLogSeverity(severity))
+            {
+                return;
+            }
+
+            std::string message = fmt::sprintf(fmt_message, args ...);
+            message = Debug::CreateLogMessage(severity, message);
+
+            LogMessage(message, true);
         }
 
-        /*! \fn size_t DebugPrintF(const char* format, const Args& ... args) 
-        * \brief Function takes a formatted string and arguments to print.
-        *
-        *
-        *  This debug utility function takes in a user format string and
-        *  a variable argument list, then prints the formatted string result
-        *  to the console.
-        *  @param format The format string.
-        *  @param args The argument list used with format string.
-        */
-        template<class ... Args>
-        inline size_t DebugPrintF(const char* format, const Args& ... args)
-        {
-            std::string message = fmt::sprintf(format, args ...);
-
-#if defined(HT_SYS_WINDOWS)
-            OutputDebugStringA(message.c_str());
-#endif
-
-            std::cerr << message.c_str();
-
-            return message.length();
-        }
     }
 }
