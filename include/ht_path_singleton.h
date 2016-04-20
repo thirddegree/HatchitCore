@@ -14,42 +14,65 @@
 
 #pragma once
 
-#include <ht_platform.h>
-#include <ht_singleton.h>
-#include <ht_inireader.h>
+#include <ht_platform.h> //HT_API
+#include <ht_singleton.h> //Singleton<T>
+#include <map> //std::map
+
+//Forward declarations
+namespace Hatchit
+{
+    namespace Core
+    {
+        class INIReader;
+    }
+}
 
 namespace Hatchit
 {
-	namespace Core
-	{
-		
+    namespace Core
+    {
+        /**
+        \class Path
+        \ingroup HatchitCore
+        \brief Describes file path to common game directories.
 
-		class HT_API Path : public Singleton<Path>
-		{
-		public:
-			enum class Directory
-			{
-				Assets,
-				Models,
+        Class provides paths to common game directories for assets.
+        **/
+        class HT_API Path : public Singleton<Path>
+        {
+        public:
+
+            /**
+            \enum Path::Directory
+            \ingroup HatchitCore
+            \brief Common game directories used by engine
+
+            This enum lists the common game directories used by Hatchit.
+            This enum may be used to gain a string path to the directory.
+            **/
+            enum class Directory
+            {
+                Assets,
+                Models,
                 Materials,
-				Pipelines,
+                Pipelines,
                 RenderPasses,
                 RenderTargets,
-				Textures,
-				Samplers,
-				Shaders,
-				Scenes,
-				Scripts
-			};
+                Textures,
+                Samplers,
+                Shaders,
+                Scenes,
+                Scripts
+            };
 
-			static void Initialize(Hatchit::Core::INIReader* settings);
-			
-			static void DeInitialize();
+            static void Initialize(INIReader& settings);
+            
+            static void DeInitialize();
 
-			static std::string Value(Directory directory);
+            static std::string Value(Directory directory);
 
-		private:
-			std::map<Directory, std::string> m_paths;
-		};
-	}
+        private:
+            std::map<Directory, std::string> m_paths;
+        };
+    }
 }
