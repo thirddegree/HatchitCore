@@ -12,73 +12,75 @@
 **
 **/
 
-/**
-* \class Scheduler
-* \ingroup HatchitCore
-*
-* \brief A manager that schedules and submits jobs to threads as they are available
-*
-* Supply this manager with function pointers (jobs) and it should schedule and sync these
-* jobs appropriately across however many threads are on the hardware.
-*/
+
 
 #pragma once
 
-#include "ht_singleton.h"
+//Header includes
+#include <ht_platform.h> //HT_API
+#include <ht_singleton.h> //Singleton<T>
+#include <stdint.h> //uint32_t
+#include <queue> //std::queue<T>
 
-#include <thread>
-#include <tuple>
-#include <vector>
-#include <queue>
-#include <functional>
-#include <iostream>
+//Inline includes
+#include <functional> //std::function<T>
 
-namespace Hatchit {
+//Forward declarations
+namespace std
+{
+    class thread;
+}
 
-    namespace Core {
-
+namespace Hatchit
+{
+    namespace Core
+    {
+        /**
+        \interface IJob
+        \ingroup HatchitCore
+        \brief Interface for threading job.
+        **/
         class HT_API IJob
         {
         public:
             virtual std::thread GetThread() = 0;
         };
 
-        template<class... Ts>
+        /**
+        \class Job
+        \ingroup HatchitCore
+        \brief Describes a function to be threaded.
+        **/
         class HT_API Job : public IJob
         {
         public:
-            template <class Func>
-            Job(Func&& function)
-            {
-                m_function = function;
-            }
+            Job(std::function<void()> function);
 
-            inline std::thread GetThread() override
-            {
-                return std::thread(m_function);
-            }
+            std::thread GetThread() override;
 
         private:
             std::function<void()> m_function;
         };
 
+        /**
+        * \class Scheduler
+        * \ingroup HatchitCore
+        *
+        * \brief A manager that schedules and submits jobs to threads as they are available
+        *
+        * Supply this manager with function pointers (jobs) and it should schedule and sync these
+        * jobs appropriately across however many threads are on the hardware.
+        */
         class HT_API Scheduler : public Singleton<Scheduler>
-        {       
-
+        {
         public:
             Scheduler();
-
             ~Scheduler();
 
             static void Initialize();
 
             template <class Func, class... Args>
-            static void ScheduleJob(Func&& function, Args&&... arguments)
-            {
-                IJob* job = new Job<Args...>([&, arguments...]() { function(arguments...); threadEnded();  });
-
-                addJob(job);
-            }
+            static void ScheduleJob(Func&& function, Args&&... arguments);
 
             static void RunJobs();
 
@@ -87,11 +89,10 @@ namespace Hatchit {
             uint32_t m_maxThreads;
             std::queue<IJob*> m_jobs;
 
-            static void addJob(IJob* job);
-            static void threadEnded();
-            
+            static void AddJob(IJob* job);
+            static void ThreadEnded();
         };
-
     }
-
 }
+
+#include <ht_scheduler.inl>
