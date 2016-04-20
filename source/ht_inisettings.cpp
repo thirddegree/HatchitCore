@@ -1,6 +1,6 @@
 /**
 **    Hatchit Engine
-**    Copyright(c) 2015 Third-Degree
+**    Copyright(c) 2015-2016 Third-Degree
 **
 **    GNU Lesser General Public License
 **    This file may be used under the terms of the GNU Lesser
@@ -12,19 +12,16 @@
 **
 **/
 
-#include <ht_inireader.h>
+#include <ht_inisettings.h>
 #include <ht_debug.h>
+#include <ht_ini_exception.h>
+#include <ini.h>
 
-namespace Hatchit {
-
-    namespace Core {
-
-        INIReader::INIReader(void)
-        {
-
-        }
-
-        void INIReader::Load(File* file)
+namespace Hatchit
+{
+    namespace Core
+    {
+        void INISettings::Load(File* file)
         {
             int error = ini_parse_stream(StreamReader, file, ValueHandler, this);
             if (error != 0)
@@ -37,22 +34,43 @@ namespace Hatchit {
             {
                 for (auto pair : val.second)
                 {
-                   HT_DEBUG_PRINTF("%s : %s=%s\n", val.first.c_str(),
+                    HT_DEBUG_PRINTF("%s : %s=%s\n", val.first.c_str(),
                         pair.first, pair.second);
                 }
             }
 #endif
         }
 
-        bool INIReader::Empty()
+        void INISettings::Write(File* file)
         {
-            return m_values.empty();
+            if (!file || m_values.size() <= 0)
+                return;
+
+            auto it = m_values.rbegin();
+            for (it; it != m_values.rend(); ++it)
+            {
+                auto key = *it;
+
+                //write section
+                std::string section = "[" + key.first + "]\n";
+                file->Write((BYTE*)section.c_str(), section.size());
+
+                ValuePairList _map = key.second;
+                for (size_t i = 0; i < _map.size(); i++)
+                {
+                    std::string name = _map[i].first;
+                    name += "=" + _map[i].second;
+                    name += "\n";
+
+                    file->Write((BYTE*)name.c_str(), name.size());
+                }
+
+                file->Write((BYTE*)"\n", strlen("\n"));
+            }
         }
 
-        std::string INIReader::Get(std::string section, std::string name)
+        std::string INISettings::Get(const std::string& section, const std::string& name)
         {
-            //std::string key = MakeKey(section, name);
-
             auto vector = m_values[section];
             for (auto pair : vector)
             {
@@ -63,17 +81,7 @@ namespace Hatchit {
             return "";
         }
 
-        std::string INIReader::MakeKey(std::string section, std::string name)
-        {
-            std::string key = section + "=" + name;
-
-            //transform key to all lower-case for case-insensitivity
-            std::transform(key.begin(), key.end(), key.begin(), ::tolower);
-
-            return key;
-        }
-
-        char* INIReader::StreamReader(char* str, int len, void* stream)
+        char* INISettings::StreamReader(char* str, int len, void* stream)
         {
             File* file = static_cast<File*>(stream);
             int pos = 0;
@@ -106,9 +114,9 @@ namespace Hatchit {
             return str;
         }
 
-        int INIReader::ValueHandler(void* user, const char* section, const char* name, const char* value)
+        int INISettings::ValueHandler(void* user, const char* section, const char* name, const char* value)
         {
-            INIReader* reader = (INIReader*)user;
+            INISettings* reader = (INISettings*)user;
             std::pair<std::string, std::string> valuePair = std::make_pair(name, value);
             auto it = std::find(reader->m_values[section].begin(), reader->m_values[section].end(),
                 valuePair);
@@ -120,6 +128,5 @@ namespace Hatchit {
 
             return 1;
         }
-
     }
 }

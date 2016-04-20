@@ -15,7 +15,7 @@
 #include <ht_path_singleton.h>
 
 #include <string> //std::string typedef
-#include <ht_inireader.h> //INIReader
+#include <ht_inisettings.h> //INIReader
 #include <ht_os.h> //os_path stuff
 
 namespace Hatchit
@@ -28,7 +28,7 @@ namespace Hatchit
 
         Initializes Path object with strings to the common game directories.
         **/
-        void Path::Initialize(INIReader& settings)
+        void Path::Initialize(INISettings& settings)
         {
             Path& _instance = Path::instance();
 
