@@ -231,6 +231,15 @@ namespace Hatchit {
         const Guid Guid::Empty = CreateEmptyGuid();
 
         /**
+        \fn const Guid& Guid::GetEmpty()
+        \brief Returns reference to empty guid.
+        **/
+        const Guid& Guid::GetEmpty()
+        {
+            return Empty;
+        }
+
+        /**
          * \brief Creates a new Guid.
          */
         Guid::Guid()
@@ -363,6 +372,28 @@ namespace Hatchit {
         bool Guid::operator!=(const Guid& other) const
         {
             return m_hashCode != other.m_hashCode;
+        }
+
+        /**
+        \fn bool Guid::operator<(const Guid& other) const
+        \brief Comparison function used for sorting
+
+        Provides a consistent comparison function for sorting
+        **/
+        bool Guid::operator<(const Guid& other) const
+        {
+            return m_hashCode < other.m_hashCode;
+        }
+
+        /**
+        \fn bool Guid::operator>(const Guid& other) const
+        \brief Comparison function used for sorting
+
+        Provides a consistent comparison function for sorting.
+        **/
+        bool Guid::operator>(const Guid& other) const
+        {
+            return m_hashCode > other.m_hashCode;
         }
 
         /**

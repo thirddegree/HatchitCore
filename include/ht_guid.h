@@ -38,6 +38,8 @@ namespace Hatchit
 
             static bool Parse(const std::string& text, Guid& out);
 
+            static const Guid& GetEmpty();
+
             //Static Variables
             static const Guid Empty;
 
@@ -63,6 +65,10 @@ namespace Hatchit
             bool operator==(const Guid& other) const;
 
             bool operator!=(const Guid& other) const;
+
+            bool operator<(const Guid& other) const;
+
+            bool operator>(const Guid& other) const;
 
             Guid& operator=(const Guid& other);
 

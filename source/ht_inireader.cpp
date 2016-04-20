@@ -26,16 +26,16 @@ namespace Hatchit {
 
         void INIReader::Load(File* file)
         {
-            int error = ini_parse_file(file->Handle(), ValueHandler, this);
+            int error = ini_parse_stream(StreamReader, file, ValueHandler, this);
             if (error != 0)
                 throw INIException(file->Name(), error);
 
 #ifdef _DEBUG
             /*Print loaded values to output window*/
-            DebugPrintF("[%s]:\n", file->Name().c_str());
+            HT_DEBUG_PRINTF("[%s]:\n", file->Name().c_str());
             for (auto val : m_values)
             {
-                DebugPrintF("%s : %s\n", val.first.c_str(), val.second.c_str());
+                HT_DEBUG_PRINTF("%s : %s\n", val.first.c_str(), val.second.c_str());
             }
 #endif
         }
@@ -60,6 +60,39 @@ namespace Hatchit {
             std::transform(key.begin(), key.end(), key.begin(), ::tolower);
 
             return key;
+        }
+
+        char* INIReader::StreamReader(char* str, int len, void* stream)
+        {
+            File* file = static_cast<File*>(stream);
+            int pos = 0;
+            bool eof = file->Handle()->eof();
+
+            // We need to emulate fgets, so we need to read a line or until EOF
+            while (!eof && pos < len - 1)
+            {
+                file->Read(reinterpret_cast<BYTE*>(str + pos), 1);
+
+                if (str[pos] == '\n')
+                {
+                    break;
+                }
+
+                ++pos;
+                eof = file->Handle()->eof();
+            }
+
+            if (eof)
+            {
+                // EOF and nothing to read means we're done
+                if (pos == 0)
+                    return nullptr;
+
+                // If we're at the end of the file, we need to back pos up by 1
+                str[pos - 1] = 0;
+            }
+            str[pos] = 0;
+            return str;
         }
 
         int INIReader::ValueHandler(void* user, const char* section, const char* name, const char* value)

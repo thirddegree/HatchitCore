@@ -14,14 +14,22 @@
 
 #pragma once
 
-#include <ht_platform.h>
-#include <ht_string.h>
-#include <exception>
+#include <ht_platform.h> //HT_API
+#include <string> //std::string
+#include <exception> //std::exception
 
-namespace Hatchit {
+namespace Hatchit
+{
+    namespace Core
+    {
+        /**
+        \class INIException
+        \ingroup HatchitCore
+        \brief Exception for errors reading an INI file.
 
-    namespace Core {
-
+        This exception is thrown during the parsing of an INI file.  It gives
+        the file name as well as the type of error it received.
+        **/
         class HT_API INIException : public std::exception
         {
         public:
@@ -32,6 +40,5 @@ namespace Hatchit {
         private:
             std::string m_error;
         };
-
     }
 }
