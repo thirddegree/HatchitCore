@@ -23,7 +23,7 @@ namespace Hatchit
 {
     namespace Core
     {
-        class INIReader;
+        class INISettings;
     }
 }
 
@@ -65,7 +65,7 @@ namespace Hatchit
                 Scripts
             };
 
-            static void Initialize(INIReader& settings);
+            static void Initialize(INISettings& settings);
             
             static void DeInitialize();
 
