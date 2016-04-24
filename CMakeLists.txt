@@ -37,9 +37,9 @@ file(GLOB HATCHIT_CORE_SOURCE
     "thirdparty/cppformat/cppformat/*.cc"
 )
 
-# C++ 11 and 64-bit on Linux
+# C++ 14 and 64-bit on Linux
 if(UNIX)
-    set(CMAKE_CXX_FLAGS "-std=c++11 -g -m64 ${CMAKE_CXX_FLAGS}")
+    set(CMAKE_CXX_FLAGS "-std=c++1y -g -m64 ${CMAKE_CXX_FLAGS}")
 endif(UNIX)
 
 include_directories("include")
