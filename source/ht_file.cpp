@@ -108,7 +108,7 @@ namespace Hatchit
             m_name = GetName(m_path);
             m_baseName = GetName(m_path, false);
             m_position = 0;
-            m_mode = 0;
+            m_mode = static_cast<std::ios::openmode>(0);
 
             switch (mode)
             {
@@ -232,7 +232,7 @@ namespace Hatchit
         bool File::Seek(long pos, FileSeek mode)
         {
             // Get the seek mode
-            unsigned int seekDir = 0;
+            std::ios::seekdir seekDir = static_cast<std::ios::seekdir>(0);
             switch (mode)
             {
                 case FileSeek::Set:

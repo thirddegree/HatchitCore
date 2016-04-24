@@ -4,6 +4,7 @@
 #if defined(HT_SYS_WINDOWS)
     #include <debugapi.h>   // For OutputDebugMessageA
 #endif
+#include <memory>
 
 namespace Hatchit {
 

@@ -53,7 +53,7 @@ namespace Hatchit {
             std::string     m_baseName;
             size_t          m_position;
             size_t          m_size;
-            unsigned int    m_mode;
+            std::ios::openmode m_mode;
         };
 
     }

@@ -30,21 +30,21 @@
 #endif
 
 #if !defined(HT_DEBUG_PRINTF) && (defined(_DEBUG) || defined(DEBUG))
-    #define HT_DEBUG_PRINTF(message, ...) Hatchit::Core::Debug::Log(Hatchit::Core::Debug::LogSeverity::Debug, message, __VA_ARGS__)
+    #define HT_DEBUG_PRINTF(message, ...) Hatchit::Core::Debug::Log(Hatchit::Core::Debug::LogSeverity::Debug, message, ##__VA_ARGS__)
 #else
     #define HT_DEBUG_PRINTF(message, ...)
 #endif
 
 #if !defined(HT_INFO_PRINTF)
-    #define HT_INFO_PRINTF(message, ...) Hatchit::Core::Debug::Log(Hatchit::Core::Debug::LogSeverity::Info, message, __VA_ARGS__)
+    #define HT_INFO_PRINTF(message, ...) Hatchit::Core::Debug::Log(Hatchit::Core::Debug::LogSeverity::Info, message, ##__VA_ARGS__)
 #endif
 
 #if !defined(HT_WARNING_PRINTF)
-    #define HT_WARNING_PRINTF(message, ...) Hatchit::Core::Debug::Log(Hatchit::Core::Debug::LogSeverity::Warning, message, __VA_ARGS__)
+    #define HT_WARNING_PRINTF(message, ...) Hatchit::Core::Debug::Log(Hatchit::Core::Debug::LogSeverity::Warning, message, ##__VA_ARGS__)
 #endif
 
 #if !defined(HT_ERROR_PRINTF)
-    #define HT_ERROR_PRINTF(message, ...) Hatchit::Core::Debug::Log(Hatchit::Core::Debug::LogSeverity::Error, message, __VA_ARGS__)
+    #define HT_ERROR_PRINTF(message, ...) Hatchit::Core::Debug::Log(Hatchit::Core::Debug::LogSeverity::Error, message, ##__VA_ARGS__)
 #endif
 
 namespace Hatchit {

@@ -16,6 +16,7 @@
 
 //Handle Header includes
 #include <stdint.h> //uint32_t typedef
+#include <typeinfo>
 #include <ht_guid.h>
 #include <ht_platform.h> //HT_API
 
