@@ -16,6 +16,7 @@ endif()
 
 file(GLOB HATCHIT_CORE_HEADERS
     "include/*.h"
+    "source/inline/*.inl"
     ${HATCHIT_CORE_SYS_HEADERS}
     "thirdparty/inih/*.h"
     "thirdparty/cppformat/cppformat/*.h"
@@ -23,6 +24,7 @@ file(GLOB HATCHIT_CORE_HEADERS
 )
 file(GLOB HATCHIT_CORE_HEADERS_DIRS
     "include"
+    "source/inline"
     ${HATCHIT_CORE_SYS_HEADERS_DIR}
     "thirdparty/inih"
     "thirdparty/cppformat/cppformat"
