@@ -77,7 +77,18 @@ namespace Hatchit
         template <>
         inline void INISettings::SetValue(const std::string& section, const std::string& name, double value)
         {
-            
+            std::string val = std::to_string(value);
+            auto it = m_values.find(section);
+            if (it != m_values.end())
+            {
+                ValuePairList& v = it->second;
+                auto loc = std::find(v.begin(), v.end(), std::make_pair(name, val));
+                if (loc == v.end())
+                    v.push_back(std::make_pair(name, val));
+                else
+                    loc->second = value;
+            }
+             
         }
 
 

@@ -46,19 +46,19 @@ TEST(JsonTest, Extraction)
     Guid jsonGuid;
 
 #if defined(_DEBUG) || defined(DEBUG)
-    ASSERT_TRUE(JsonExtractString(TestJson, "message", jsonString));
-    ASSERT_TRUE(JsonExtractInt64(TestJson, "meaning_of_life", jsonInt));
-    ASSERT_TRUE(JsonExtractDouble(TestJson, "pi", jsonDouble));
-    ASSERT_TRUE(JsonExtractBool(TestJson, "is_civil_war_out_yet", jsonBool));
-    ASSERT_TRUE(JsonExtractGuid(TestJson, "my_guid", jsonGuid));
+    ASSERT_TRUE(JsonExtract(TestJson, "message", jsonString));
+    ASSERT_TRUE(JsonExtract(TestJson, "meaning_of_life", jsonInt));
+    ASSERT_TRUE(JsonExtract(TestJson, "pi", jsonDouble));
+    ASSERT_TRUE(JsonExtract(TestJson, "is_civil_war_out_yet", jsonBool));
+    ASSERT_TRUE(JsonExtract(TestJson, "my_guid", jsonGuid));
 #else
     try
     {
-        JsonExtractString(TestJson, "message", jsonString);
-        JsonExtractInt64(TestJson, "meaning_of_life", jsonInt);
-        JsonExtractDouble(TestJson, "pi", jsonDouble);
-        JsonExtractBool(TestJson, "is_civil_war_out_yet", jsonBool);
-        JsonExtractGuid(TestJson, "my_guid", jsonGuid);
+        JsonExtract(TestJson, "message", jsonString);
+        JsonExtract(TestJson, "meaning_of_life", jsonInt);
+        JsonExtract(TestJson, "pi", jsonDouble);
+        JsonExtract(TestJson, "is_civil_war_out_yet", jsonBool);
+        JsonExtract(TestJson, "my_guid", jsonGuid);
     }
     catch (...)
     {
