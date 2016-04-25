@@ -13,21 +13,28 @@
 **/
 
 #include <ht_scopedthread.h>
-#include <exception>
-#include <stdexcept>
 
-namespace Hatchit {
+#include <stdexcept> //std::logic_error
 
-    namespace Core {
-        
+namespace Hatchit
+{
+    namespace Core
+    {
+        /**
+        \fn ScopedThread::ScopedThread(std::thread _t)
+        \brief Creates scoped thread given std::thread t.
+        **/
         ScopedThread::ScopedThread(std::thread _t)
+            : t(std::move(t))
         {
-            t = std::thread(std::move(_t));
-            
             if(!t.joinable())
                 throw std::logic_error("No thread");
         }
 
+        /**
+        \fn ScopedThread::~ScopedThread()
+        \brief Joins internal thread while scoped thread is being deleted
+        **/
         ScopedThread::~ScopedThread()
         {
             t.join();
