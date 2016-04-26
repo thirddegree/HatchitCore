@@ -14,66 +14,46 @@
 
 #pragma once
 
-#include <ht_platform.h>
-#include <stack>
-#include <mutex>
-#include <memory>
+//Header includes
+#include <ht_platform.h> //HT_API
+#include <stack> //std::stack<T>
+#include <mutex> //std::mutex, std::lock_guard<T>
+#include <memory> //std::shared_ptr<T>
 
-namespace Hatchit {
+//Inline includes
+#include <cassert> //assert()
 
-    namespace Core {
-        
+namespace Hatchit
+{
+    namespace Core
+    {
+        /**
+        \class ThreadsafeStack<T>
+        \ingroup HatchitCore
+        \brief wrapper for std::stack that provides thread-safe functions
+        **/
         template <typename T>
-        class HT_API threadsafe_stack
+        class HT_API ThreadsafeStack
         {
         public:
-            threadsafe_stack() { }
-            threadsafe_stack(const threadsafe_stack& other)
-            {
-                std::lock_guard<std::mutex> lock(other.m);
-
-                m_data = other.data;
-            }
-            threadsafe_stack& operator=(const threadsafe_stack&)=delete;
-
-            void push(T _val)
-            {
-                std::lock_guard<std::mutex> lock(m_mutex);
-
-                m_data.push(_val);
-            }
-
-            std::shared_ptr<T> pop()
-            {
-                std::lock_guard<std::mutex> lock(m_mutex);
-                if(m_data.empty())
-                    throw std::exception();
-
-                std::shared_ptr<T> const result = std::make_shared<T>(m_data.top());
-                m_data.pop();
-
-                return result;        
-            }
-
-            void pop(T& _val)
-            {
-                std::lock_guard<std::mutex> lock(m_mutex);
-                if(m_data.empty())
-                    throw std::exception();
-
-                _val = m_data.top();
-                m_data.pop();
-            }
+            ThreadsafeStack();
+            ThreadsafeStack(const ThreadsafeStack& other);
+            ThreadsafeStack(ThreadsafeStack&& other);
             
-            bool empty() const
-            {
-                std::lock_guard<std::mutex> lock(m_mutex);
+            ThreadsafeStack& operator=(const ThreadsafeStack&);
+            ThreadsafeStack& operator=(ThreadsafeStack&&);
 
-                return m_data.empty();
-            }
+            void push(T _val);
+
+            std::shared_ptr<T> pop();
+            void pop(T& _val);
+            
+            bool empty() const;
         private:
             std::stack<T>       m_data;
-            mutable std::mutex  m_mutex;          
+            mutable std::mutex  m_mutex;
         };
     }
 }
+
+#include <ht_threadstack.inl>
