@@ -12,34 +12,26 @@
 **
 **/
 
+#pragma once
 
-#include <ht_platform.h>
-#include <string>
-#include <sstream>
-#include <vector>
+#include <ht_platform.h> //HT_API
+#include <string> //std::string typedef
+#include <cstdint> //size_t
 
-#ifndef HT_BUFSIZE
-#define HT_BUFSIZE 1024
-#endif
+namespace Hatchit
+{
+    namespace Core
+    {
+        /**
+        \brief Describes the buffer size to use for C-String operations.
+        **/
+        constexpr size_t HT_STRINGBUFFSIZE = 1024;
 
-namespace Hatchit {
 
-    namespace Core {
-
-
-        /*! \brief Function replaces occurences of character in string
-        *
-        *
-        *  This string utility function takes in a user string and replaces
-        *  all occurences of a specified character or string with another
-        *  @param input The string to modify
-        *  @param from  The character to replace
-        *  @param to    The character to replace with
-        */
-        HT_API
-        void str_replaceAll(std::string& input,
-                            const std::string& from,
-                            const std::string& to);
+        HT_API void str_replaceAll(
+            std::string& input,
+            const std::string& from,
+            const std::string& to);
 
     }
 
