@@ -14,27 +14,35 @@
 
 #pragma once
 
-#include <ht_platform.h>
-#include <ht_noncopy.h>
+//Header includes
+#include <ht_platform.h> //HT_API
+#include <ht_noncopy.h> //INonCopy
 
-namespace Hatchit {
+//Inline includes
+#include <type_traits> //std::is_default_constructable
 
-    namespace Core {
+namespace Hatchit
+{
+    namespace Core
+    {
+        /**
+        \class Singleton<T>
+        \ingroup HatchitCore
+        \brief Describes class that has only one instance avialable globally.
 
+        Describes class that has only one instance available globally.  Is
+        unable to be copied or instantiated elsewhere.
+        **/
         template <typename T>
         class HT_API Singleton : private INonCopy
         {
         public:
-            static T& instance()
-            {
-                static T _instance;
-
-                return _instance;
-            }
+            static T& instance();
 
         protected:
-            explicit Singleton<T>() { }
+            explicit Singleton<T>() = default;
         };
-
     }
 }
+
+#include <ht_singleton.inl>
