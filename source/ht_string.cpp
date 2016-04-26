@@ -13,13 +13,32 @@
 **/
 
 #include <ht_string.h>
-#include <ht_types.h>
 
-namespace Hatchit {
+#include <string> //std::string
+#include <cstdint> //size_t
 
-    namespace Core {
-
-        void str_replaceAll(std::string& input, const std::string& from, const std::string& to)
+namespace Hatchit
+{
+    namespace Core
+    {
+        /*!
+        * \fn void str_replaceAll(
+        *   std::string& input, 
+        *   const std::string& from, 
+        *   const std::string& to)
+        * \brief Function replaces occurences of character in string
+        *
+        *
+        *  This string utility function takes in a user string and replaces
+        *  all occurences of a specified character or string with another
+        *  @param input The string to modify
+        *  @param from  The character or string to replace
+        *  @param to    The character or string to replace with
+        */
+        void str_replaceAll(
+            std::string& input, 
+            const std::string& from, 
+            const std::string& to)
         {
             size_t pos = 0;
             while ((pos = input.find(from, pos)) != std::string::npos) {
