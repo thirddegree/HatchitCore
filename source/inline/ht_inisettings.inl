@@ -55,7 +55,7 @@ namespace Hatchit
             if (it == list.end())
                 list.push_back(std::make_pair(name, val));
             else
-                it->second = value;
+                it->second = static_cast<char>(value);
         }
 
         template <>
@@ -86,7 +86,7 @@ namespace Hatchit
                 if (loc == v.end())
                     v.push_back(std::make_pair(name, val));
                 else
-                    loc->second = value;
+                    loc->second = static_cast<char>(value);
             }
              
         }
