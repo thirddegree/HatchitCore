@@ -14,31 +14,26 @@
 
 #pragma once
 
-#include <ht_platform.h> //HT_API
-#include <string> //std::string
-#include <exception> //std::exception
+#include <ht_singleton.h>
 
 namespace Hatchit
 {
     namespace Core
     {
         /**
-        \class INIException
-        \ingroup HatchitCore
-        \brief Exception for errors reading an INI file.
+        \fn T& Singleton<T>::instance()
+        \brief Provides reference to single instance of class
 
-        This exception is thrown during the parsing of an INI file.  It gives
-        the file name as well as the type of error it received.
+        Provides mutable reference to single instance of singleton class.
         **/
-        class HT_API INIException : public std::exception
+        template<typename T>
+        T& Singleton<T>::instance()
         {
-        public:
-            INIException(std::string name, int error);
-
-            const char* what() const NOEXCEPT override;
-
-        private:
-            std::string m_error;
-        };
+            static_assert(std::is_default_constructible<T>::value,
+                "T is required to be default constructable");
+            static T _instance;
+            
+            return _instance;
+        }
     }
 }

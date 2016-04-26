@@ -12,32 +12,22 @@
 **
 **/
 
-#include <ht_scopedthread.h>
-
-#include <stdexcept> //std::logic_error
+#include <ht_refcounted_resourcemanager.h>
 
 namespace Hatchit
 {
     namespace Core
     {
         /**
-        \fn ScopedThread::ScopedThread(std::thread _t)
-        \brief Creates scoped thread given std::thread t.
-        **/
-        ScopedThread::ScopedThread(std::thread _t)
-            : t(std::move(t))
-        {
-            if(!t.joinable())
-                throw std::logic_error("No thread");
-        }
+        \fn RefCountedResourceManager& RefCountedResourceManager::GetInstance()
+        \brief Returns singleton instance to RefCountedResourceManager.
 
-        /**
-        \fn ScopedThread::~ScopedThread()
-        \brief Joins internal thread while scoped thread is being deleted
+        Returns singleton instance to RefCountedResourceManager.  This function
+        allows the instance to be localized to Core dll instead of calling dll.
         **/
-        ScopedThread::~ScopedThread()
+        RefCountedResourceManager& RefCountedResourceManager::GetInstance()
         {
-            t.join();
+            return RefCountedResourceManager::instance();
         }
     }
 }

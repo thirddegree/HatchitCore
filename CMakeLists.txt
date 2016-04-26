@@ -16,15 +16,19 @@ endif()
 
 file(GLOB HATCHIT_CORE_HEADERS
     "include/*.h"
+    "source/inline/*.inl"
     ${HATCHIT_CORE_SYS_HEADERS}
     "thirdparty/inih/*.h"
     "thirdparty/cppformat/cppformat/*.h"
+    "thirdparty/json/src/*.hpp"
 )
 file(GLOB HATCHIT_CORE_HEADERS_DIRS
     "include"
+    "source/inline"
     ${HATCHIT_CORE_SYS_HEADERS_DIR}
     "thirdparty/inih"
     "thirdparty/cppformat/cppformat"
+    "thirdparty/json/src"
 )
 file(GLOB HATCHIT_CORE_SOURCE
     "source/*.cpp"
@@ -33,9 +37,9 @@ file(GLOB HATCHIT_CORE_SOURCE
     "thirdparty/cppformat/cppformat/*.cc"
 )
 
-# C++ 11 and 64-bit on Linux
+# C++ 14 and 64-bit on Linux
 if(UNIX)
-    set(CMAKE_CXX_FLAGS "-std=c++11 -g -m64 ${CMAKE_CXX_FLAGS}")
+    set(CMAKE_CXX_FLAGS "-std=c++1y -g -m64 ${CMAKE_CXX_FLAGS}")
 endif(UNIX)
 
 include_directories("include")

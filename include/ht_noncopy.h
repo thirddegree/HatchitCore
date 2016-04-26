@@ -14,7 +14,7 @@
 
 #pragma once
 
-#include <ht_platform.h>
+#include <ht_platform.h> //HT_API
 
 /** \file ht_noncopy.h
 * Noncopy Interface
@@ -23,21 +23,29 @@
 * for noncopyable classes
 */
 
-namespace Hatchit {
+namespace Hatchit
+{
+    namespace Core
+    {
+        /**
+        \interface INonCopy
+        \ingroup HatchitCore
+        \brief Describes a class that cannot be copied.
 
-    namespace Core {
-
+        INonCopy describes the interface of a non-copyable class.
+        Any attempt to copy an INonCopy will not compile.
+        **/
         class HT_API INonCopy
         {
         protected:
-            INonCopy() { }
-            ~INonCopy() { }
+            INonCopy() = default;
+            virtual ~INonCopy() = default;
 
-        private:
-            INonCopy(const INonCopy&);
-            const INonCopy& operator=(const INonCopy&);
+            INonCopy(const INonCopy&) = delete;
+            INonCopy(INonCopy&&) = default;
+
+            INonCopy& operator=(const INonCopy&) = delete;
+            INonCopy& operator=(INonCopy&&) = default;
         };
-
     }
-
 }

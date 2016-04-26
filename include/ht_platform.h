@@ -19,21 +19,53 @@
 /////////////////////////////////////////////////////////////
 
 #ifdef _WIN32
-    //Windows platform
-    #define HT_SYS_WINDOWS
-    #define WIN32_LEAN_AND_MEAN
-    #include <windows.h>
-    #ifndef NOMINMAX
-    #define NOMINMAX
-    #endif
+    /**
+    \def HT_SYS_WINDOWS
+    \brief Using Windows platform
+    **/
+#   define HT_SYS_WINDOWS
+
+    /**
+    \def WIN32_LEAN_AND_MEAN
+    \brief Used to help stop namespace pollution
+
+    Helps stop pollution of the C namespace as well
+    as the macro namespace.
+    **/
+#   define WIN32_LEAN_AND_MEAN
+#   include <windows.h>
+#   include <winapifamily.h>
+#   ifndef NOMINMAX
+
+    /**
+    \def NOMINMAX
+    \brief Prevents precompiler minmax from being defined
+
+    Prevents precompiler minmax from being defined, allowing
+    use of std::min and std::max
+    **/
+#   define NOMINMAX
+#   endif
+
+#   if defined(WINAPI_FAMILY) && WINAPI_FAMILY == WINAPI_FAMILY_PC_APP
+        /*include headers for Universal Windows PC Application*/
+#       include <wrl.h>
+#       include <concrt.h>
+#   endif
 #elif defined(__linux__)
-    //Linux platform
-    #define HT_SYS_LINUX
+    /**
+    \def HT_SYS_LINUX
+    \brief Using Linux platform
+    **/
+#   define HT_SYS_LINUX
 #elif defined(__APPLE__)
-    //Apple platform
-    #define HT_SYS_MACOS
+    /**
+    \def HT_SYS_MACOS
+    \brief Using Mac OS platform (Apple)
+    **/
+#   define HT_SYS_MACOS
 #else
-    #error System is not suported by Hatchit
+#   error System is not suported by Hatchit
 #endif
 
 /////////////////////////////////////////////////////////////
@@ -41,54 +73,113 @@
 /////////////////////////////////////////////////////////////
 
 #if !defined(HT_STATIC)
-    #ifdef HT_SYS_WINDOWS
+#   ifdef HT_SYS_WINDOWS
         //define dllexport and dllimport macros
-        #if defined (HT_NONCLIENT_BUILD)
-            #ifndef HT_API
-            #define HT_API __declspec(dllexport)
-            #endif
-        #else
-            #ifndef HT_API
-            #define HT_API __declspec(dllimport)
-            #endif
-        #endif
+#       if defined (HT_NONCLIENT_BUILD)
+#           ifndef HT_API
+            /**
+            \def HT_API
+            \brief defined portable API import and export
+
+            Allows Hatchit to easily switch between defining
+            export and import functions
+            **/
+#           define HT_API __declspec(dllexport)
+#           endif
+#       else
+#           ifndef HT_API
+            /**
+            \def HT_API
+            \brief defined portable API import and export
+
+            Allows Hatchit to easily switch between defining
+            export and import functions
+            **/
+#           define HT_API __declspec(dllimport)
+#           endif
+#       endif
 
         //Visual C++ compiler warning C4251 disable
-        #ifdef _MSC_VER
-        #pragma warning(disable : 4251)
-        #pragma warning(disable : 4275)
-        #endif
+#       ifdef _MSC_VER
+#       pragma warning(disable : 4251)
+#       pragma warning(disable : 4275)
+        #pragma warning(disable : 4996)
+#       endif
 
-    #else //Linux and MAC OSX
-        #if __GNUC__ >= 4
+#   else //Linux and MAC OSX
+#       if __GNUC__ >= 4
             //GCC 4 has unique keywords for showing/hiding symbols
             //the same keyword is used for both import and export
-            #define HT_API __attribute__((__visibility__("default")))
-            
-            //Define MSVC compatible __forceinline keyword
-            //for use with GCC compiler.
-            #ifndef __forceinline
-            #define __forceinline __attribute__((always_inline))
-            #endif
+            /**
+            \def HT_API
+            \brief defined portable API import and export
 
-        #else
-            #define HT_API
-        #endif
-    #endif
+            Allows Hatchit to easily switch between defining
+            export and import functions
+            **/
+#           define HT_API __attribute__((__visibility__("default")))
+            
+#           ifndef __forceinline
+            /**
+            \def __forceinline
+            \brief Define __forceinline for use with GCC
+
+            Define MSVC compatible __forceinline keyword
+            for use with GCC compiler.
+            **/
+#           define __forceinline //__attribute__((always_inline))
+#           endif
+
+#       else
+#           define HT_API
+#       endif
+#   endif
 #else
     //static build doesn't need import/export macros
-    #define HT_API
+#   define HT_API
 #endif
 
 #ifndef _MSC_VER
+
+/**
+\def NOEXCEPT
+\brief Defines function that does not throw exceptions
+
+Place at the end of function declarations to define a function
+that guarantees an exception will not be thrown.
+**/
 #define NOEXCEPT noexcept
 #elif _MSC_VER >= 1900
+
+/**
+\def NOEXCEPT
+\brief Defines function that does not throw exceptions
+
+Place at the end of function declarations to define a function
+that guarantees an exception will not be thrown.
+**/
 #define NOEXCEPT noexcept
 #else
+
+/**
+\def NOEXCEPT
+\brief Defines function that does not throw exceptions
+
+Place at the end of function declarations to define a function
+that guarantees an exception will not be thrown.
+**/
 #define NOEXCEPT 
 #endif
 
 //////////////////////////////
 // BYTE typedef
 //////////////////////////////
-typedef unsigned char BYTE;
+
+/**
+\typedef BYTE
+\brief Defines variable length of a single byte
+
+Defines a variable of a single byte length.  Useful
+for functions that take general data streams.
+**/
+using BYTE = unsigned char;

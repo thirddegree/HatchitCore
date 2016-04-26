@@ -14,9 +14,12 @@
 
 #pragma once
 
-#include <ht_platform.h>
-#include <ht_file_interface.h>
-#include <ht_file_exception.h>
+//Header includes
+#include <ht_platform.h> //HT_API
+#include <ht_file_interface.h> //IFile
+#include <fstream> //std::fstream typedef
+#include <string> //std::string typedef
+#include <cstddef> //size_t typedef
 
 namespace Hatchit {
 
@@ -29,31 +32,28 @@ namespace Hatchit {
 
             ~File(void);
 
-            virtual std::string Name(void)                                  override;
-            virtual std::string Path(void)                                  override;
-            virtual std::string BaseName(void)                              override;
-            virtual void        Open(std::string path, FileMode mode)       override;
-            virtual bool        Seek(long offset, FileSeek mode)            override;
-            virtual size_t      Read(BYTE* out, size_t len)                 override;
-            virtual size_t      Write(BYTE* in, size_t len)                 override;
-            virtual bool        Close(void)                                 override;
-            virtual size_t      Tell(void)                                  override;
-            virtual size_t      SizeBytes(void)                             override;
-            virtual size_t      SizeKBytes(void)                            override;
-            virtual size_t      Position(void)                              override;
-            virtual FILE*       Handle(void)                                override;
-
+            virtual std::string     Name(void)                                      override;
+            virtual std::string     Path(void)                                      override;
+            virtual std::string     BaseName(void)                                  override;
+            virtual void            Open(const std::string& path, FileMode mode)    override;
+            virtual bool            Seek(long offset, FileSeek mode)                override;
+            virtual size_t          Read(BYTE* out, size_t len)                     override;
+            virtual size_t          Write(const BYTE* in, size_t len)               override;
+            virtual bool            Close(void)                                     override;
+            virtual size_t          Tell(void)                                      override;
+            virtual size_t          SizeBytes(void)                                 override;
+            virtual size_t          SizeKBytes(void)                                override;
+            virtual size_t          Position(void)                                  override;
+            virtual std::fstream*   Handle(void)                                    override;
+            
         private:
-            std::string m_path;
-            std::string m_name;
-            std::string m_baseName;
-            size_t      m_position;
-            size_t      m_size;
-            FILE*       m_handle;
-
-        private:
-            static std::string GetExtension(const std::string& path, bool wd = true);
-            static std::string GetName(const std::string& path, bool we = true);
+            std::fstream    m_handle;
+            std::string     m_path;
+            std::string     m_name;
+            std::string     m_baseName;
+            size_t          m_position;
+            size_t          m_size;
+            std::ios::openmode m_mode;
         };
 
     }
