@@ -12,22 +12,53 @@
 **
 **/
 
-#include "ht_scheduler.h"
+#include <ht_scheduler.h>
 
-#include <iostream>
+#include <thread> //std::thread
+#include <ht_debug.h> //HT_DEBUG_PRINTF
 
-namespace Hatchit {
+namespace Hatchit
+{
+    namespace Core
+    {
+        /**
+        \fn Job::Job(std::function<void()> function)
+        \brief Creates Threading job for given function
+        **/
+        Job::Job(std::function<void()> function)
+            : m_function(std::move(function))
+        {}
 
-    namespace Core {
-
-        Scheduler::Scheduler() 
+        /**
+        \fn std::thread Job::GetThread()
+        \brief Creates thread for job and returns created thread.
+        **/
+        std::thread Job::GetThread() 
         {
-            m_runningThreads = 0;
-            m_maxThreads = 0;
+            return std::thread(m_function);
         }
 
-        Scheduler::~Scheduler() {}
+        /**
+        \fn Scheduler::Scheduler()
+        \brief Initializes scheduler to begin managing threads.
+        **/
+        Scheduler::Scheduler()
+            : m_runningThreads(0),
+            m_maxThreads(0)
+        {}
 
+        /**
+        \fn Scheduler::~Scheduler()
+        \brief Releases members of scheduler.
+        **/
+        Scheduler::~Scheduler() = default;
+
+        /**
+        \fn void Scheduler::Initialize()
+        \brief Initializes scheduler and sets max threads
+
+        Initializes scheduler and sets max threads to capacity of hardware.
+        **/
         void Scheduler::Initialize() 
         {
             Scheduler& _instance = Scheduler::instance();
@@ -35,6 +66,13 @@ namespace Hatchit {
             _instance.m_maxThreads = std::thread::hardware_concurrency();
         }
 
+        /**
+        \fn void Scheduler::RunJobs()
+        \brief Begins running jobs in a threaded environment
+
+        Will attempt to run jobs in a threaded environment.  May hang until
+        all jobs begin running.
+        **/
         void Scheduler::RunJobs()
         {
             Scheduler& _instance = Scheduler::instance();
@@ -46,7 +84,7 @@ namespace Hatchit {
                     continue;
 
                 _instance.m_runningThreads++;
-                std::cout << _instance.m_runningThreads << " : ";
+                HT_DEBUG_PRINTF("Running Threads - %u : ", _instance.m_runningThreads);
 
                 //Get the next job's pointer and then pop it off
                 IJob* nextJob = _instance.m_jobs.front();
@@ -60,14 +98,22 @@ namespace Hatchit {
             }
         }
 
-        void Scheduler::addJob(IJob* job)
+        /**
+        \fn void Scheduler::AddJob(IJob* job)
+        \brief Adds a job to run in threaded environment.
+        **/
+        void Scheduler::AddJob(IJob* job)
         {
             Scheduler& _instance = Scheduler::instance();
 
             _instance.m_jobs.push(job);
         }
 
-        void Scheduler::threadEnded() 
+        /**
+        \fn void Scheduler::ThreadEnded()
+        \brief Function called once a thread ends to decrease running total.
+        **/
+        void Scheduler::ThreadEnded() 
         {
             Scheduler& _instance = Scheduler::instance();
 
