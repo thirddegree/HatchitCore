@@ -13,66 +13,69 @@
 **/
 
 #include <ht_inisettings.h>
+
 #include <ht_debug.h>
 #include <ht_ini_exception.h>
+#include <ht_file.h>
 #include <ini.h>
 
 namespace Hatchit
 {
     namespace Core
     {
-        void INISettings::Load(File* file)
-        {
-            int error = ini_parse_stream(StreamReader, file, ValueHandler, this);
-            if (error != 0)
-                throw INIException(file->Name(), error);
+        INISettings::INISettings()
+            : m_values() {}
 
-#ifdef _DEBUG
+        void INISettings::Load(File& file)
+        {
+            int error = ini_parse_stream(StreamReader, &file, ValueHandler, this);
+            if (error != 0)
+                throw INIException(file.Name(), error);
+
             /*Print loaded values to output window*/
-            HT_DEBUG_PRINTF("[%s]:\n", file->Name().c_str());
-            for (auto val : m_values)
+            HT_DEBUG_PRINTF("[%s]:\n", file.Name().c_str());
+            for (const auto& val : m_values)
             {
-                for (auto pair : val.second)
+                for (const auto& pair : val.second)
                 {
                     HT_DEBUG_PRINTF("%s : %s=%s\n", val.first.c_str(),
                         pair.first, pair.second);
                 }
             }
-#endif
         }
 
-        void INISettings::Write(File* file)
+        void INISettings::Write(File& file)
         {
-            if (!file || m_values.size() <= 0)
+            if (m_values.size() <= 0)
                 return;
 
             auto it = m_values.rbegin();
             for (it; it != m_values.rend(); ++it)
             {
-                auto key = *it;
+                const auto& key = *it;
 
                 //write section
                 std::string section = "[" + key.first + "]\n";
-                file->Write((BYTE*)section.c_str(), section.size());
+                file.Write(reinterpret_cast<const BYTE*>(section.c_str()), section.size());
 
-                ValuePairList _map = key.second;
+                const ValuePairList& _map = key.second;
                 for (size_t i = 0; i < _map.size(); i++)
                 {
                     std::string name = _map[i].first;
                     name += "=" + _map[i].second;
                     name += "\n";
 
-                    file->Write((BYTE*)name.c_str(), name.size());
+                    file.Write(reinterpret_cast<const BYTE*>(name.c_str()), name.size());
                 }
 
-                file->Write((BYTE*)"\n", strlen("\n"));
+                file.Write(reinterpret_cast<const BYTE*>("\n"), strlen("\n"));
             }
         }
 
         std::string INISettings::Get(const std::string& section, const std::string& name)
         {
-            auto vector = m_values[section];
-            for (auto pair : vector)
+            const auto& vector = m_values[section];
+            for (const auto& pair : vector)
             {
                 if (pair.first == name)
                     return pair.second;
