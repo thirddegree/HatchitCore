@@ -39,6 +39,13 @@ namespace Hatchit
 {
     namespace Core
     {
+        /**
+        \class INISettings
+        \ingroup HatchitCore
+        \brief Class handling reading and writing of .ini files
+
+        Class handles loading and writing .ini files to and from memory.
+        **/
         class HT_API INISettings
         {
             using ValuePairList = std::vector<std::pair<std::string, std::string>>;
