@@ -24,10 +24,8 @@
 
 namespace Hatchit
 {
-
     namespace Core
     {
-
         namespace
         {
             std::string GetExtension(const std::string& path, bool wd = true)
