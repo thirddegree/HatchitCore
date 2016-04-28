@@ -32,25 +32,24 @@ TEST(INITest, Serialize)
 
         file.Open(os_exec_dir() + "test.ini", File::FileMode::WriteBinary);
         INISettings s;
-        s.SetValue("TEST", "iVal", 600);
-        s.SetValue("TEST", "bVal", true);
-        s.SetValue("TEST", "fVal", 2.5f);
-        s.SetValue("TEST", "dVal", 35.5);
+        s.SetValue<int>("TEST", "iVal", 600);
+        s.SetValue<bool>("TEST", "bVal", true);
+        s.SetValue<float>("TEST", "fVal", 2.5f);
+        s.SetValue<double>("TEST", "dVal", 35.5);
 
         s.Write(file);
 
         file.Close();
-
 
         file.Open(os_exec_dir() + "test.ini", File::FileMode::ReadText);
 
         INISettings r;
         r.Load(file);
 
-        bool    bValue = r.GetValue("TEST", "bVal");
-        int     iValue = r.GetValue("TEST", "iVal");
-        float   fValue = r.GetValue("TEST", "fVal");
-        double  dValue = r.GetValue("TEST", "dVal");
+        bool    bValue = r.GetValue<bool>("TEST", "bVal");
+        int     iValue = r.GetValue<int>("TEST", "iVal");
+        float   fValue = r.GetValue<float>("TEST", "fVal");
+        double  dValue = r.GetValue<double>("TEST", "dVal");
 
         EXPECT_EQ(600, iValue);
         EXPECT_EQ(true, bValue);
