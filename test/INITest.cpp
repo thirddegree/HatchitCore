@@ -37,7 +37,7 @@ TEST(INITest, Serialize)
         s.SetValue("TEST", "fVal", 2.5f);
         s.SetValue("TEST", "dVal", 35.5);
 
-        s.Write(&file);
+        s.Write(file);
 
         file.Close();
 
@@ -45,12 +45,12 @@ TEST(INITest, Serialize)
         file.Open(os_exec_dir() + "test.ini", File::FileMode::ReadText);
 
         INISettings r;
-        r.Load(&file);
+        r.Load(file);
 
-        bool    bValue = r.GetValue("TEST", "bVal", false);
-        int     iValue = r.GetValue("TEST", "iVal", 0);
-        float   fValue = r.GetValue("TEST", "fVal", 0.0f);
-        double  dValue = r.GetValue("TEST", "dVal", 0.0);
+        bool    bValue = r.GetValue("TEST", "bVal");
+        int     iValue = r.GetValue("TEST", "iVal");
+        float   fValue = r.GetValue("TEST", "fVal");
+        double  dValue = r.GetValue("TEST", "dVal");
 
         EXPECT_EQ(600, iValue);
         EXPECT_EQ(true, bValue);
