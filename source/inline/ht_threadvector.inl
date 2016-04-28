@@ -12,8 +12,9 @@
 **
 **/
 
+#pragma once
+
 #include <ht_threadvector.h>
-#include <cassert>
 
 namespace Hatchit
 {
@@ -65,7 +66,7 @@ namespace Hatchit
         deadlock.
         **/
         template <typename T>
-        ThreadsafeVector<T>& ThreadsafeVector<T>::operator= (const ThreadsafeVector<T>& other)
+        ThreadsafeVector<T>& ThreadsafeVector<T>::operator=(const ThreadsafeVector<T>& other)
         {
             assert(this != &other);
 
