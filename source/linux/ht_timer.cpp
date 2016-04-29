@@ -14,123 +14,142 @@
 
 #include <ht_timer.h>
 
-namespace Hatchit {
-
-    namespace Core {
-
-        Timer::Timer()
+namespace Hatchit
+{
+    namespace Core
+    {
+        namespace Linux
         {
-            m_paused = {0};
-            m_previous = {0};
-            m_start = {0};
-            m_stop = {0};
-            m_current = {0};
-            m_base = {0};
-            m_stopped = false;
-        }
-
-        void Timer::Start()
-        {
-            clock_gettime(CLOCK_MONOTONIC_RAW, &m_start);
-
-            if(m_stopped)
+            /**
+            \fn void Hatchit::Core::Linux::Timer::Timer()
+            \brief Creates instance of timer, ready to be started
+            **/
+            Timer::Timer()
+                : ITimer(),
+                m_previous(0),
+                m_stopped(true),
+                m_totalTime(0),
+                m_deltaTime(0.0f)
             {
-                m_paused.tv_sec += (m_start.tv_sec - m_stop.tv_sec);
-                m_paused.tv_nsec += (m_start.tv_nsec - m_stop.tv_nsec);
-
-                m_previous = m_start;
-                m_stop = {0};
-                m_stopped = false;
             }
-        }
+            
+            /**
+            \fn void Hatchit::Core::Linux::Timer::Start()
+            \brief Starts tracking time from moment this function is called.
 
-        void Timer::Stop()
-        {
-            if(!m_stopped)
+            Starts tracking time from moment this function is called.
+            **/
+            void Timer::Start()
             {
-                timespec current;
-                clock_gettime(CLOCK_MONOTONIC_RAW, &current);
-
-                m_stop = current;
+                if (m_stopped)
+                {
+                    clock_gettime(CLOCK_MONOTONIC_RAW, &m_previous);
+                    m_stopped = false;
+                }
+            }
+            
+            /**
+            \fn void Hatchit::Core::Linux::Timer::Stop()
+            \brief Stops tracking timing information
+            **/
+            void Timer::Stop()
+            {
                 m_stopped = true;
             }
-        }
 
-        void Timer::Reset()
-        {
-            timespec current;
-            clock_gettime(CLOCK_MONOTONIC_RAW, &current);
-
-            m_base = current;
-            m_previous = current;
-            m_stop = {0};
-            m_stopped = false;
-
-            m_deltaTime = 0.0;
-        }
-
-        void Timer::Tick()
-        {
-            //If timer is stopped, we don't do anything
-            if(m_stopped) {
-                m_deltaTime = 0.0;
-                return;
-            }
-
-            //Query the current time
-            timespec current;
-            clock_gettime(CLOCK_MONOTONIC_RAW, &current);
-            m_current = current;
-
-            //Calculate the time difference between the current frame
-            //and the previous. This is known as DelaTime. After
-            //we then setup for the next frame by setting previous to the current
-            double currentPart = static_cast<double>(m_current.tv_sec + (m_current.tv_nsec / 1000000000.0));
-            double previousPart = static_cast<double>(m_previous.tv_sec + (m_previous.tv_nsec / 1000000000.0));
-
-            m_deltaTime = currentPart - previousPart;
-
-            m_previous = m_current;
-
-            //make sure delta time is never negative due to CPU error
-            if(m_deltaTime < 0.0)
-                m_deltaTime = 0.0;
-        }
-
-        float Timer::TotalTime() const
-        {
-            //If we happen to be stopped. We need to exclude the time we have
-            //spend paused. Thus, we subtract it from the stop time, then take the difference
-            //(or elapsed) time since it started.
-            double paused = static_cast<double>(m_paused.tv_sec + (m_paused.tv_nsec / 1000000000.0));
-            double base = static_cast<double>(m_base.tv_sec + (m_paused.tv_nsec / 1000000000.0));
-            if(m_stopped)
+            /**
+            \fn void Hatchit::Core::Linux::Timer::Reset()
+            \brief Resets the timer data.  If timer is currently running, delta
+            time will be calculated between the tick this function is called
+            and the tick that Tick() is called.
+            **/
+            void Timer::Reset()
             {
-                double stop = static_cast<double>(m_stop.tv_sec + (m_stop.tv_nsec / 1000000000.0));
-
-                return static_cast<float>((stop - paused) - base);
+                m_totalTime = 0;
+                clock_gettime(CLOCK_MONOTONIC_RAW, &m_previous);
             }
-            else
+
+            /**
+            \fn void Hatchit::Core::Linux::Timer::Tick()
+            \brief Recalculates the delta time and total time
+
+            Recalculates the delta time between this tick and the last tick,
+            or the last reset, depending on which happened more recently.
+            Also recalculates the total time by accruing the calculated delta
+            time into the total time.
+            **/
+            void Timer::Tick()
             {
-                double current = static_cast<double>(m_current.tv_sec + (m_current.tv_nsec / 1000000000.0));
+                //If timer is stopped, we don't do anything
+                if(m_stopped) {
+                    m_deltaTime = 0.0;
+                    return;
+                }
 
-                return static_cast<float>((current - paused) - base);
+                //Query the current time
+                timespec current;
+                clock_gettime(CLOCK_MONOTONIC_RAW, &current);
+                
+                timespec deltaTime;
+                
+                //timespec subtraction
+                if ((current.tv_sec < m_previous.tv_sec) ||
+                    ((current.tv_sec == m_previous.tv_sec) &&
+                    (current.tv_nsec <= m_previous.tv_nsec)))
+                {
+                    deltaTime.tv_sec = deltaTime.tv_nsec = 0;
+                }
+                else
+                {
+                    deltaTime.tv_sec = current.tv_sec - m_previous.tv_sec;
+                    if (current.tv_nsec < previous.tv_nsec)
+                    {
+                        deltaTime.tv_nsec = current.tv_nsec + 1000000000L - previous.tv_nsec;
+                        deltaTime.tv_sec--;
+                    }
+                    else
+                    {
+                        deltaTime.tv_nsec = current.tv_nsec - previous.tv_nsec;
+                    }
+                }
+                
+                //Conversion to float
+                m_deltaTime = static_cast<float>(
+                    static_cast<double>(deltaTime.tv_sec) + 
+                    static_cast<double>(deltaTime.tv_nsec) / 1000000000.0);
+                    
+                //timespec addition
+                m_totalTime.tv_sec += deltaTime.tv_sec;
+                m_totalTime.tv_nsec += deltaTime.tv_nsec;
+                if (m_totalTime.tv_nsec >= 1000000000L)
+                {
+                    m_totalTime.tv_sec++;
+                    m_totalTime.tv_nsec -= 1000000000L;
+                }
+                
+                //Finally, set previous to current time.
+                m_previous = current;
+            }
+
+            /**
+            \fn float Hatchit::Core::Linux::Timer::TotalTime() const
+            \brief Gets total time (in seconds) between when timer was started and last tick.
+            **/
+            float Timer::TotalTime() const
+            {
+                return static_cast<float>(
+                    static_cast<double>(m_totalTime.tv_sec) +
+                    static_cast<double>(m_totalTime.tv_nsec) / 1000000000.0);
+            }
+
+            /**
+            \fn float Hatchit::Core::Linux::Timer::DeltaTime() const
+            \brief Gets time (in seconds) between last two ticks of timer.
+            **/
+            float Timer::DeltaTime() const
+            {
+                return m_deltaTime;
             }
         }
-
-        float Timer::DeltaTime() const
-        {
-            return static_cast<float>(m_deltaTime);
-        }
-
-        float Timer::PausedTime() const
-        {
-            //timespec struct is defined as
-            //tv_sec (the positive and greater than 1 part of time signature )
-            //tv_nsec (the positive fraction of the time signature in nanoseconds)
-            //To calculate the time in seconds we must add both parts in second units.
-            return static_cast<float>((m_paused.tv_sec + (m_paused.tv_nsec / 1000000000.0)));
-        }
-
     }
 }

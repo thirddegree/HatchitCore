@@ -14,43 +14,78 @@
 
 #pragma once
 
-#include <ht_platform.h>
+#include <ht_platform.h> //HT_API
 
-namespace Hatchit {
+namespace Hatchit
+{
+    namespace Core
+    {
+        /**
+        \interface Hatchit::Core::ITimer
+        \ingroup HatchitCore
+        \brief Interface to describe timer functionality
 
-    namespace Core {
-
-        class HT_API Timer
+        Interface that describes the functionality of a timer.
+        Used to link usability between a Windows timer and a
+        Linux timer.
+        **/
+        class HT_API ITimer
         {
+        protected:
+            ITimer() = default;
+            virtual ~ITimer() = default;
+
         public:
-            Timer();
-
-            void Start();
-
-            void Tick();
-
-            void Stop();
-
-            void Reset();
-
-            float TotalTime() const;
-
-            float DeltaTime() const;
-
-            float PausedTime() const;
-
-        private:
-            __int64 m_base;
-            __int64 m_start;
-            __int64 m_current;
-            __int64 m_previous;
-            __int64 m_stop;
-            __int64 m_paused;
-            bool    m_stopped;
-
-            double        m_secPerTick;
-            double        m_deltaTime;
+            virtual void Start() = 0;
+            virtual void Tick() = 0;
+            virtual void Stop() = 0;
+            virtual void Reset() = 0;
+            virtual float TotalTime() const = 0;
+            virtual float DeltaTime() const = 0;
         };
 
+        namespace Windows
+        {
+            /**
+            \class Hatchit::Core::Windows::Timer
+            \ingroup HatchitCore
+            \brief Class to manage tracking time.
+
+            Class to manage tracking time.  Timer is specific to Windows
+            **/
+            class HT_API Timer : public ITimer
+            {
+            public:
+                Timer();
+
+                virtual ~Timer() = default;
+
+                virtual void Start() override;
+
+                virtual void Tick() override;
+
+                virtual void Stop() override;
+
+                virtual void Reset() override;
+
+                virtual float TotalTime() const override;
+
+                virtual float DeltaTime() const override;
+
+            private:
+                __int64 m_previous;
+                __int64 m_totalTime;
+                bool m_stopped;
+
+                double m_secPerTick;
+                float m_deltaTime;
+            };
+        }
+
+#if defined(HT_SYS_LINUX)
+        using Timer = Linux::Timer;
+#elif defined(HT_SYS_WINDOWS)
+        using Timer = Windows::Timer;
+#endif
     }
 }

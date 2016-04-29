@@ -13,116 +13,133 @@
 **/
 
 #include <ht_timer.h>
+#undef max
+#include <algorithm> //std::max
 
-namespace Hatchit {
-
-    namespace Core {
-
-        Timer::Timer()
+namespace Hatchit
+{
+    namespace Core
+    {
+        namespace Windows
         {
-            m_secPerTick = 0;
-            m_deltaTime = 0.0;
-            m_base = 0;
-            m_paused = 0;
-            m_previous = 0;
-            m_current = 0;
-            m_stopped = false;
-
-            __int64 ticksPerSecond;
-            QueryPerformanceFrequency((LARGE_INTEGER*)&ticksPerSecond);
-
-            m_secPerTick = 1.0 / static_cast<double>(ticksPerSecond);
-        }
-
-        void Timer::Start()
-        {
-            //Query for initial time
-            QueryPerformanceCounter((LARGE_INTEGER*)&m_start);
-
-            //If timer was previously stopped
-            //we must accumulate the time it spent in that state
-            if (m_stopped)
+            /**
+            \fn void Hatchit::Core::Windows::Timer::Timer()
+            \brief Creates instance of timer, ready to be started
+            **/
+            Timer::Timer()
+                : ITimer(),
+                m_previous(0),
+                m_stopped(true),
+                m_totalTime(0),
+                m_secPerTick(),
+                m_deltaTime(0.0f)
             {
-                m_paused += (m_start - m_stop);
+                __int64 ticksPerSecond;
+                QueryPerformanceFrequency(
+                    reinterpret_cast<LARGE_INTEGER*>(&ticksPerSecond));
 
-                m_previous = m_start;
-                m_stop = 0;
-                m_stopped = false;
+                m_secPerTick = 1.0 / static_cast<double>(ticksPerSecond);
             }
 
-        }
+            /**
+            \fn void Hatchit::Core::Windows::Timer::Start()
+            \brief Starts tracking time from moment this function is called.
 
-        void Timer::Reset()
-        {
-            __int64 curTime;
-            QueryPerformanceCounter((LARGE_INTEGER*)&curTime);
-
-            m_base = curTime;
-            m_previous = curTime;
-            m_stop = 0;
-            m_stopped = false;
-        }
-
-        void Timer::Stop()
-        {
-            if (!m_stopped)
+            Starts tracking time from moment this function is called.
+            **/
+            void Timer::Start()
             {
-                //Query current time and set stop time
-                __int64 curTime;
-                QueryPerformanceCounter((LARGE_INTEGER*)&curTime);
+                if (m_stopped)
+                {
+                    //Query for initial time
+                    QueryPerformanceCounter(
+                        reinterpret_cast<LARGE_INTEGER*>(&m_previous));
+                    m_stopped = false;
+                }
+            }
 
-                m_stop = curTime;
+            /**
+            \fn void Hatchit::Core::Windows::Timer::Reset()
+            \brief Resets the timer data.  If timer is currently running, delta
+            time will be calculated between the tick this function is called
+            and the tick that Tick() is called.
+            **/
+            void Timer::Reset()
+            {
+                m_totalTime = 0;
+                QueryPerformanceCounter(
+                    reinterpret_cast<LARGE_INTEGER*>(&m_previous));
+            }
+
+            /**
+            \fn void Hatchit::Core::Windows::Timer::Stop()
+            \brief Stops tracking timing information
+            **/
+            void Timer::Stop()
+            {
                 m_stopped = true;
             }
-        }
 
-        void Timer::Tick()
-        {
-            //Don't do anything if the timer is stopped
-            if (m_stopped) {
-                m_deltaTime = 0.0;
-                return;
+            /**
+            \fn void Hatchit::Core::Windows::Timer::Tick()
+            \brief Recalculates the delta time and total time
+
+            Recalculates the delta time between this tick and the last tick,
+            or the last reset, depending on which happened more recently.
+            Also recalculates the total time by accruing the calculated delta
+            time into the total time.
+            **/
+            void Timer::Tick()
+            {
+                //Don't do anything if the timer is stopped
+                if (m_stopped) {
+                    m_deltaTime = 0.0;
+                    return;
+                }
+
+                //Query current time
+                __int64 curTime;
+                QueryPerformanceCounter(
+                    reinterpret_cast<LARGE_INTEGER*>(&curTime));
+
+                //Calculate the time difference between the current frame
+                //and the previous. This is known as DeltaTime. After
+                //we then setup for the next frame by 
+                //setting previous to the current
+                __int64 deltaTicks = curTime - m_previous;
+
+                //Since converting between int and float is expensive,
+                //we're gonna do the conversion every tick instead of every
+                //request, since requests for delta time are likely to happen 
+                //more than once per timer tick.
+                m_deltaTime = std::max(
+                    static_cast<float>(
+                        static_cast<double>(deltaTicks) * m_secPerTick),
+                    0.0f);
+
+                m_totalTime += deltaTicks;
+
+                m_previous = curTime;
             }
 
-            //Query current time
-            __int64 curTime;
-            QueryPerformanceCounter((LARGE_INTEGER*)&curTime);
-            m_current = curTime;
+            /**
+            \fn float Hatchit::Core::Windows::Timer::DeltaTime() const
+            \brief Gets time (in seconds) between last two ticks of timer.
+            **/
+            float Timer::DeltaTime() const
+            {
+                return m_deltaTime;
+            }
 
-            //Calculate the time difference between the current frame
-            //and the previous. This is known as DeltaTime. After
-            //we then setup for the next frame by setting previous to the current
-            m_deltaTime = static_cast<double>(m_current - m_previous) * m_secPerTick;
-
-            m_previous = m_current;
-            
-            //Also, make sure the delta time is never negative due to CPU error
-            if (m_deltaTime < 0.0)
-                m_deltaTime = 0.0;
+            /**
+            \fn float Hatchit::Core::Windows::Timer::TotalTime() const
+            \brief Gets total time (in seconds) between when timer was started and last tick.
+            **/
+            float Timer::TotalTime() const
+            {
+                return static_cast<float>(
+                    static_cast<double>(m_totalTime) * m_secPerTick);
+            }
         }
-
-        float Timer::DeltaTime() const
-        {
-            return static_cast<float>(m_deltaTime);
-        }
-
-        float Timer::TotalTime() const
-        {
-            //If we happen to be stopped. We need to not include the time
-            //we have spent paused. Thus, we subtract it from stop time, then take the different
-            //(or elapsed) time since it started.
-            if (m_stopped)
-                return static_cast<float>(((m_stop - m_paused) - m_base)*m_secPerTick);
-            //Otherwise, we want to take the time elapsed from the beginning (base) and the current
-            //time. However, this will also include paused time. So we must again subtract this value.
-            else
-                return static_cast<float>(((m_current - m_paused) - m_base)*m_secPerTick);
-        }
-
-        float Timer::PausedTime() const
-        {
-            return static_cast<float>(m_paused * m_secPerTick);
-        }
-
     }
 }
