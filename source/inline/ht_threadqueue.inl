@@ -12,29 +12,30 @@
 **
 **/
 
-#include <ht_threadvector.h>
+#include <ht_threadqueue.h>
+#include <cassert>
 
 namespace Hatchit
 {
     namespace Core
     {
         /**
-        \fn ThreadsafeVector<T>::ThreadsafeVector()
-        \brief Creates empty thread-safe vector.
+        \fn ThreadsafeQueue<T>::ThreadsafeQueue()
+        \brief Creates empty thread-safe queue.
         **/
         template <typename T>
-        ThreadsafeVector<T>::ThreadsafeVector()
+        ThreadsafeQueue<T>::ThreadsafeQueue()
             : m_data(), m_mutex()
         {
 
         }
 
         /**
-        \fn ThreadsafeVector<T>::ThreadsafeVector(const ThreadsafeVector<T>& other)
-        \brief Creates copy of given Threadsafe vector
+        \fn ThreadsafeQueue<T>::ThreadsafeQueue(const ThreadsafeQueue<T>& other)
+        \brief Creates copy of given ThreadsafeQueue.
         **/
         template <typename T>
-        ThreadsafeVector<T>::ThreadsafeVector(const ThreadsafeVector<T>& other)
+        ThreadsafeQueue<T>::ThreadsafeQueue(const ThreadsafeQueue<T>& other)
         {
             std::lock_guard<std::mutex> lock(other.m_mutex);
 
@@ -42,11 +43,11 @@ namespace Hatchit
         }
 
         /**
-        \fn ThreadsafeVector<T>::ThreadsafeVector(ThreadsafeVector<T>&& other)
-        \brief Moves data from given Threadsafe vector into new Threadsafe vector
+        \fn ThreadsafeQueue<T>::ThreadsafeQueue(ThreadsafeQueue<T>&& other)
+        \brief Moves data from given ThreadsafeQueue into new ThreadsafeQueue.
         **/
         template <typename T>
-        ThreadsafeVector<T>::ThreadsafeVector(ThreadsafeVector&& other)
+        ThreadsafeQueue<T>::ThreadsafeQueue(ThreadsafeQueue<T>&& other)
         {
             std::lock_guard<std::mutex> lock(other.m_mutex);
 
@@ -54,17 +55,18 @@ namespace Hatchit
         }
 
         /**
-        \fn ThreadsafeVector<T> ThreadsafeVector<T>::operator=(const ThreadsafeVector<T>& other)
-        \brief Copies data from one Threadsafe vector into current Threadsafe vector
+        \fn ThreadsafeQueue<T> ThreadsafeQueue<T>::operator=(const ThreadsafeQueue<T>& other)
+        \brief Copies data from one ThreadsafeQueue
+        into current ThreadsafeQueue
 
-        Copies data from one ThreadsafeVector into current ThreadsafeVector.
+        Copies data from one ThreadsafeQueue into current ThreadsafeQueue.
         One must be cautious when assigning Threadsafe objects to each other,
         as assignments of one object to itself will cause deadlock, and
         assignments of objects to each other concurrently may cause
         deadlock.
         **/
         template <typename T>
-        ThreadsafeVector<T>& ThreadsafeVector<T>::operator=(const ThreadsafeVector<T>& other)
+        ThreadsafeQueue<T>& ThreadsafeQueue<T>::operator=(const ThreadsafeQueue<T>& other)
         {
             assert(this != &other);
 
@@ -76,19 +78,19 @@ namespace Hatchit
             return *this;
         }
 
-
         /**
-        \fn ThreadsafeVector<T> ThreadsafeVector<T>::operator=(ThreadsafeVector<T>&& other)
-        \brief Moves data from temporary Threadsafe vector into current Threadsafe vector
+        \fn ThreadsafeQueue<T> ThreadsafeQueue<T>::operator=(ThreadsafeQueue<T>&& other)
+        \brief Moves data from temportaty ThreadsafeQueue
+        into current ThreadsafeQueue
 
-        Moves data from temporary ThreadsafeVector into current ThreadsafeVector.
+        Moves data from temporary ThreadsafeQueue into current ThreadsafeQueue.
         One must be cautious when assigning Threadsafe objects to each other,
         as assignments of one object to itself will cause deadlock, and
         assignments of objects to each other concurrently may cause
         deadlock.
         **/
         template <typename T>
-        ThreadsafeVector<T>& ThreadsafeVector<T>::operator=(ThreadsafeVector<T>&& other)
+        ThreadsafeQueue<T>& ThreadsafeQueue<T>::operator=(ThreadsafeQueue&& other)
         {
             assert(this != &other);
 
@@ -99,47 +101,61 @@ namespace Hatchit
 
             return *this;
         }
-        
+
         /**
-        \fn T& ThreadsafeVector<T>::operator[](size_t pos)
-        \brief Returns a shared ptr copy to the element at specified location \a pos in ThreadsafeVector
-        
-        No bounds checking is performed.
+        \fn void ThreadsafeQueue<T>::push(T _val)
+        \brief Adds new value \a _val to current ThreadsafeQueue.
         **/
         template <typename T>
-        std::shared_ptr<T> ThreadsafeVector<T>::operator[](size_t pos)
+        void ThreadsafeQueue<T>::push(T _val)
+        {
+            std::lock_guard<std::mutex> lock(m_mutex);
+
+            m_data.push(std::move(_val));
+        }
+
+        /**
+        \fn std::shared_ptr<T> ThreadsafeQueue<T>::pop()
+        \brief Pops off first element in queue, and returns a shared ptr to temp copy of it.
+        **/
+        template <typename T>
+        std::shared_ptr<T> ThreadsafeQueue<T>::pop()
         {
             std::lock_guard<std::mutex> lock(m_mutex);
             if (m_data.empty())
                 throw std::exception();
 
-            std::shared_ptr<T> const result = std::make_shared<T>(m_data.at(pos));
+            std::shared_ptr<T> const result = std::make_shared<T>(m_data.front());
+            m_data.pop();
 
             return result;
         }
 
         /**
-        \fn void ThreadsafeVector<T>::push_back(T _val)
-        \brief Adds a new value \a _val to current ThreadsafeVector
+        \fn void ThreadsafeQueue<T>::pop(T& out)
+        \brief Removes last entry in queue and moves it into /a out param.
         **/
         template <typename T>
-        void ThreadsafeVector<T>::push_back(T _val)
+        void ThreadsafeQueue<T>::pop(T& out)
         {
             std::lock_guard<std::mutex> lock(m_mutex);
+            if (m_data.empty())
+                throw std::exception();
 
-            m_data.push_back(std::move(_val));
+            out = m_data.front();
+            m_data.pop();
         }
 
         /**
-        \fn size_t ThreadsafeVector<T>::size() const
-        \brief Returns the current number of elements in ThreadsafeVector
+        \fn bool ThreadsafeQueue<T>::empty() const
+        \brief Returns whether queue contains no members.
         **/
         template <typename T>
-        size_t ThreadsafeVector<T>::size() const
+        bool ThreadsafeQueue<T>::empty() const
         {
             std::lock_guard<std::mutex> lock(m_mutex);
 
-            return m_data.size();
+            return m_data.empty();
         }
     }
 }

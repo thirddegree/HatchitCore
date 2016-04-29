@@ -17,6 +17,7 @@
 //Handle Header includes
 #include <stdint.h> //uint32_t typedef
 #include <typeinfo>
+#include <mutex>
 #include <ht_guid.h>
 #include <ht_platform.h> //HT_API
 
@@ -96,6 +97,8 @@ namespace Hatchit
             VarType* m_ptr;
             uint32_t* m_refCount;
             const Guid* m_ID;
+
+            mutable std::mutex m_mutex;
         };
 
         /**
