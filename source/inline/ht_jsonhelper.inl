@@ -70,8 +70,12 @@ namespace Hatchit
                 return true;
 #   else
                 auto  search = json.find(name);
-                auto& object = *search;
+                if (search == json.end())
+                {
+                    return false;
+                }
 
+                auto& object = *search;
                 out = object.get<T>();
                 return (object.*verify)();
 #   endif
