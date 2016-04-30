@@ -86,7 +86,8 @@ namespace Hatchit
             void Release();
 
         private:
-            friend class RefCounted<VarType>;
+            template <typename VarType>
+            friend class RefCounted;
 
             template<typename NewVarType>
             friend class Handle;
@@ -121,9 +122,12 @@ namespace Hatchit
             //Public Methods
             RefCounted& operator=(RefCounted&&) = default;
 
-            template<typename... Args>
+            template <typename... Args>
             static Handle<VarType> GetHandle(std::string name, Args&&... args);
-            
+
+            template <typename... Args>
+            static Handle<VarType> GetHandleAsync(Handle<VarType> _default, std::string name, Args&&... args);
+
         protected:
             friend class RefCountedResourceManager;
 
