@@ -27,8 +27,8 @@ namespace Hatchit
             Timer::Timer()
                 : ITimer(),
                 m_previous(),
-                m_stopped(true),
                 m_totalTime(),
+                m_stopped(true),
                 m_deltaTime(0.0f)
             {
             }
