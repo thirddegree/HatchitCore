@@ -14,10 +14,14 @@
 
 #pragma once
 
-#include <ht_platform.h>
-#include <vector>
-#include <mutex>
-#include <memory>
+//Header includes
+#include <ht_platform.h> //HT_API
+#include <vector> //std::vector
+#include <mutex> //std::mutex
+#include <memory> //std::shared_ptr<T>
+
+//Inline includes
+#include <cassert> //assert()
 
 namespace Hatchit
 {
@@ -36,8 +40,8 @@ namespace Hatchit
             ThreadsafeVector(const ThreadsafeVector& other);
             ThreadsafeVector(ThreadsafeVector&& other);
 
-            ThreadsafeVector& operator=(const ThreadsafeVector&);
-            ThreadsafeVector& operator=(ThreadsafeVector&&);
+            ThreadsafeVector& operator=(const ThreadsafeVector& other);
+            ThreadsafeVector& operator=(ThreadsafeVector&& other);
 
             std::shared_ptr<T> operator[](size_t pos);
 

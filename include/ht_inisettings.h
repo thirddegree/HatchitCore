@@ -14,27 +14,50 @@
 
 #pragma once
 
-#include <ht_platform.h>
-#include <ht_file.h>
-#include <map>
-#include <vector>
-#include <algorithm>
+//Header includes
+#include <ht_platform.h> //HT_API
+#include <map> //std::map
+#include <vector> //std::vector
+#include <utility> //std::pair
+#include <string> //std::string
+
+//Inline includes
+#include <algorithm> //std::find, std::transform
+//#include <string> //std::stoi
+#include <stdexcept> //std::invalid_argument
+
+//Forward Declarations
+namespace Hatchit
+{
+    namespace Core
+    {
+        class File;
+    }
+}
 
 namespace Hatchit
 {
     namespace Core
     {
+        /**
+        \class INISettings
+        \ingroup HatchitCore
+        \brief Class handling reading and writing of .ini files
+
+        Class handles loading and writing .ini files to and from memory.
+        **/
         class HT_API INISettings
         {
-            typedef std::vector<std::pair<std::string, std::string> > ValuePairList;
-        public:
-            INISettings() = default;
+            using ValuePairList = std::vector<std::pair<std::string, std::string>>;
 
-            void Load(File* file);
-            void Write(File* file);
+        public:
+            INISettings();
+
+            void Load(File& file);
+            void Write(File& file);
 
             template <typename T>
-            T GetValue(const std::string& section, const std::string& name, T default_val);
+            T GetValue(const std::string& section, const std::string& name);
         
             template <typename T>
             void SetValue(const std::string& section, const std::string& name, T value);
