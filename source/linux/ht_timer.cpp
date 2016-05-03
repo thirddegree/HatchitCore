@@ -26,9 +26,9 @@ namespace Hatchit
             **/
             Timer::Timer()
                 : ITimer(),
-                m_previous(0),
+                m_previous(),
                 m_stopped(true),
-                m_totalTime(0),
+                m_totalTime(),
                 m_deltaTime(0.0f)
             {
             }
@@ -65,7 +65,7 @@ namespace Hatchit
             **/
             void Timer::Reset()
             {
-                m_totalTime = 0;
+                m_totalTime = timespec();
                 clock_gettime(CLOCK_MONOTONIC_RAW, &m_previous);
             }
 
@@ -82,7 +82,7 @@ namespace Hatchit
             {
                 //If timer is stopped, we don't do anything
                 if(m_stopped) {
-                    m_deltaTime = 0.0;
+                    m_deltaTime = 0.0f;
                     return;
                 }
 
@@ -102,14 +102,14 @@ namespace Hatchit
                 else
                 {
                     deltaTime.tv_sec = current.tv_sec - m_previous.tv_sec;
-                    if (current.tv_nsec < previous.tv_nsec)
+                    if (current.tv_nsec < m_previous.tv_nsec)
                     {
-                        deltaTime.tv_nsec = current.tv_nsec + 1000000000L - previous.tv_nsec;
+                        deltaTime.tv_nsec = current.tv_nsec + 1000000000L - m_previous.tv_nsec;
                         deltaTime.tv_sec--;
                     }
                     else
                     {
-                        deltaTime.tv_nsec = current.tv_nsec - previous.tv_nsec;
+                        deltaTime.tv_nsec = current.tv_nsec - m_previous.tv_nsec;
                     }
                 }
                 
