@@ -51,3 +51,5 @@ namespace Hatchit
         };
     }
 }
+
+#include <ht_threadqueue.inl>
