@@ -12,7 +12,6 @@
 **
 **/
 
-#include <ht_threadqueue.h>
 #include <cassert>
 
 namespace Hatchit
