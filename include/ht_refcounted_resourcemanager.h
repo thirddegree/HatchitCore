@@ -56,7 +56,7 @@ namespace Hatchit
         private:
             static RefCountedResourceManager& GetInstance();
 
-            std::map<Guid, void*> m_resources;
+            std::map<Guid, void*>     m_resources;
         };
     }
 }

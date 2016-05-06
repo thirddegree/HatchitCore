@@ -1,6 +1,7 @@
 #pragma once
 
 #include <ht_refcounted_resourcemanager.h>
+#include <ht_debug.h>
 
 namespace Hatchit
 {
@@ -24,7 +25,13 @@ namespace Hatchit
         **/
         inline RefCountedResourceManager::~RefCountedResourceManager()
         {
-            assert(m_resources.size() == 0);
+            if(m_resources.size() > 0)
+            {
+                for (auto resource : m_resources)
+                {
+                    HT_ERROR_PRINTF("Resource Alive: %s\n", resource.first.GetOriginalString());
+                }
+            }
         }
 
         /**
