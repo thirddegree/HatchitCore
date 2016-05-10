@@ -48,7 +48,7 @@ namespace Hatchit
 
 #if defined(HT_SYS_LINUX)
 #include <ht_linuxtimer.h>
-#else if defined(HT_SYS_WINDOWS)
+#elif defined(HT_SYS_WINDOWS)
 #include <ht_windowstimer.h>
 #endif
 
