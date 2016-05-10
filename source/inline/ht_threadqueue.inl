@@ -13,6 +13,7 @@
 **/
 
 #include <cassert>
+#include <ht_debug.h>
 
 namespace Hatchit
 {
@@ -26,7 +27,7 @@ namespace Hatchit
         ThreadsafeQueue<T>::ThreadsafeQueue()
             : m_data(), m_mutex()
         {
-
+            m_count = 0;
         }
 
         /**
@@ -111,6 +112,10 @@ namespace Hatchit
             std::lock_guard<std::mutex> lock(m_mutex);
 
             m_data.push(std::move(_val));
+        
+            m_count++;
+
+            m_cv.notify_one();
         }
 
         /**
@@ -120,12 +125,19 @@ namespace Hatchit
         template <typename T>
         std::shared_ptr<T> ThreadsafeQueue<T>::pop()
         {
-            std::lock_guard<std::mutex> lock(m_mutex);
+            //Wait until there is a job that has been added to the queue
+            std::unique_lock<std::mutex> lock(m_mutex);
+            m_cv.wait(lock, [this]() { return m_count > 0; });
+            
             if (m_data.empty())
+            {
                 throw std::exception();
+            }
 
             std::shared_ptr<T> const result = std::make_shared<T>(m_data.front());
             m_data.pop();
+
+            m_count--;
 
             return result;
         }

@@ -19,6 +19,8 @@
 #include <queue>
 #include <memory>
 #include <mutex>
+#include <condition_variable>
+#include <atomic>
 
 namespace Hatchit
 {
@@ -46,8 +48,10 @@ namespace Hatchit
             bool empty() const;
 
         private:
-            std::queue<T>       m_data;
-            mutable std::mutex  m_mutex;
+            std::queue<T>           m_data;
+            mutable std::mutex      m_mutex;
+            std::condition_variable m_cv;
+            std::atomic_uint32_t    m_count;
         };
     }
 }
