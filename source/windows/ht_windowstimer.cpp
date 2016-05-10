@@ -12,7 +12,7 @@
 **
 **/
 
-#include <ht_timer.h>
+#include <ht_timer.h> //ITimer
 //We need to include this first so that there isn't a circular dependency with
 //the aliases used.
 
