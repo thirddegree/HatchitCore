@@ -28,7 +28,7 @@ namespace Hatchit
     {
         namespace
         {
-            std::string GetExtension(const std::string& path, bool wd = true)
+            /*std::string GetExtension(const std::string& path, bool wd = true)
             {
                 std::string ext = "";
                 size_t pos = path.rfind(".");
@@ -41,7 +41,7 @@ namespace Hatchit
                 }
 
                 return ext;
-            }
+            }*/
 
             std::string GetName(const std::string& path, bool we = true)
             {

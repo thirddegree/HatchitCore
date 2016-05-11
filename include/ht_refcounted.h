@@ -94,8 +94,8 @@ namespace Hatchit
             Handle(VarType* varPtr, uint32_t* refCounter, const Guid* name);
 
             //Private members
-            VarType* m_ptr;
-            uint32_t* m_refCount;
+            VarType*    m_ptr;
+            uint32_t*   m_refCount;
             const Guid* m_ID;
 
             mutable std::mutex m_mutex;
@@ -133,8 +133,8 @@ namespace Hatchit
             RefCounted(Guid ID);
 
         private:
-            uint32_t m_refCount;
-            const Guid m_ID;
+            uint32_t    m_refCount;
+            const Guid  m_ID;
         };
     }
 }

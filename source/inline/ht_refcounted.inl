@@ -51,8 +51,10 @@ namespace Hatchit
 
         template<typename VarType>
         inline RefCounted<VarType>::RefCounted(Guid ID)
-            : m_ID(std::move(ID)),
-            m_refCount(0U)
-        {}
+            :   m_refCount(0U),
+                m_ID(std::move(ID))
+        {
+
+        }
     }
 }
