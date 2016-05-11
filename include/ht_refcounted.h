@@ -86,8 +86,7 @@ namespace Hatchit
             void Release();
 
         private:
-            template <typename VarType>
-            friend class RefCounted;
+            friend class RefCounted<VarType>;
 
             template<typename NewVarType>
             friend class Handle;

@@ -146,7 +146,7 @@ namespace Hatchit
             if (m_data.empty())
                 throw std::exception();
 
-            _val = m_data.top();
+            out = m_data.top();
             m_data.pop();
         }
 
