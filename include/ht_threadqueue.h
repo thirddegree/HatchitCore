@@ -43,15 +43,14 @@ namespace Hatchit
             ThreadsafeQueue& operator=(ThreadsafeQueue&& other);
 
             void push(T _val);
-            std::shared_ptr<T> pop();
-            void pop(T& out);
+            std::shared_ptr<T> wait_pop();
+            void wait_pop(T& out);
             bool empty() const;
 
         private:
             std::queue<T>           m_data;
             mutable std::mutex      m_mutex;
-            std::condition_variable m_cv;
-            std::atomic_uint32_t    m_count;
+            std::condition_variable m_condition;
         };
     }
 }

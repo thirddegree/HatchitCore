@@ -27,7 +27,7 @@ namespace Hatchit
         ThreadsafeQueue<T>::ThreadsafeQueue()
             : m_data(), m_mutex()
         {
-            m_count = 0;
+
         }
 
         /**
@@ -110,49 +110,36 @@ namespace Hatchit
         void ThreadsafeQueue<T>::push(T _val)
         {
             std::lock_guard<std::mutex> lock(m_mutex);
-
             m_data.push(std::move(_val));
-        
-            m_count++;
-
-            m_cv.notify_one();
+            m_condition.notify_one();
         }
 
         /**
-        \fn std::shared_ptr<T> ThreadsafeQueue<T>::pop()
+        \fn std::shared_ptr<T> ThreadsafeQueue<T>::wait_pop()
         \brief Pops off first element in queue, and returns a shared ptr to temp copy of it.
         **/
         template <typename T>
-        std::shared_ptr<T> ThreadsafeQueue<T>::pop()
+        std::shared_ptr<T> ThreadsafeQueue<T>::wait_pop()
         {
             //Wait until there is a job that has been added to the queue
             std::unique_lock<std::mutex> lock(m_mutex);
-            m_cv.wait(lock, [this]() { return m_count > 0; });
-            
-            if (m_data.empty())
-            {
-                throw std::exception();
-            }
+            m_condition.wait(lock, [this] { return !m_data.empty(); });
 
             std::shared_ptr<T> const result = std::make_shared<T>(m_data.front());
             m_data.pop();
-
-            m_count--;
 
             return result;
         }
 
         /**
-        \fn void ThreadsafeQueue<T>::pop(T& out)
+        \fn void ThreadsafeQueue<T>::wait_pop(T& out)
         \brief Removes last entry in queue and moves it into /a out param.
         **/
         template <typename T>
-        void ThreadsafeQueue<T>::pop(T& out)
+        void ThreadsafeQueue<T>::wait_pop(T& out)
         {
-            std::lock_guard<std::mutex> lock(m_mutex);
-            if (m_data.empty())
-                throw std::exception();
-
+            std::unique_lock<std::mutex> lock(m_mutex);
+            m_condition.wait(lock, [this] { return !m_data.empty();  });
             out = m_data.front();
             m_data.pop();
         }
@@ -168,5 +155,6 @@ namespace Hatchit
 
             return m_data.empty();
         }
+    
     }
 }
