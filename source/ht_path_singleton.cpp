@@ -48,6 +48,7 @@ namespace Hatchit
                 _AssetPath += os_path_delimeter();
 
             _instance.m_paths.insert(std::make_pair(Directory::Assets, _AssetPath));
+            _instance.m_paths.insert(std::make_pair(Directory::Audio, _AssetPath + os_path("Audio/")));
             _instance.m_paths.insert(std::make_pair(Directory::Models, _AssetPath + os_path("Models/")));
             _instance.m_paths.insert(std::make_pair(Directory::Materials, _AssetPath + os_path("Materials/")));
             _instance.m_paths.insert(std::make_pair(Directory::Textures, _AssetPath + os_path("Textures/")));
