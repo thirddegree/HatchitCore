@@ -12,8 +12,6 @@
 **
 **/
 
-#pragma once
-
 #include <ht_threadvector.h>
 
 namespace Hatchit

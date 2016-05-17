@@ -92,6 +92,7 @@ namespace Hatchit
             //Removed for GCC compilation. 
             //TODO: Find cross platform solution.
             //static_assert(false, "Extraction is not defined for this type!");
+            return false;
         }
 
         /**

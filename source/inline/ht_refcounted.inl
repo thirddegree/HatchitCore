@@ -28,9 +28,33 @@ namespace Hatchit
         }
 
         template<typename VarType>
+        template<typename ...Args>
+        inline Handle<VarType> RefCounted<VarType>::GetHandleAsync(Handle<VarType> _default, std::string name, Args&&... args)
+        {
+            name += std::to_string(typeid(VarType).hash_code());
+            Guid ID = Guid::FromString(name);
+            VarType* var = RefCountedResourceManager::GetRawPointerUnitialized<VarType, Args...>(std::move(ID), std::forward<Args>(args)...);
+            if (var)
+            {
+                Handle<VarType> handle(_default.m_ptr, &(var->m_refCount), &(var->m_ID));
+                if (!var->InitializeAsync(handle, _default, std::forward<Args>(args)...))
+                {
+                    delete var;
+                    RefCountedResourceManager::ReleaseRawPointer<VarType>(ID);
+                }
+
+                return handle;
+            }
+
+            return Handle<VarType>();
+        }
+
+        template<typename VarType>
         inline RefCounted<VarType>::RefCounted(Guid ID)
-            : m_ID(std::move(ID)),
-            m_refCount(0U)
-        {}
+            :   m_refCount(0U),
+                m_ID(std::move(ID))
+        {
+
+        }
     }
 }

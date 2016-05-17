@@ -43,6 +43,8 @@ namespace Hatchit
         class HT_API IJob
         {
         public:
+            virtual ~IJob() = default;
+
             virtual std::thread GetThread() = 0;
         };
 

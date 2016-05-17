@@ -73,7 +73,7 @@ namespace Hatchit
                 return;
 
             auto it = m_values.rbegin();
-            for (it; it != m_values.rend(); ++it)
+            for (; it != m_values.rend(); ++it)
             {
                 const auto& key = *it;
 

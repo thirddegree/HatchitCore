@@ -1,6 +1,6 @@
 /**
 **    Hatchit Engine
-**    Copyright(c) 2015 Third-Degree
+**    Copyright(c) 2015-2016 Third-Degree
 **
 **    GNU Lesser General Public License
 **    This file may be used under the terms of the GNU Lesser
@@ -11,8 +11,6 @@
 **    will be met: https://www.gnu.org/licenses/lgpl.html
 **
 **/
-
-#pragma once
 
 #include <ht_threadstack.h>
 
@@ -148,7 +146,7 @@ namespace Hatchit
             if (m_data.empty())
                 throw std::exception();
 
-            _val = m_data.top();
+            out = m_data.top();
             m_data.pop();
         }
 

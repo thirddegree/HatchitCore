@@ -47,13 +47,16 @@ namespace Hatchit
                 const Guid& ID, 
                 Args&&... arguments);
 
+            template <typename ResourceType, typename... Args>
+            static ResourceType* GetRawPointerUnitialized(const Guid& ID, Args&&... arguments);
+
             template<typename ResourceType>
             static void ReleaseRawPointer(const Guid& name);
 
         private:
             static RefCountedResourceManager& GetInstance();
 
-            std::map<Guid, void*> m_resources;
+            std::map<Guid, void*>     m_resources;
         };
     }
 }
