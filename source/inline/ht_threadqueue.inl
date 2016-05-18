@@ -122,8 +122,10 @@ namespace Hatchit
         std::shared_ptr<T> ThreadsafeQueue<T>::wait_pop()
         {
             //Wait until there is a job that has been added to the queue
+            
             std::unique_lock<std::mutex> lock(m_mutex);
-            m_condition.wait(lock, [this] { return !m_data.empty(); });
+            while (m_data.empty())
+                m_condition.wait(lock, [this] { return !m_data.empty(); });
 
             std::shared_ptr<T> const result = std::make_shared<T>(m_data.front());
             m_data.pop();
@@ -138,8 +140,11 @@ namespace Hatchit
         template <typename T>
         void ThreadsafeQueue<T>::wait_pop(T& out)
         {
+            
             std::unique_lock<std::mutex> lock(m_mutex);
-            m_condition.wait(lock, [this] { return !m_data.empty();  });
+            while (m_data.empty())
+                m_condition.wait(lock, [this] { return !m_data.empty();  });
+
             out = m_data.front();
             m_data.pop();
         }
