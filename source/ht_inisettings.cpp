@@ -13,66 +13,103 @@
 **/
 
 #include <ht_inisettings.h>
-#include <ht_debug.h>
-#include <ht_ini_exception.h>
-#include <ini.h>
+
+#include <map> //std::map
+#include <vector> //std::vector
+#include <utility> //std::pair
+#include <string> //std::string
+#include <ht_debug.h> //HT_DEBUG_PRINTF
+#include <ht_ini_exception.h> //INIException
+#include <ht_file.h> //File
+#include <ini.h> //ini_parse_stream
 
 namespace Hatchit
 {
     namespace Core
     {
-        void INISettings::Load(File* file)
-        {
-            int error = ini_parse_stream(StreamReader, file, ValueHandler, this);
-            if (error != 0)
-                throw INIException(file->Name(), error);
+        /**
+        \fn INISettings::INISettings()
+        \brief Creates empty ini file in memory
+        **/
+        INISettings::INISettings()
+            : m_values() {}
 
-#ifdef _DEBUG
+        /**
+        \fn void INISettings::Load(File& file)
+        \brief Adds ini settings from given file into memory.
+
+        Loads ini settings from given file into memory.  Will append
+        settings if current INISettings already has settings.
+        **/
+        void INISettings::Load(File& file)
+        {
+            int error = ini_parse_stream(StreamReader, &file, ValueHandler, this);
+            if (error != 0)
+                throw INIException(file.Name(), error);
+
             /*Print loaded values to output window*/
-            HT_DEBUG_PRINTF("[%s]:\n", file->Name().c_str());
-            for (auto val : m_values)
+            HT_DEBUG_PRINTF("[%s]:\n", file.Name().c_str());
+            for (const auto& val : m_values)
             {
-                for (auto pair : val.second)
+                for (const auto& pair : val.second)
                 {
                     HT_DEBUG_PRINTF("%s : %s=%s\n", val.first.c_str(),
                         pair.first, pair.second);
                 }
             }
-#endif
         }
 
-        void INISettings::Write(File* file)
+        /**
+        \fn void INISettings::Write(File& file)
+        \brief Writes ini settings from memory into given file
+
+        Writes ini settings from current INISettings into given file.
+        Appending / overwritting rules depend on what file was initialized
+        with.
+        **/
+        void INISettings::Write(File& file)
         {
-            if (!file || m_values.size() <= 0)
+            if (m_values.size() <= 0)
                 return;
 
             auto it = m_values.rbegin();
-            for (it; it != m_values.rend(); ++it)
+            for (; it != m_values.rend(); ++it)
             {
-                auto key = *it;
+                const auto& key = *it;
 
                 //write section
                 std::string section = "[" + key.first + "]\n";
-                file->Write((BYTE*)section.c_str(), section.size());
+                file.Write(reinterpret_cast<const BYTE*>(section.c_str()), section.size());
 
-                ValuePairList _map = key.second;
+                const ValuePairList& _map = key.second;
                 for (size_t i = 0; i < _map.size(); i++)
                 {
                     std::string name = _map[i].first;
                     name += "=" + _map[i].second;
                     name += "\n";
 
-                    file->Write((BYTE*)name.c_str(), name.size());
+                    file.Write(reinterpret_cast<const BYTE*>(name.c_str()), name.size());
                 }
 
-                file->Write((BYTE*)"\n", strlen("\n"));
+                file.Write(reinterpret_cast<const BYTE*>("\n"), strlen("\n"));
             }
         }
 
-        std::string INISettings::Get(const std::string& section, const std::string& name)
+        /**
+        \fn std::string INISettings::Get(const std::string& section, const std::string& name)
+        \brief Retrieves string representation of value for key \a name
+        in given \a section
+
+        Retrieves string representation of value for key \a name in given
+        \a section.  If no key is found in the given section for the given
+        name, an empty string will be returned.
+        **/
+        std::string INISettings::Get(
+            const std::string& section, 
+            const std::string& name)
         {
-            auto vector = m_values[section];
-            for (auto pair : vector)
+            const auto& vector = m_values[section];
+            for (const auto& pair : vector)
             {
                 if (pair.first == name)
                     return pair.second;
@@ -81,6 +118,10 @@ namespace Hatchit
             return "";
         }
 
+        /**
+        \fn char* INISettings::StreamReader(char* str, int len, void* stream)
+        \brief Function handler for reading data from stream into buffer \a str
+        **/
         char* INISettings::StreamReader(char* str, int len, void* stream)
         {
             File* file = static_cast<File*>(stream);
@@ -114,9 +155,19 @@ namespace Hatchit
             return str;
         }
 
-        int INISettings::ValueHandler(void* user, const char* section, const char* name, const char* value)
+        /**
+        \fn int INISettings::ValueHandler(void* user, const char* section, const char* name, const char* value)
+        \brief Handler for each value found in INI file.
+
+        Handler for each value found in the INI file.  \a user is a pointer to the INISettings variable.
+        **/
+        int INISettings::ValueHandler(
+            void* user, 
+            const char* section, 
+            const char* name, 
+            const char* value)
         {
-            INISettings* reader = (INISettings*)user;
+            INISettings* reader = reinterpret_cast<INISettings*>(user);
             std::pair<std::string, std::string> valuePair = std::make_pair(name, value);
             auto it = std::find(reader->m_values[section].begin(), reader->m_values[section].end(),
                 valuePair);

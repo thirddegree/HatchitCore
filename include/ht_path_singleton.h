@@ -53,6 +53,7 @@ namespace Hatchit
             enum class Directory
             {
                 Assets,
+                Audio,
                 Models,
                 Materials,
                 Pipelines,

@@ -1,6 +1,6 @@
 /**
 **    Hatchit Engine
-**    Copyright(c) 2015 Third-Degree
+**    Copyright(c) 2015-2016 Third-Degree
 **
 **    GNU Lesser General Public License
 **    This file may be used under the terms of the GNU Lesser
@@ -70,8 +70,12 @@ namespace Hatchit
                 return true;
 #   else
                 auto  search = json.find(name);
-                auto& object = *search;
+                if (search == json.end())
+                {
+                    return false;
+                }
 
+                auto& object = *search;
                 out = object.get<T>();
                 return (object.*verify)();
 #   endif
@@ -88,6 +92,7 @@ namespace Hatchit
             //Removed for GCC compilation. 
             //TODO: Find cross platform solution.
             //static_assert(false, "Extraction is not defined for this type!");
+            return false;
         }
 
         /**

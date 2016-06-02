@@ -16,8 +16,8 @@
 
 //Header includes
 #include <ht_platform.h> //HT_API
-#include <stack> //std::stack<T>
-#include <mutex> //std::mutex, std::lock_guard<T>
+#include <vector> //std::vector
+#include <mutex> //std::mutex
 #include <memory> //std::shared_ptr<T>
 
 //Inline includes
@@ -28,32 +28,32 @@ namespace Hatchit
     namespace Core
     {
         /**
-        \class ThreadsafeStack<T>
+        \class ThreadsafeVector<T>
         \ingroup HatchitCore
-        \brief wrapper for std::stack that provides thread-safe functions
-        **/
+        \brief wrapper for std::vector that provides thread-safe functions
+        */
         template <typename T>
-        class HT_API ThreadsafeStack
+        class HT_API ThreadsafeVector
         {
         public:
-            ThreadsafeStack();
-            ThreadsafeStack(const ThreadsafeStack& other);
-            ThreadsafeStack(ThreadsafeStack&& other);
-            
-            ThreadsafeStack& operator=(const ThreadsafeStack&);
-            ThreadsafeStack& operator=(ThreadsafeStack&&);
+            ThreadsafeVector();
+            ThreadsafeVector(const ThreadsafeVector& other);
+            ThreadsafeVector(ThreadsafeVector&& other);
 
-            void push(T _val);
+            ThreadsafeVector& operator=(const ThreadsafeVector& other);
+            ThreadsafeVector& operator=(ThreadsafeVector&& other);
 
-            std::shared_ptr<T> pop();
-            void pop(T& _val);
-            
-            bool empty() const;
+            std::shared_ptr<T> operator[](size_t pos);
+
+            void push_back(T _val);
+
+            size_t size() const;
+
         private:
-            std::stack<T>       m_data;
+            std::vector<T>      m_data;
             mutable std::mutex  m_mutex;
         };
     }
 }
 
-#include <ht_threadstack.inl>
+#include <ht_threadvector.inl>

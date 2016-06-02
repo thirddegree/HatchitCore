@@ -1,6 +1,6 @@
 /**
 **    Hatchit Engine
-**    Copyright(c) 2015 Third-Degree
+**    Copyright(c) 2015-2016 Third-Degree
 **
 **    GNU Lesser General Public License
 **    This file may be used under the terms of the GNU Lesser
@@ -17,6 +17,7 @@
 //Handle Header includes
 #include <stdint.h> //uint32_t typedef
 #include <typeinfo>
+#include <mutex>
 #include <ht_guid.h>
 #include <ht_platform.h> //HT_API
 
@@ -93,9 +94,11 @@ namespace Hatchit
             Handle(VarType* varPtr, uint32_t* refCounter, const Guid* name);
 
             //Private members
-            VarType* m_ptr;
-            uint32_t* m_refCount;
+            VarType*    m_ptr;
+            uint32_t*   m_refCount;
             const Guid* m_ID;
+
+            mutable std::mutex m_mutex;
         };
 
         /**
@@ -118,17 +121,20 @@ namespace Hatchit
             //Public Methods
             RefCounted& operator=(RefCounted&&) = default;
 
-            template<typename... Args>
+            template <typename... Args>
             static Handle<VarType> GetHandle(std::string name, Args&&... args);
-            
+
+            template <typename... Args>
+            static Handle<VarType> GetHandleAsync(Handle<VarType> _default, std::string name, Args&&... args);
+
         protected:
             friend class RefCountedResourceManager;
 
             RefCounted(Guid ID);
 
         private:
-            uint32_t m_refCount;
-            const Guid m_ID;
+            uint32_t    m_refCount;
+            const Guid  m_ID;
         };
     }
 }

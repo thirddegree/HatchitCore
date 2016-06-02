@@ -17,6 +17,7 @@
 #include <string> //std::string typedef
 #include <ht_inisettings.h> //INIReader
 #include <ht_os.h> //os_path stuff
+#include <ht_debug.h> //HT_WARNING_PRINTF
 
 namespace Hatchit
 {
@@ -32,11 +33,22 @@ namespace Hatchit
         {
             Path& _instance = Path::instance();
 
-            std::string _AssetPath = os_path(settings.GetValue("PATHS", "sAssetPath", os_exec_dir() + "Assets/"));
+            std::string _AssetPath;
+            try
+            {
+                _AssetPath = os_path(settings.GetValue<std::string>("PATHS", "sAssetPath"));
+            }
+            catch (const std::invalid_argument& e)
+            {
+                HT_ERROR_PRINTF("Error loading INI File: %s\n", e.what());
+                _AssetPath = os_exec_dir() + "Assets/";
+            }
+            
             if (_AssetPath.back() != os_path_delimeter())
                 _AssetPath += os_path_delimeter();
 
             _instance.m_paths.insert(std::make_pair(Directory::Assets, _AssetPath));
+            _instance.m_paths.insert(std::make_pair(Directory::Audio, _AssetPath + os_path("Audio/")));
             _instance.m_paths.insert(std::make_pair(Directory::Models, _AssetPath + os_path("Models/")));
             _instance.m_paths.insert(std::make_pair(Directory::Materials, _AssetPath + os_path("Materials/")));
             _instance.m_paths.insert(std::make_pair(Directory::Textures, _AssetPath + os_path("Textures/")));

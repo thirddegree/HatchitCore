@@ -1,6 +1,6 @@
 /**
 **    Hatchit Engine
-**    Copyright(c) 2015 Third-Degree
+**    Copyright(c) 2015-2016 Third-Degree
 **
 **    GNU Lesser General Public License
 **    This file may be used under the terms of the GNU Lesser
@@ -47,13 +47,16 @@ namespace Hatchit
                 const Guid& ID, 
                 Args&&... arguments);
 
+            template <typename ResourceType, typename... Args>
+            static ResourceType* GetRawPointerUnitialized(const Guid& ID, Args&&... arguments);
+
             template<typename ResourceType>
             static void ReleaseRawPointer(const Guid& name);
 
         private:
             static RefCountedResourceManager& GetInstance();
 
-            std::map<Guid, void*> m_resources;
+            std::map<Guid, void*>     m_resources;
         };
     }
 }

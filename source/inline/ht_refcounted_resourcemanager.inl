@@ -1,6 +1,7 @@
 #pragma once
 
 #include <ht_refcounted_resourcemanager.h>
+#include <ht_debug.h>
 
 namespace Hatchit
 {
@@ -24,7 +25,13 @@ namespace Hatchit
         **/
         inline RefCountedResourceManager::~RefCountedResourceManager()
         {
-            assert(m_resources.size() == 0);
+            if(m_resources.size() > 0)
+            {
+                for (auto resource : m_resources)
+                {
+                    HT_ERROR_PRINTF("Resource Alive: %s\n", resource.first.GetOriginalString());
+                }
+            }
         }
 
         /**
@@ -61,6 +68,26 @@ namespace Hatchit
                     delete resource;
                     return nullptr;
                 }
+                _instance.m_resources.insert(std::make_pair(ID, resource));
+            }
+
+            return reinterpret_cast<ResourceType*>(_instance.m_resources[ID]);
+        }
+
+        template<typename ResourceType, typename ...Args>
+        inline ResourceType * RefCountedResourceManager::GetRawPointerUnitialized(const Guid & ID, Args && ...arguments)
+        {
+            if (ID == Guid::GetEmpty())
+                return nullptr;
+
+            RefCountedResourceManager& _instance = RefCountedResourceManager::GetInstance();
+
+            std::map<Guid, void*>::iterator it = _instance.m_resources.find(ID);
+            if (it == _instance.m_resources.end())
+            {
+                //resource not found.  Must allocate
+                ResourceType* resource = new ResourceType(ID);
+               
                 _instance.m_resources.insert(std::make_pair(ID, resource));
             }
 
