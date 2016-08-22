@@ -58,7 +58,7 @@ namespace Hatchit
     {
         #if defined(HT_SYS_LINUX)
         using Timer = Linux::Timer;
-        #else if defined(HT_SYS_WINDOWS)
+        #elif defined(HT_SYS_WINDOWS)
         using Timer = Windows::Timer;
         #endif
     }

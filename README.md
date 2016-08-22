@@ -11,7 +11,7 @@ The core utilities and OS interfacing library for [Hatchit](https://github.com/t
 
 ### Contributing
 
-If you have an issue with Hatchit specific to OS level utility put it on this repo. This includes routines such as opening files and threadable file structures.
+If you have an issue with Hatchit specific to OS level utility put it on this repo. This includes routines such as opening files and threadable data structures.
 
 If you would like to make a contribution please make a fork and submit a pull request.
 
