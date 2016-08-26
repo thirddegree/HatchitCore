@@ -20,34 +20,30 @@ namespace Hatchit
 {
     namespace Core
     {
-        //////////////////////////////////////////////////////////////////////
-        //// BITFLAG IMPLEMENTATION
-        //////////////////////////////////////////////////////////////////////
-
         /**
-        \fn BitFlag::BitFlag(long)
-        \brief Creates Bitflag from long
-
-        Creates a bitflag from a long.  Long will be truncated to size of int.
-        \return A bitflag with bits marked from those marked in long.
+        * \fn BitFlag::BitFlag(long)
+        * \brief Creates Bitflag from long
+        *
+        * Creates a bitflag from a long.  Long will be truncated to size of int.
+        * \return A bitflag with bits marked from those marked in long.
         */
         constexpr inline BitFlag::BitFlag(long pI) : i(static_cast<int>(pI)) {}
 
         /**
-        \fn BitFlag::BitFlag(unsigned long)
-        \brief Creates Bitflag from long
-
-        Creates a bitflag from an unsigned long.  Long will be truncated to size of int.
-        \return A bitflag with bits marked from those marked in long.
+        * \fn BitFlag::BitFlag(unsigned long)
+        * \brief Creates Bitflag from long
+        *
+        * Creates a bitflag from an unsigned long.  Long will be truncated to size of int.
+        * \return A bitflag with bits marked from those marked in long.
         */
         constexpr inline BitFlag::BitFlag(unsigned long pI) : i(static_cast<int>(static_cast<long>(pI))) {}
 
         /**
-        \fn BitFlag::BitFlag(int)
-        \brief Creates Bitflag from int
-
-        Creates a bitflag from an int.
-        \return A bitflag with bits marked from those marked in int.
+        * \fn BitFlag::BitFlag(int)
+        * \brief Creates Bitflag from int
+        *
+        * Creates a bitflag from an int.
+        * \return A bitflag with bits marked from those marked in int.
         */
         constexpr inline BitFlag::BitFlag(int pI) : i(pI) {}
 
@@ -97,9 +93,6 @@ namespace Hatchit
         **/
         constexpr inline BitFlag::operator unsigned int() const { return static_cast<unsigned int>(i); }
 
-        //////////////////////////////////////////////////////////////////////
-        //// BITFIELD IMPLEMENTATION
-        //////////////////////////////////////////////////////////////////////
 
         /**
         \fn BitField<Enum>::BitField(EnumType)

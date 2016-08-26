@@ -68,21 +68,24 @@ namespace Hatchit
         }
 
         /**
-        \fn File::File()
-        \brief Creates empty file info
-
-        Creates instance of File class with no information.  Class is not tied to any system file.
+        * \fn File::File()
+        * \brief Creates empty file info
+        *
+        * Creates instance of File class with no information.  Class is not tied to any system file.
         **/
         File::File(void)
             : IFile(),
             m_position(0),
-            m_size(0) {}
+            m_size(0)
+        {
+
+        }
 
         /**
-        \fn File::~File()
-        \brief Closes file if file tied to it is open.
-
-        Will close file opened with this instance if instance was used to open system file.
+        * \fn File::~File()
+        * \brief Closes file if file tied to it is open.
+        *
+        * Will close file opened with this instance if instance was used to open system file.
         **/
         File::~File(void)
         {
@@ -90,11 +93,11 @@ namespace Hatchit
         }
 
         /**
-        \fn File::Open(const std::string& path, FileMode mode)
-        \brief Opens file at given path using given file mode.
-
-        Opens file and grabs handle to system file.  Will use one of
-        the file modes given to determine how file may be used.
+        * \fn File::Open(const std::string& path, FileMode mode)
+        * \brief Opens file at given path using given file mode.
+        *
+        * Opens file and grabs handle to system file.  Will use one of
+        * the file modes given to determine how file may be used.
         **/
         void File::Open(const std::string& path, FileMode mode)
         {
@@ -152,11 +155,11 @@ namespace Hatchit
         }
 
         /**
-        \fn File::Close()
-        \brief Closes file and releases handle to system file.
-
-        Will close an open file if one is held by this instance, and
-        nullify its handle.
+        * \fn File::Close()
+        * \brief Closes file and releases handle to system file.
+        *
+        * Will close an open file if one is held by this instance, and
+        * nullify its handle.
         **/
         bool File::Close(void)
         {
@@ -169,13 +172,13 @@ namespace Hatchit
         }
 
         /**
-        \fn File::Read(BYTE* out, size_t len)
-        \brief Fills \a out buffer with contents of file, up to size \a len
-
-        Reads the contents of the file and places into buffer \a out.  Length
-        of the buffer must be provided by \a len.
-
-        /exception FileException The end of the file has already been reached.
+        * \fn File::Read(BYTE* out, size_t len)
+        * \brief Fills \a out buffer with contents of file, up to size \a len
+        *
+        * Reads the contents of the file and places into buffer \a out.  Length
+        * of the buffer must be provided by \a len.
+        *
+        * \exception FileException The end of the file has already been reached.
         **/
         size_t File::Read(BYTE* out, size_t len)
         {
@@ -192,14 +195,14 @@ namespace Hatchit
         }
 
         /**
-        \fn File::Write(BYTE* in, size_t len)
-        \brief Fills system file with data from \a in, up to \a len bytes.
-
-        Writes the contents of the buffer \a in into the file.  Length of 
-        the buffer must be provided by \a len.
-
-        /exception FileException The file system is not able to write
-        the requested number of bytes into the file.
+        * \fn File::Write(BYTE* in, size_t len)
+        * \brief Fills system file with data from \a in, up to \a len bytes.
+        *
+        * Writes the contents of the buffer \a in into the file.  Length of
+        * the buffer must be provided by \a len.
+        *
+        * \exception FileException The file system is not able to write
+        * the requested number of bytes into the file.
         **/
         size_t File::Write(const BYTE* in, size_t len)
         {
@@ -215,17 +218,17 @@ namespace Hatchit
         }
 
         /**
-        \fn File::Seek(long pos, FileSeek mode)
-        \brief Moves stream pointer to position \pos
-
-        Moves stream pointer to position \a pos number of bytes
-        from either the start of the file, or from the current position,
-        depending on the FileSeek mode given.
-
-        \return true if successful in moving to desired position, false otherwise
-
-        \exception FileException The file stream could not move to the desired
-        position.
+        * \fn File::Seek(long pos, FileSeek mode)
+        * \brief Moves stream pointer to position
+        *
+        * Moves stream pointer to position \a pos number of bytes
+        * from either the start of the file, or from the current position,
+        * depending on the FileSeek mode given.
+        *
+        * \return true if successful in moving to desired position, false otherwise
+        *
+        * \exception FileException The file stream could not move to the desired
+        * position.
         **/
         bool File::Seek(long pos, FileSeek mode)
         {
@@ -271,13 +274,13 @@ namespace Hatchit
         }
 
         /**
-        \fn File::Tell()
-        \brief Gives current position of file stream
-
-        This function gives the current position of the stream pointer in the file.
-        for binary streams, this is the number of bytes from the beginning of the file.
-
-        Further information can be found here: http://www.cplusplus.com/reference/cstdio/ftell/
+        * \fn File::Tell()
+        * \brief Gives current position of file stream
+        *
+        * This function gives the current position of the stream pointer in the file.
+        * for binary streams, this is the number of bytes from the beginning of the file.
+        *
+        * Further information can be found here: http://www.cplusplus.com/reference/cstdio/ftell/
         **/
         size_t File::Tell(void)
         {
@@ -289,13 +292,13 @@ namespace Hatchit
         }
 
         /**
-        \fn File::Position()
-        \brief Gives the current position of the file stream
-
-        This function gives the current position of the stream pointer in the file.
-        For binary streams, this is the number of bytes from the beginning of the file.
-
-        Further information can be found here: http://www.cplusplus.com/reference/cstdio/ftell/
+        * \fn File::Position()
+        * \brief Gives the current position of the file stream
+        *
+        * This function gives the current position of the stream pointer in the file.
+        * For binary streams, this is the number of bytes from the beginning of the file.
+        *
+        * Further information can be found here: http://www.cplusplus.com/reference/cstdio/ftell/
         **/
         size_t File::Position(void)
         {
@@ -303,13 +306,13 @@ namespace Hatchit
         }
 
         /**
-        \fn File::SizeBytes()
-        \brief Gives the size of the system file in bytes.
-
-        This function gives the size of the system file in bytes.
-
-        \return size of the file in bytes, -1 if a failure occured in getting
-        the file attributes.
+        * \fn File::SizeBytes()
+        * \brief Gives the size of the system file in bytes.
+        *
+        * This function gives the size of the system file in bytes.
+        *
+        * \return size of the file in bytes, -1 if a failure occured in getting
+        * the file attributes.
         **/
         size_t File::SizeBytes(void)
         {
@@ -335,13 +338,13 @@ namespace Hatchit
         }
 
         /**
-        \fn File::SizeKBytes()
-        \brief Gives the size of the system file in kilobytes
-
-        This function gives the size of the system file in kilobytes
-
-        \return size of the file in bytes, -1 if a failure occured in getting
-        the file attributes.
+        * \fn File::SizeKBytes()
+        * \brief Gives the size of the system file in kilobytes
+        *
+        * This function gives the size of the system file in kilobytes
+        *
+        * \return size of the file in bytes, -1 if a failure occured in getting
+        * the file attributes.
         **/
         size_t File::SizeKBytes(void)
         {
@@ -349,10 +352,10 @@ namespace Hatchit
         }
 
         /**
-        \fn File::Name()
-        \brief Gives the name of the system file
-
-        This function returns the name of the system file.
+        * \fn File::Name()
+        * \brief Gives the name of the system file
+        *
+        * This function returns the name of the system file.
         **/
         std::string File::Name(void)
         {
@@ -360,10 +363,10 @@ namespace Hatchit
         }
 
         /**
-        \fn File::Path()
-        \brief Gives the name of the path to the file.
-
-        This function returns the path to the system file.
+        * \fn File::Path()
+        * \brief Gives the name of the path to the file.
+        *
+        * This function returns the path to the system file.
         **/
         std::string File::Path(void)
         {
@@ -371,11 +374,11 @@ namespace Hatchit
         }
 
         /**
-        \fn File::BaseName()
-        \brief Gives the base name of the system file.
-
-        This function returns the base name of the system file.
-        The base name of the file is the file name without the extension.
+        * \fn File::BaseName()
+        * \brief Gives the base name of the system file.
+        *
+        * This function returns the base name of the system file.
+        * The base name of the file is the file name without the extension.
         **/
         std::string File::BaseName(void)
         {
@@ -383,10 +386,10 @@ namespace Hatchit
         }
 
         /**
-        \fn File::Handle()
-        \brief Gives a file handle to the system file.
-
-        This function returns a handle to the system file.
+        * \fn File::Handle()
+        * \brief Gives a file handle to the system file.
+        *
+        * This function returns a handle to the system file.
         **/
         std::fstream* File::Handle(void)
         {

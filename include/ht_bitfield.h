@@ -64,20 +64,20 @@ namespace Hatchit
         public:
 
             /**
-            \typedef BitField<Enum>::BitfieldType
-            \brief Internal type used in bitfield
-
-            The internal type that is used in the bitfield, determined based
-            on the internal type of the Enum.  If the enum is unsigned, then
-            the internal type is also unsigned.  Will always be size of int.
+            * \typedef BitField<Enum>::BitfieldType
+            * \brief Internal type used in bitfield
+            *
+            * The internal type that is used in the bitfield, determined based
+            * on the internal type of the Enum.  If the enum is unsigned, then
+            * the internal type is also unsigned.  Will always be size of int.
             **/
             using BitfieldType = typename std::conditional<std::is_unsigned<Enum>::value, unsigned int, signed int>::type;
 
             /**
-            \typedef BitField<Enum>::EnumType
-            \brief Enum given from template parameter
-
-            The enum given from the template parameter.
+            * \typedef BitField<Enum>::EnumType
+            * \brief Enum given from template parameter
+            *
+            * The enum given from the template parameter.
             **/
             using EnumType = Enum;
 
