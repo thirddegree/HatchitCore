@@ -33,8 +33,6 @@
     as the macro namespace.
     **/
 #   define WIN32_LEAN_AND_MEAN
-#   include <windows.h>
-#   include <winapifamily.h>
 #   ifndef NOMINMAX
 
     /**
@@ -46,6 +44,9 @@
     **/
 #   define NOMINMAX
 #   endif
+#   include <windows.h>
+#   include <winapifamily.h>
+
 
 #   if defined(WINAPI_FAMILY) && WINAPI_FAMILY == WINAPI_FAMILY_PC_APP
         /*include headers for Universal Windows PC Application*/
