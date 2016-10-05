@@ -133,6 +133,39 @@ namespace Hatchit
                 m_previous = current;
             }
 
+            float Timer::ElapsedTime() const
+            {
+                //Query the current time
+                timespec current;
+                clock_gettime(CLOCK_MONOTONIC_RAW, &current);
+
+                timespec deltaTime;
+                //timespec subtraction
+                if ((current.tv_sec < m_previous.tv_sec) ||
+                    ((current.tv_sec == m_previous.tv_sec) &&
+                     (current.tv_nsec <= m_previous.tv_nsec)))
+                {
+                    deltaTime.tv_sec = deltaTime.tv_nsec = 0;
+                }
+                else
+                {
+                    deltaTime.tv_sec = current.tv_sec - m_previous.tv_sec;
+                    if (current.tv_nsec < m_previous.tv_nsec)
+                    {
+                        deltaTime.tv_nsec = current.tv_nsec + 1000000000L - m_previous.tv_nsec;
+                        deltaTime.tv_sec--;
+                    }
+                    else
+                    {
+                        deltaTime.tv_nsec = current.tv_nsec - m_previous.tv_nsec;
+                    }
+                }
+
+                return static_cast<float>(
+                        static_cast<double>(deltaTime.tv_sec) +
+                        static_cast<double>(deltaTime.tv_nsec) / 1000000000.0);
+            }
+
             /**
             \fn float Hatchit::Core::Linux::Timer::TotalTime() const
             \brief Gets total time (in seconds) between when timer was started and last tick.

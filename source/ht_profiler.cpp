@@ -95,7 +95,7 @@ namespace Hatchit
         {
             m_timer.Stop();
 
-            float elapsed = m_timer.Elapsed();
+            float elapsed = m_timer.ElapsedTime();
 
             Profiler::Sample sample(m_name, elapsed);
             Profiler::StoreSample(sample);

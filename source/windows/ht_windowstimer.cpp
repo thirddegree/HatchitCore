@@ -138,7 +138,7 @@ namespace Hatchit
             \fn float Hatchit::Core::Windows::Timer::Elapsed() const
             \brief Gets time (in seconds) between last Start and Stop of timer.
             **/
-            float Timer::Elapsed() const
+            float Timer::ElapsedTime() const
             {
                 __int64 curTime;
                 QueryPerformanceCounter(

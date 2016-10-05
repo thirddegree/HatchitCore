@@ -40,7 +40,7 @@ namespace Hatchit
             virtual void Tick() = 0;
             virtual void Stop() = 0;
             virtual void Reset() = 0;
-            virtual float Elapsed() const = 0;
+            virtual float ElapsedTime() const = 0;
             virtual float TotalTime() const = 0;
             virtual float DeltaTime() const = 0;
         };

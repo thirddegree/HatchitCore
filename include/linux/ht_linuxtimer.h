@@ -47,6 +47,8 @@ namespace Hatchit
 
                 virtual void Reset() override;
 
+                virtual float ElapsedTime() const override;
+
                 virtual float TotalTime() const override;
 
                 virtual float DeltaTime() const override;
