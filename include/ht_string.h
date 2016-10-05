@@ -18,6 +18,24 @@
 #include <string> //std::string typedef
 #include <cstdint> //size_t
 
+
+/**
+*   Unique Identifier Macro
+*
+*   This macro is used wherever string literals are used but a unique identifier is wanted. The purpose
+*   of this macro is to be used to convert the string into the hashed integer value
+*   to avoid using actual string comparisons in code.
+*
+*   NOTE:
+*           Currently NOT implemented. There will need to be some sort of preprocess
+*           that is run to correctly find each use of the macro and substitute the correct
+*           hashed value in place of the string literal.
+*
+*/
+#ifndef HID
+#define HID(x) x
+#endif
+
 namespace Hatchit
 {
     namespace Core

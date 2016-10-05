@@ -135,6 +135,22 @@ namespace Hatchit
             }
 
             /**
+            \fn float Hatchit::Core::Windows::Timer::Elapsed() const
+            \brief Gets time (in seconds) between last Start and Stop of timer.
+            **/
+            float Timer::Elapsed() const
+            {
+                __int64 curTime;
+                QueryPerformanceCounter(
+                    reinterpret_cast<LARGE_INTEGER*>(&curTime));
+
+                __int64 deltaTicks = curTime - m_previous;
+
+                return static_cast<float>(
+                    static_cast<double>(deltaTicks) * m_secPerTick);
+            }
+
+            /**
             \fn float Hatchit::Core::Windows::Timer::TotalTime() const
             \brief Gets total time (in seconds) between when timer was started and last tick.
             **/
