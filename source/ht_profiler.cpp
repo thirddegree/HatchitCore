@@ -14,6 +14,8 @@
 
 #include <ht_profiler.h>
 #include <ht_debug.h>
+#include <ht_file.h>
+#include <ht_jsonhelper.h>
 
 namespace Hatchit
 {
@@ -22,7 +24,7 @@ namespace Hatchit
         void Profiler::PushSample(Profiler::Sample *sample)
         {
             Profiler& _instance = Profiler::instance();
-            
+
             _instance.m_sampleStack.push(sample);
         }
 
@@ -58,20 +60,28 @@ namespace Hatchit
         {
             Profiler& _instance = Profiler::instance();
 
-            HT_DEBUG_PRINTF("-----PROFILING------\n");
-            for (auto& sample : _instance.m_samples)
+            JSON json;
+            for(auto& sample : _instance.m_samples)
             {
-                HT_DEBUG_PRINTF("Sample: \t%s \tElapsed: \t%.9f sec\n", sample.Name(), sample.ElapsedTime());
+                JSON children;
                 if(!sample.Children().empty())
                 {
-                    HT_DEBUG_PRINTF("\tChildren:\n");
-                    for(auto& child : sample.Children())
-                    {
-                        HT_DEBUG_PRINTF("\t\tSample: \t%s \tElapsed: \t%.9f sec\n", child.Name(), child.ElapsedTime());
+                    for(auto& child : sample.Children()) {
+                        JSON c = { {"Function", child.Name()}, {"Elapsed", child.ElapsedTime()} };
+                        children.push_back(c);
                     }
                 }
 
+                JSON s = { {"Function", sample.Name()}, {"Elapsed",sample.ElapsedTime()} };
+                s["Children"] = children;
+                json["Samples"].push_back(s);
             }
+
+            File f;
+            std::stringstream ss;
+            ss << json.dump(4);
+            f.Open("Profile.json", File::FileMode::WriteBinary);
+            f.Write((const unsigned char*)ss.str().c_str(), ss.str().length());
         }
 
         Profiler::Sample::Sample()
