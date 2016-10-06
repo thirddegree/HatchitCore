@@ -18,12 +18,25 @@
 #include <ht_singleton.h>
 #include <ht_string.h>
 #include <ht_timer.h>
+#include <ht_types.h>
 #include <map>
 
 namespace Hatchit
 {
     namespace Core
     {
+        /**
+         * \class Profiler
+         * \brief Defines a Runtime Profiler Singleton
+         *
+         * This runtime profiler singleton manages all runtime
+         * profiling samples and managers the distributiion
+         * and hierarchy of the samples
+         *
+         * NOTE:
+         *      The current implementation does not support distributed
+         *      hierarchical sampling.
+         */
         class HT_API Profiler : public Singleton<Profiler>
         {
         public:
@@ -54,6 +67,19 @@ namespace Hatchit
         };
 
 
+        /**
+         * \class AutoProfile
+         * \brief Simple auto-profiling class
+         *
+         * This class creates a timed sample of code execution
+         * automatically upon leaving scope and being destroyed.
+         * All code executed between creation and destruction of this
+         * object will be timed and a sample will be added to the master list.
+         *
+         * NOTE:
+         *      Direct creation of this object type is not recommended. Instead, please
+         *      use the provided macro HT_PROFILE
+         */
         class HT_API AutoProfile
         {
         public:
