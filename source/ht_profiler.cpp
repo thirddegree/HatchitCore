@@ -19,19 +19,39 @@ namespace Hatchit
 {
     namespace Core
     {
-        void Profiler::StoreSample(Profiler::Sample& sample)
+        void Profiler::PushSample(Profiler::Sample *sample)
         {
             Profiler& _instance = Profiler::instance();
+            
+            _instance.m_sampleStack.push(sample);
+        }
 
-            std::string name = sample.Name();
+        void Profiler::PopSample()
+        {
+            /**
+             * Now we need to pop the active sample
+             * off of the stack. In doing so, if there is a parent
+             * sample we must add the popped sample to that parents children list
+             */
 
-            auto it = _instance.m_samples.find(name);
-            if (it != _instance.m_samples.end())
+            Profiler& _instance = Profiler::instance();
+
+            Profiler::Sample* current = _instance.m_sampleStack.top();
+            _instance.m_sampleStack.pop(); ///remove from samples stack
+
+            if(!_instance.m_sampleStack.empty())
             {
-                _instance.m_samples[name].Increment();
+                Profiler::Sample *parent = _instance.m_sampleStack.top();
+                parent->AddChild(*current); ///add a copy of the sample information as child
             }
             else
-                _instance.m_samples[name] = sample;
+            {
+                /**
+                * If this was the last sample in the stack (i.e topmost)
+                * we must add it to the official sample list
+                */
+                _instance.m_samples.push_back(*current);
+            }
         }
 
         void Profiler::Dump()
@@ -39,10 +59,18 @@ namespace Hatchit
             Profiler& _instance = Profiler::instance();
 
             HT_DEBUG_PRINTF("-----PROFILING------\n");
-            for (auto sample : _instance.m_samples)
+            for (auto& sample : _instance.m_samples)
             {
-                Profiler::Sample s = sample.second;
-                HT_DEBUG_PRINTF("Sample: \t%s \tElapsed: \t%.9f sec\n", s.Name(), s.ElapsedTime());
+                HT_DEBUG_PRINTF("Sample: \t%s \tElapsed: \t%.9f sec\n", sample.Name(), sample.ElapsedTime());
+                if(!sample.Children().empty())
+                {
+                    HT_DEBUG_PRINTF("\tChildren:\n");
+                    for(auto& child : sample.Children())
+                    {
+                        HT_DEBUG_PRINTF("\t\tSample: \t%s \tElapsed: \t%.9f sec\n", child.Name(), child.ElapsedTime());
+                    }
+                }
+
             }
         }
 
@@ -75,6 +103,26 @@ namespace Hatchit
             return m_elapsedTime;
         }
 
+        const std::vector<Profiler::Sample>& Profiler::Sample::Children()
+        {
+            return m_children;
+        }
+
+        void Profiler::Sample::SetName(const std::string &name)
+        {
+            m_name = name;
+        }
+
+        void Profiler::Sample::SetCount(uint32_t count)
+        {
+            m_count = count;
+        }
+
+        void Profiler::Sample::SetElapsedTime(float elapsed)
+        {
+            m_elapsedTime = elapsed;
+        }
+
         void Profiler::Sample::Increment()
         {
             m_count++;
@@ -85,10 +133,18 @@ namespace Hatchit
             m_count--;
         }
 
+        void Profiler::Sample::AddChild(Sample &child)
+        {
+            m_children.push_back(child);
+        }
+
         AutoProfile::AutoProfile(const std::string& name)
         {
             m_name = name;
             m_timer.Start();
+            m_sample = new Profiler::Sample(name, 0.0f);
+
+            Profiler::PushSample(m_sample);
         }
 
         AutoProfile::~AutoProfile()
@@ -96,9 +152,11 @@ namespace Hatchit
             m_timer.Stop();
 
             float elapsed = m_timer.ElapsedTime();
+            m_sample->SetElapsedTime(elapsed);
 
-            Profiler::Sample sample(m_name, elapsed);
-            Profiler::StoreSample(sample);
+            Profiler::PopSample();
+
+            delete m_sample;
         }
     }
 }

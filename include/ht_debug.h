@@ -29,6 +29,14 @@
     #define HT_SFY_(x) HT_STRINGIFY(x)
 #endif
 
+#ifndef HT_FUNCTION
+    #ifdef HT_SYS_LINUX
+    #define HT_FUNCTION __PRETTY_FUNCTION__
+    #else
+    #define HT_FUNCTION __FUNCSIG__
+    #endif
+#endif
+
 #if !defined(HT_DEBUG_PRINTF) && (defined(_DEBUG) || defined(DEBUG))
     #define HT_DEBUG_PRINTF(message, ...) Hatchit::Core::Debug::Log(Hatchit::Core::Debug::LogSeverity::Debug, message, ##__VA_ARGS__)
 #else

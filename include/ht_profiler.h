@@ -20,6 +20,8 @@
 #include <ht_timer.h>
 #include <ht_types.h>
 #include <map>
+#include <stack>
+#include <vector>
 
 namespace Hatchit
 {
@@ -50,20 +52,32 @@ namespace Hatchit
                 const uint32_t Count() const;
                 const float    ElapsedTime() const;
 
+                void SetName(const std::string& name);
+                void SetCount(uint32_t count);
+                void SetElapsedTime(float elapsed);
                 void Increment();
                 void Decrement();
+
+                void AddChild(Sample& child);
+
+                const std::vector<Sample>& Children();
 
             private:
                 std::string m_name;
                 uint32_t    m_count;
                 float       m_elapsedTime;
+
+                std::vector<Sample> m_children;
             };
 
-            static void StoreSample(Sample& sample);
+            static void PushSample(Sample* sample);
+            static void PopSample();
             static void Dump();
 
         private:
-            std::map<std::string, Sample> m_samples;
+            //std::map<std::string, Sample> m_samples;
+            std::vector<Sample> m_samples;
+            std::stack<Sample*> m_sampleStack;
         };
 
 
@@ -88,8 +102,9 @@ namespace Hatchit
             ~AutoProfile();
 
         private:
-            std::string m_name;
-            Timer       m_timer;
+            std::string           m_name;
+            Timer                 m_timer;
+            Profiler::Sample*     m_sample;
         };
 
     }
