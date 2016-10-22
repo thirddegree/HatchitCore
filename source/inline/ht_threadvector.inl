@@ -12,16 +12,21 @@
 **
 **/
 
+/**
+ * \file ht_threadvector.inl
+ * \brief ThreadVector class implementation
+ * \author Matt Guerrette (direct3Dtutorials@gmail.com)
+ * \author Third-Degree contributors (https://github.com/thirddegree)
+ *
+ * This file contains implementation for ThreadVector class
+ */
+
 #include <ht_threadvector.h>
 
 namespace Hatchit
 {
     namespace Core
     {
-        /**
-        \fn ThreadsafeVector<T>::ThreadsafeVector()
-        \brief Creates empty thread-safe vector.
-        **/
         template <typename T>
         ThreadsafeVector<T>::ThreadsafeVector()
             : m_data(), m_mutex()
@@ -29,10 +34,6 @@ namespace Hatchit
 
         }
 
-        /**
-        \fn ThreadsafeVector<T>::ThreadsafeVector(const ThreadsafeVector<T>& other)
-        \brief Creates copy of given Threadsafe vector
-        **/
         template <typename T>
         ThreadsafeVector<T>::ThreadsafeVector(const ThreadsafeVector<T>& other)
         {
@@ -41,10 +42,6 @@ namespace Hatchit
             m_data = other.m_data;
         }
 
-        /**
-        \fn ThreadsafeVector<T>::ThreadsafeVector(ThreadsafeVector<T>&& other)
-        \brief Moves data from given Threadsafe vector into new Threadsafe vector
-        **/
         template <typename T>
         ThreadsafeVector<T>::ThreadsafeVector(ThreadsafeVector&& other)
         {
@@ -53,16 +50,6 @@ namespace Hatchit
             m_data = std::move(other.m_data);
         }
 
-        /**
-        \fn ThreadsafeVector<T> ThreadsafeVector<T>::operator=(const ThreadsafeVector<T>& other)
-        \brief Copies data from one Threadsafe vector into current Threadsafe vector
-
-        Copies data from one ThreadsafeVector into current ThreadsafeVector.
-        One must be cautious when assigning Threadsafe objects to each other,
-        as assignments of one object to itself will cause deadlock, and
-        assignments of objects to each other concurrently may cause
-        deadlock.
-        **/
         template <typename T>
         ThreadsafeVector<T>& ThreadsafeVector<T>::operator=(const ThreadsafeVector<T>& other)
         {
@@ -76,17 +63,6 @@ namespace Hatchit
             return *this;
         }
 
-
-        /**
-        \fn ThreadsafeVector<T> ThreadsafeVector<T>::operator=(ThreadsafeVector<T>&& other)
-        \brief Moves data from temporary Threadsafe vector into current Threadsafe vector
-
-        Moves data from temporary ThreadsafeVector into current ThreadsafeVector.
-        One must be cautious when assigning Threadsafe objects to each other,
-        as assignments of one object to itself will cause deadlock, and
-        assignments of objects to each other concurrently may cause
-        deadlock.
-        **/
         template <typename T>
         ThreadsafeVector<T>& ThreadsafeVector<T>::operator=(ThreadsafeVector<T>&& other)
         {
@@ -99,13 +75,7 @@ namespace Hatchit
 
             return *this;
         }
-        
-        /**
-        \fn T& ThreadsafeVector<T>::operator[](size_t pos)
-        \brief Returns a shared ptr copy to the element at specified location \a pos in ThreadsafeVector
-        
-        No bounds checking is performed.
-        **/
+
         template <typename T>
         std::shared_ptr<T> ThreadsafeVector<T>::operator[](size_t pos)
         {
@@ -118,10 +88,6 @@ namespace Hatchit
             return result;
         }
 
-        /**
-        \fn void ThreadsafeVector<T>::push_back(T _val)
-        \brief Adds a new value \a _val to current ThreadsafeVector
-        **/
         template <typename T>
         void ThreadsafeVector<T>::push_back(T _val)
         {
@@ -130,11 +96,6 @@ namespace Hatchit
             m_data.push_back(std::move(_val));
         }
 
-        /**
-        \fn size_t ThreadsafeVector<T>::size() const
-        \brief Returns the current number of elements in ThreadsafeVector
-        **/
-        template <typename T>
         size_t ThreadsafeVector<T>::size() const
         {
             std::lock_guard<std::mutex> lock(m_mutex);

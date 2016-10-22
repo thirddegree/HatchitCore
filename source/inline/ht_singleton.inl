@@ -14,6 +14,15 @@
 
 #pragma once
 
+/**
+ * \file ht_singleton.inl
+ * \brief Singleton class implementation
+ * \author Matt Guerrette (direct3Dtutorials@gmail.com)
+ * \author Third-Degree contributors (https://github.com/thirddegree)
+ *
+ * This file contains implementation for Singleton class
+ */
+
 #include <ht_singleton.h>
 
 namespace Hatchit
