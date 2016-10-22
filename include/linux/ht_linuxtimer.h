@@ -43,69 +43,22 @@ namespace Hatchit
             class HT_API Timer : public ITimer
             {
             public:
-
-                /**
-                * \brief Creates instance of timer.
-                *
-                * Created instance must then be started.
-                **/
                 Timer();
-
 
                 virtual ~Timer() = default;
 
-                /**
-                * \brief Starts tracking time from moment this function is called.
-                *
-                * Starts tracking time from moment this function is called.
-                **/
                 virtual void Start() override;
 
-                /**
-                * \brief Recalculates the delta time and total time
-                *
-                * Recalculates the delta time between this tick and the last tick,
-                * or the last reset, depending on which happened more recently.
-                * Also recalculates the total time by accruing the calculated delta
-                * time into the total time.
-                **/
                 virtual void Tick() override;
 
-                /**
-                * \brief Stops timer
-                *
-                * Stops tracking timing information
-                **/
                 virtual void Stop() override;
 
-
-                /**
-                * \brief Resets the timer data.
-                *
-                * If timer is currently running, delta time will be calculated between
-                * the tick this function is called and the tick that Tick() is called.
-                **/
                 virtual void Reset() override;
 
-                /**
-                * \brief Gets elapsed time (in seconds)
-                *
-                * Returns elapsed time (in seconds) between Start() and Stop() calls.
-                */
                 virtual float ElapsedTime() const override;
 
-                /**
-                * \brief Gets total time (in seconds)
-                *
-                * Returns total time between when timer was started and last tick.
-                **/
                 virtual float TotalTime() const override;
-
-                /**
-                * \brief Gets delta time (in seconds)
-                *
-                * Returns delta time (in seconds) between last two ticks of timer.
-                **/
+                
                 virtual float DeltaTime() const override;
 
             private:
