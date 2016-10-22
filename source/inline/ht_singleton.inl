@@ -20,12 +20,6 @@ namespace Hatchit
 {
     namespace Core
     {
-        /**
-        \fn T& Singleton<T>::instance()
-        \brief Provides reference to single instance of class
-
-        Provides mutable reference to single instance of singleton class.
-        **/
         template<typename T>
         T& Singleton<T>::instance()
         {

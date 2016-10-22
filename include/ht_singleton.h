@@ -14,12 +14,19 @@
 
 #pragma once
 
-//Header includes
-#include <ht_platform.h> //HT_API
-#include <ht_noncopy.h> //INonCopy
+/**
+ * \file ht_singleton.h
+ * \brief Singelton class definition
+ * \author Matt Guerrette (direct3Dtutorials@gmail.com)
+ * \author Third-Degree contributors (https://github.com/thirddegree)
+ *
+ * This file contains definition for Singleton class
+ */
 
-//Inline includes
-#include <type_traits> //std::is_default_constructable
+#include <ht_platform.h>
+#include <ht_noncopy.h>
+
+#include <type_traits>
 
 namespace Hatchit
 {
@@ -36,6 +43,12 @@ namespace Hatchit
         class HT_API Singleton : private INonCopy
         {
         public:
+
+            /**
+            * \brief Provides reference to single instance of class
+            *
+            * Provides mutable reference to single instance of singleton class.
+            **/
             static T& instance();
 
         protected:
@@ -44,4 +57,4 @@ namespace Hatchit
     }
 }
 
-//#include <ht_singleton.inl>
+#include <ht_singleton.inl>

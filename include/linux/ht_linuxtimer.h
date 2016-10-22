@@ -58,7 +58,7 @@ namespace Hatchit
                 virtual float ElapsedTime() const override;
 
                 virtual float TotalTime() const override;
-                
+
                 virtual float DeltaTime() const override;
 
             private:
