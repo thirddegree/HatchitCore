@@ -14,8 +14,17 @@
 
 #pragma once
 
-#include <ht_timer.h> //ITimer
-#include <ht_platform.h> //HT_API
+/**
+ * \file ht_windowstimer.h
+ * \brief Timer class definition
+ * \author Matt Guerrette (direct3Dtutorials@gmail.com)
+ * \author Third-Degree contributors (https://github.com/thirddegree)
+ *
+ * This file contains definition for Windows Timer class
+ */
+
+#include <ht_platform.h>
+#include <ht_timer.h>
 
 namespace Hatchit
 {
@@ -24,11 +33,10 @@ namespace Hatchit
         namespace Windows
         {
             /**
-            \class Hatchit::Core::Windows::Timer
-            \ingroup HatchitCore
-            \brief Class to manage tracking time.
-
-            Class to manage tracking time.  Timer is specific to Windows
+            * \class Timer
+            * \brief Defines class to track elapsed time.
+            *
+            * Defines class to track elapsed time. Timer is specific to Windows
             **/
             class HT_API Timer : public ITimer
             {

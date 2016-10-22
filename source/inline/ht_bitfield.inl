@@ -14,7 +14,13 @@
 
 #pragma once
 
-#include <ht_bitfield.h>
+/**
+ * \file ht_bifield.inl
+ * \brief BitField class implementation
+ * \author Third-Degree contributors (https://github.com/thirddegree)
+ *
+ * This file contains implementation for BitField class
+ */
 
 namespace Hatchit
 {

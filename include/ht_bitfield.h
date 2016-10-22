@@ -14,8 +14,16 @@
 
 #pragma once
 
-//Header includes
-#include <type_traits> //For: std::conditional, std::is_unsigned
+/**
+ * \file ht_bitfield.h
+ * \brief BitField class definition
+ * \author Third-Degree contributors (https://github.com/thirddegree)
+ *
+ * This file contains definition for BitField class
+ */
+
+
+#include <type_traits>
 
 namespace Hatchit
 {
@@ -23,7 +31,6 @@ namespace Hatchit
     {
         /**
         * \class BitFlag
-        * \ingroup HatchitCore
         * \brief A class that represents a single bit flag
         *
         * Class stores a single bit flag that may be used for testing flags
@@ -50,11 +57,10 @@ namespace Hatchit
         };
 
         /**
-        * \class BitField<typename Enum>
-        * \ingroup HatchitCore
+        * \class BitField
         * \brief A class that represents an array of bitflags for a given enum
         *
-        * Class stores marked bits for a given enum in a bit array, or bit field.
+        * Stores marked bits for a given enum in a bit array, or bit field.
         */
         template<typename Enum>
         class BitField
@@ -85,7 +91,6 @@ namespace Hatchit
             constexpr BitField(BitfieldType val = 0);
             constexpr BitField(BitFlag b);
 
-            //Operators
 
             constexpr operator BitfieldType() const;
 
@@ -118,8 +123,6 @@ namespace Hatchit
             constexpr BitField operator~() const;
 
             constexpr bool operator!() const;
-
-            //Functions
 
             constexpr bool TestFlag(Enum flag) const;
 

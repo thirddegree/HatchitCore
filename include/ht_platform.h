@@ -55,8 +55,8 @@
 #   endif
 #elif defined(__linux__)
     /**
-    \def HT_SYS_LINUX
-    \brief Using Linux platform
+    * \def HT_SYS_LINUX
+    * \brief Using Linux platform
     **/
 #   define HT_SYS_LINUX
 #elif defined(__APPLE__)

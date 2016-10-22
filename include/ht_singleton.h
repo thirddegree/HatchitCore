@@ -26,12 +26,11 @@ namespace Hatchit
     namespace Core
     {
         /**
-        \class Singleton<T>
-        \ingroup HatchitCore
-        \brief Describes class that has only one instance avialable globally.
-
-        Describes class that has only one instance available globally.  Is
-        unable to be copied or instantiated elsewhere.
+        * \class Singleton class
+        * \brief Describes class that has only one instance avialable globally.
+        *
+        * Describes class that has only one instance available globally.  Is
+        * unable to be copied or instantiated elsewhere.
         **/
         template <typename T>
         class HT_API Singleton : private INonCopy
@@ -45,4 +44,4 @@ namespace Hatchit
     }
 }
 
-#include <ht_singleton.inl>
+//#include <ht_singleton.inl>
