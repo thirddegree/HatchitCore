@@ -31,11 +31,16 @@
 namespace Hatchit
 {
     namespace Core
-    {    
+    {
+        /**
+         * \namespace Linux
+         * \brief Engine Linux platform utilities
+         */
         namespace Linux
         {
             /**
             * \class Timer
+            * \ingroup Core
             * \brief Defines class to track elapsed time.
             *
             * Defines class to track elapsed time. Timer is specific to Linux

@@ -31,7 +31,7 @@ namespace Hatchit
     {
         /**
         * \interface Hatchit::Core::ITimer
-        * \ingroup HatchitCore
+        * \ingroup Core
         * \brief Interface to describe timer functionality
         *
         * Interface that describes the functionality of a timer.

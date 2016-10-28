@@ -33,7 +33,7 @@ namespace Hatchit
     namespace Core
     {
         /**
-        * \class Singleton class
+        * \class Singleton
         * \brief Describes class that has only one instance avialable globally.
         *
         * Describes class that has only one instance available globally.  Is

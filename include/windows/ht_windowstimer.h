@@ -30,10 +30,15 @@ namespace Hatchit
 {
     namespace Core
     {
+        /**
+         * \namespace Windows
+         * \brief Engine Windows platform utilities
+         */
         namespace Windows
         {
             /**
             * \class Timer
+            * \ingroup Core
             * \brief Defines class to track elapsed time.
             *
             * Defines class to track elapsed time. Timer is specific to Windows

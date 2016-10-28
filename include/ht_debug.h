@@ -14,6 +14,16 @@
 
 #pragma once
 
+/**
+ * \file ht_debug.h
+ * \brief Defines various debug utilities
+ * \author Matt Guerrette (direct3Dtutorials@gmail.com)
+ * \author Third-Degree contributors (https://github.com/thirddegree)
+ *
+ * This file contains various debug utility functions
+ * and macros
+ */
+
 #include <string>           // For std::string
 #include <fstream>          // For std::ofstream
 #include <memory>           // For std::unique_ptr
@@ -21,22 +31,40 @@
 #include <ht_platform.h>    // For HT_API
 #include <format.h>         // For fmt::sprintf
 
+/**
+ * \def HT_STRINGIFY(x)
+ * Defines macro to return string form of input
+ */
 #if !defined(HT_STRINGIFY)
     #define HT_STRINGIFY(x) #x
 #endif
 
+/**
+ * \def HT_SFY_(x)
+ * Defines macro wrapper for HT_STRINGIFY
+ */
 #if !defined(HT_SFY_)
     #define HT_SFY_(x) HT_STRINGIFY(x)
 #endif
 
+/**
+ * \def HT_FUNCTION
+ * Defines platform specific function signature macro
+ *
+ */
 #ifndef HT_FUNCTION
     #ifdef HT_SYS_LINUX
-    #define HT_FUNCTION __PRETTY_FUNCTION__
+        #define HT_FUNCTION __PRETTY_FUNCTION__
     #else
-    #define HT_FUNCTION __FUNCSIG__
+        #define HT_FUNCTION __FUNCSIG__
     #endif
 #endif
 
+/**
+ * \def HT_DEBUG_PRINTF(x)
+ * Defines debug print macro that can be used to log debug text at runtime.
+ * NOTE: This macro is only active for Debug builds.
+ */
 #if !defined(HT_DEBUG_PRINTF) && (defined(_DEBUG) || defined(DEBUG))
     #define HT_DEBUG_PRINTF(message, ...) Hatchit::Core::Debug::Log(Hatchit::Core::Debug::LogSeverity::Debug, message, ##__VA_ARGS__)
 #else
@@ -55,11 +83,22 @@
     #define HT_ERROR_PRINTF(message, ...) Hatchit::Core::Debug::Log(Hatchit::Core::Debug::LogSeverity::Error, message, ##__VA_ARGS__)
 #endif
 
+/**
+ * \namespace Hatchit
+ * \brief Engine global layer
+ * \defgroup Hatchit
+ */
 namespace Hatchit {
 
+    /**
+     * \namespace Hatchit::Core
+     * \brief Engine utility layer
+     * \defgroup Core
+     */
     namespace Core {
 
         /**
+         * \ingroup Core
          * \brief Defines a static debug class.
          */
         class HT_API Debug
