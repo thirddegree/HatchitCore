@@ -18,28 +18,32 @@ namespace Hatchit
 {
     namespace Core
     {
-        uint64_t FNV1A_Hash(const std::wstring& text)
+        namespace Hash
         {
-            // This is adapted from the 64-bit version of the FNV-1a hashing algorithm
-            // Source:  http://www.isthe.com/chongo/tech/comp/fnv/
-            // License: Public Domain
-
-            uint64_t hash = 0;
-            for (uint64_t index = 0; index < text.size(); ++index)
+            uint64_t FNV1A(const std::wstring& text)
             {
-                hash ^= static_cast<uint64_t>(text[index]);
+                // This is adapted from the 64-bit version of the FNV-1a hashing algorithm
+                // Source:  http://www.isthe.com/chongo/tech/comp/fnv/
+                // License: Public Domain
 
-                // The algorithm differs on the next part, so if we're compiling using
-                // GCC, then let's just use their optimization
+                uint64_t hash = 0;
+                for (uint64_t index = 0; index < text.size(); ++index)
+                {
+                    hash ^= static_cast<uint64_t>(text[index]);
+
+                    // The algorithm differs on the next part, so if we're compiling using
+                    // GCC, then let's just use their optimization
 #if defined(__GNUC__)
-                hash += (hash << 1) + (hash << 4) + (hash << 5) +
-                        (hash << 7) + (hash << 8) + (hash << 40);
+                    hash += (hash << 1) + (hash << 4) + (hash << 5) +
+                            (hash << 7) + (hash << 8) + (hash << 40);
 #else
-                hash *= 0x100000001b3ULL;
+                    hash *= 0x100000001b3ULL;
 #endif
-            }
+                }
 
-            return hash;
+                return hash;
+            }
         }
+
     }
 }

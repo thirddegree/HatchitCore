@@ -20,6 +20,9 @@ namespace Hatchit
 {
     namespace Core
     {
-        HT_API uint64_t FNV1A_Hash(const std::wstring& text);
+        namespace Hash
+        {
+            HT_API uint64_t FNV1A(const std::wstring& text);
+        }
     }
 }
