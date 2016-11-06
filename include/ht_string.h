@@ -14,9 +14,9 @@
 
 #pragma once
 
-#include <ht_platform.h> //HT_API
-#include <string> //std::string typedef
-#include <cstdint> //size_t
+#include <ht_platform.h>
+#include <string>
+#include <cstdint>
 
 
 /**
