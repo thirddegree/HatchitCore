@@ -19,7 +19,6 @@
 #include <string> //std::string typedef
 
 //Inline includes
-#include <ht_guid.h> //Core::Guid
 #if defined(_DEBUG) || defined(DEBUG)
 #  include <ht_debug.h> //HT_DEBUG_PRINTF
 #endif

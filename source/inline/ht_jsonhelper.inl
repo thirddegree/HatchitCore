@@ -305,24 +305,5 @@ namespace Hatchit
                 name,
                 out);
         }
-
-        /**
-        * \brief Attempts to extract a Guid from a JSON object.
-        *
-        * \param json The JSON object.
-        * \param name The name of the Guid to retrieve.
-        * \param out The output Guid.
-        * \return True if the extraction was successful, false if not.
-        */
-        template<>
-        inline bool JsonExtract<Guid>(
-            const JSON& json,
-            const std::string& name,
-            Guid& out)
-        {
-            std::string guidText;
-            return JsonExtract<std::string>(json, name, guidText)
-                && Guid::Parse(guidText, out);
-        }
     }
 }
