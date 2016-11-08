@@ -153,14 +153,6 @@ namespace Hatchit {
             static void SetLogCallback(LogCallback callback);
 
             /**
-             * \brief Sets the file name of the output file.
-             * \warning This function will not do anything after the first time something is logged.
-             *
-             * \param fname The new file name.
-             */
-            static void SetOutputFileName(const std::string& fname);
-
-            /**
              * \brief Sets the current severity threshold.
              *
              * \param threshold The new severity threshold.
@@ -207,7 +199,6 @@ namespace Hatchit {
 
             static const std::string s_severityStrings[4];
             static LogCallback s_logCallback;
-            static std::string s_outputFile;
             static std::unique_ptr<std::ofstream> s_outputStream;
             static Debug::LogSeverity s_severityThreshold;
             static bool s_canLogToFile;

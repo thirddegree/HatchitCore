@@ -146,6 +146,32 @@ namespace Hatchit
             return "";
         }
 
+        /**
+         * \brief Function returns the name of current executable
+         */
+        std::string os_exec_name()
+        {
+            std::string _name;
+
+            #ifdef HT_SYS_WINDOWS
+
+            #else
+                char arg1[20];
+                char exepath[PATH_MAX + 1] = {0};
+                sprintf(arg1, "/proc/%d/exe", getpid());
+                readlink(arg1, exepath, 1024);
+
+                _name = exepath;
+                size_t pos = 0;
+                pos = _name.find_last_of('/');
+                if (pos != std::string::npos)
+                    _name.erase(0, pos + 1);
+
+            #endif
+
+            return _name;
+        }
+
         /*! \brief Function returns the path delimeter character
         *
         */

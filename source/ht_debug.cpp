@@ -1,4 +1,5 @@
 #include <ht_debug.h>       // For Debug::*
+#include <ht_os.h>
 #include <iostream>         // For std::cout
 #include <ctime>            // For std::time, std::localtime
 #if defined(HT_SYS_WINDOWS)
@@ -10,7 +11,6 @@ namespace Hatchit {
 
     namespace Core {
 
-        std::string                     Debug::s_outputFile = "debug.log";
         Debug::LogCallback              Debug::s_logCallback;
         std::unique_ptr<std::ofstream>  Debug::s_outputStream;
         bool                            Debug::s_canLogToFile = false;
@@ -59,7 +59,7 @@ namespace Hatchit {
          */
         std::string Debug::GetOutputFileName()
         {
-            return s_outputFile;
+            return os_exec_name() + ".log";
         }
 
         /**
@@ -94,11 +94,11 @@ namespace Hatchit {
             // Open the file
             if (s_outputStream)
             {
-                s_outputStream->open(s_outputFile, std::ios::app | std::ios::binary);
+                s_outputStream->open(GetOutputFileName(), std::ios::app | std::ios::binary);
                 if (!s_outputStream->is_open())
                 {
                     // We need to use LogMessage instead of Log here so that we don't try to open the file again
-                    LogMessage(CreateLogMessage(LogSeverity::Error, "Failed to open output file '" + s_outputFile + "'.\n"), false);
+                    LogMessage(CreateLogMessage(LogSeverity::Error, "Failed to open output file '" + GetOutputFileName() + "'.\n"), false);
                     canLog = false;
                 }
             }
@@ -160,23 +160,6 @@ namespace Hatchit {
         void Debug::SetLogCallback(LogCallback callback)
         {
             s_logCallback = callback;
-        }
-
-        /**
-         * \brief Sets the file name of the output file.
-         * \warning This function will not do anything after the first time something is logged.
-         *
-         * \param fname The new file name.
-         */
-        void Debug::SetOutputFileName(const std::string& fname)
-        {
-            if (s_outputStream && s_outputStream->is_open())
-            {
-                Log(LogSeverity::Error, "Cannot specify new file name after logging has begun.\n");
-                return;
-            }
-
-            s_outputFile = fname;
         }
 
         /**

@@ -39,6 +39,8 @@ namespace Hatchit
 
         HT_API std::string os_exec_dir();
 
+        HT_API std::string os_exec_name();
+
         HT_API char	os_path_delimeter();
 
     }
