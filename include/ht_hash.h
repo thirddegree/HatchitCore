@@ -22,6 +22,7 @@ namespace Hatchit
     {
         namespace Hash
         {
+            HT_API uint64_t FNV1A(const std::string& text);
             HT_API uint64_t FNV1A(const std::wstring& text);
         }
     }

@@ -20,25 +20,31 @@ namespace Hatchit
     {
         namespace Hash
         {
-            uint64_t FNV1A(const std::wstring& text)
+            uint64_t FNV1A(const std::string& text)
             {
-                // This is adapted from the 64-bit version of the FNV-1a hashing algorithm
-                // Source:  http://www.isthe.com/chongo/tech/comp/fnv/
-                // License: Public Domain
+                uint64_t offset_basis = 0xCBF29CE484222325;
+                uint64_t prime = 0x100000001B3;
 
-                uint64_t hash = 0;
+                uint64_t hash = offset_basis;
                 for (uint64_t index = 0; index < text.size(); ++index)
                 {
-                    hash ^= static_cast<uint64_t>(text[index]);
+                    hash *= prime;
+                    hash ^= text[index];
+                }
 
-                    // The algorithm differs on the next part, so if we're compiling using
-                    // GCC, then let's just use their optimization
-#if defined(__GNUC__)
-                    hash += (hash << 1) + (hash << 4) + (hash << 5) +
-                            (hash << 7) + (hash << 8) + (hash << 40);
-#else
-                    hash *= 0x100000001b3ULL;
-#endif
+                return hash;
+            }
+
+            uint64_t FNV1A(const std::wstring& text)
+            {
+                uint64_t offset_basis = 0xCBF29CE484222325;
+                uint64_t prime = 0x100000001B3;
+
+                uint64_t hash = offset_basis;
+                for (uint64_t index = 0; index < text.size(); ++index)
+                {
+                    hash *= prime;
+                    hash ^= text[index];
                 }
 
                 return hash;
