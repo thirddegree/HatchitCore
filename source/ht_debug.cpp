@@ -59,7 +59,7 @@ namespace Hatchit {
          */
         std::string Debug::GetOutputFileName()
         {
-            return os_exec_name() + ".log";
+            return os_exec_dir() + os_exec_name() + ".log";
         }
 
         /**
