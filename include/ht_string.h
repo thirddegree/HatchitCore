@@ -33,7 +33,7 @@
 *
 */
 #ifndef HID
-#define HID(x) x
+#define HID(x) -1
 #endif
 
 namespace Hatchit
