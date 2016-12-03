@@ -83,6 +83,10 @@
     #define HT_ERROR_PRINTF(message, ...) Hatchit::Core::Debug::Log(Hatchit::Core::Debug::LogSeverity::Error, message, ##__VA_ARGS__)
 #endif
 
+#if !defined(HT_PERF_PRINTF)
+    #define HT_PERF_PRINTF(message, ...) Hatchit::Core::Debug::Log(Hatchit::Core::Debug::LogSeverity::Performance, message, ##__VA_ARGS__)
+#endif
+
 /**
  * \namespace Hatchit
  * \brief Engine global layer
@@ -112,7 +116,8 @@ namespace Hatchit {
                 Debug,
                 Info,
                 Warning,
-                Error
+                Error,
+                Performance
             };
 
             /**
@@ -197,7 +202,7 @@ namespace Hatchit {
              */
             static bool ShouldLogSeverity(Debug::LogSeverity severity);
 
-            static const std::string s_severityStrings[4];
+            static const std::string s_severityStrings[5];
             static LogCallback s_logCallback;
             static std::unique_ptr<std::ofstream> s_outputStream;
             static Debug::LogSeverity s_severityThreshold;

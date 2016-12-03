@@ -14,12 +14,13 @@ namespace Hatchit {
         Debug::LogCallback              Debug::s_logCallback;
         std::unique_ptr<std::ofstream>  Debug::s_outputStream;
         bool                            Debug::s_canLogToFile = false;
-        const std::string               Debug::s_severityStrings[4] =
+        const std::string               Debug::s_severityStrings[5] =
         {
             std::string("[DEBUG]"),
             std::string("[INFO] "),
             std::string("[WARN] "),
             std::string("[ERROR]"),
+            std::string("[PERFORMANCE]")
         };
 #if defined(_DEBUG) || defined(DEBUG)
         Debug::LogSeverity              Debug::s_severityThreshold = Debug::LogSeverity::Debug;

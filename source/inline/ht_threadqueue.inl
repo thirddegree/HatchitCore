@@ -160,6 +160,11 @@ namespace Hatchit
 
             return m_data.empty();
         }
-    
+
+        template <typename T>
+        void ThreadsafeQueue<T>::clear() {
+            std::queue<T> empty;
+            std::swap(m_data, empty);
+        }
     }
 }

@@ -46,6 +46,7 @@ namespace Hatchit
             std::shared_ptr<T> wait_pop();
             void wait_pop(T& out);
             bool empty() const;
+            void clear();
 
         private:
             std::queue<T>           m_data;
