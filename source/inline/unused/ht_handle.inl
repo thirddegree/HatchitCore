@@ -1,6 +1,6 @@
 #pragma once
 
-#include <ht_refcounted.h>
+#include <ht_resource.h>
 
 namespace Hatchit
 {
