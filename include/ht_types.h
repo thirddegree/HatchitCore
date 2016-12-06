@@ -14,3 +14,4 @@
 
 #include <ht_platform.h>
 #include <cstdint>
+#include <cinttypes>
