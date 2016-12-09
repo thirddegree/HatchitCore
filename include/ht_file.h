@@ -44,6 +44,7 @@ namespace Hatchit {
             virtual void            Open(const std::string& path, FileMode mode)    override;
             virtual bool            Seek(long pos, FileSeek mode)                   override;
             virtual size_t          Read(BYTE* out, size_t len)                     override;
+            virtual std::string     ReadAll()                                       override;
             virtual size_t          Write(const BYTE* in, size_t len)               override;
             virtual bool            Close(void)                                     override;
             virtual size_t          Tell(void)                                      override;

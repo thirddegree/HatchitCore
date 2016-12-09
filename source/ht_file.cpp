@@ -194,6 +194,12 @@ namespace Hatchit
             return count;
         }
 
+        std::string File::ReadAll()
+        {
+            return std::string(std::istreambuf_iterator<char>(m_handle),
+                               std::istreambuf_iterator<char>());
+        }
+
         /**
         * \fn File::Write(BYTE* in, size_t len)
         * \brief Fills system file with data from \a in, up to \a len bytes.

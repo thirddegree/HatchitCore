@@ -153,6 +153,8 @@ namespace Hatchit {
             **/
             virtual size_t          Read(BYTE* out, size_t len) = 0;
 
+            virtual std::string     ReadAll() = 0;
+
             /**
             \fn size_t IFile::Write(BYTE* in, size_t len)
             \brief Writes contents of byte array into file output stream.
