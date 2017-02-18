@@ -117,7 +117,8 @@ namespace Hatchit {
                 Info,
                 Warning,
                 Error,
-                Performance
+                Performance,
+                None
             };
 
             /**
