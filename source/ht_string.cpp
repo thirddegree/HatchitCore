@@ -16,6 +16,8 @@
 
 #include <string> //std::string
 #include <cstdint> //size_t
+#include <codecvt>
+#include <locale>
 
 namespace Hatchit
 {
@@ -45,6 +47,18 @@ namespace Hatchit
                 input.replace(pos, from.length(), to);
                 pos += to.length();
             }
+        }
+
+        std::wstring string_to_wstring(const std::string& str)
+        {
+            std::wstring_convert<std::codecvt_utf8<wchar_t>> myconv;
+            return myconv.from_bytes(str);
+        }
+
+        std::string wstring_to_string(const std::wstring& str)
+        {
+            std::wstring_convert<std::codecvt_utf8<wchar_t>> myconv;
+            return myconv.to_bytes(str);
         }
 
     }

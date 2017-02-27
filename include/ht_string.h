@@ -45,6 +45,9 @@ namespace Hatchit
         **/
         constexpr size_t HT_STRINGBUFFSIZE = 1024;
 
+        HT_API std::wstring string_to_wstring (const std::string& str);
+
+        HT_API std::string wstring_to_string (const std::wstring& str);
 
         HT_API void str_replaceAll(
             std::string& input,
