@@ -15,10 +15,9 @@
 #pragma once
 
 #include <ht_platform.h> //HT_API
-#include <string> //std::string typedef
-#include <fstream> //std::fstream typedef
-#include <cstddef> //size_t typedef
-#include <ht_noncopy.h> //INonCopy
+#include <ht_noncopy.h> 
+
+#include <fstream>
 
 namespace Hatchit {
 

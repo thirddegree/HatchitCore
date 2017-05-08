@@ -19,14 +19,15 @@
 #include <ht_string.h> //str_replaceAll()
 
 #ifdef HT_SYS_WINDOWS
-#include <direct.h> //_mkdir(const char*)
-#include <fileapi.h>    //GetFileAttributesExA()
-                        //INVALID_FILE_ATTRIBUTES
+#include <direct.h>
+#include <fileapi.h>
+#include <WinBase.h>
+#include <winnt.h>
 
-#include <WinBase.h>    //WIN32_FILE_ATTRIBUTE_DATA
-                        //GetModuleFileNameA()
+    #ifdef HT_WINDOWS_STORE_APP
+    #include <ht_winrt_filesystem.h>
+    #endif
 
-#include <winnt.h> //FILE_ATTRIBUTE_DIRECTORY
 #endif
 
 #ifdef HT_SYS_LINUX
@@ -152,9 +153,17 @@ namespace Hatchit
         std::string os_exec_name()
         {
             std::string _name;
+            size_t pos = 0;
 
             #ifdef HT_SYS_WINDOWS
+                CHAR szFileName[MAX_PATH + 1];
 
+                GetModuleFileNameA(NULL, szFileName, MAX_PATH + 1);
+
+                _name = szFileName;
+
+                pos = _name.find_last_of('.');
+                _name.erase(pos, pos + 3);
             #else
                 char arg1[20];
                 char exepath[PATH_MAX + 1] = {0};
@@ -162,12 +171,11 @@ namespace Hatchit
                 readlink(arg1, exepath, 1024);
 
                 _name = exepath;
-                size_t pos = 0;
-                pos = _name.find_last_of('/');
-                if (pos != std::string::npos)
-                    _name.erase(0, pos + 1);
-
             #endif
+
+            pos = _name.find_last_of(os_path_delimeter());
+            if (pos != std::string::npos)
+                _name.erase(0, pos + 1);
 
             return _name;
         }

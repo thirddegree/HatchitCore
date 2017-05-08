@@ -25,6 +25,14 @@
     **/
 #   define HT_SYS_WINDOWS
 
+    //Visual C++ compiler warning C4251 disable
+#   ifdef _MSC_VER
+#   pragma warning(disable : 4251)
+#   pragma warning(disable : 4275)
+#   pragma warning(disable : 4996)
+#   pragma warning(disable : 4467)
+#   endif
+
     /**
     \def WIN32_LEAN_AND_MEAN
     \brief Used to help stop namespace pollution
@@ -49,6 +57,7 @@
 
 
 #   if defined(WINAPI_FAMILY) && WINAPI_FAMILY == WINAPI_FAMILY_PC_APP
+#   define HT_WINDOWS_STORE_APP 
         /*include headers for Universal Windows PC Application*/
 #       include <wrl.h>
 #       include <concrt.h>
@@ -100,12 +109,7 @@
 #           endif
 #       endif
 
-        //Visual C++ compiler warning C4251 disable
-#       ifdef _MSC_VER
-#       pragma warning(disable : 4251)
-#       pragma warning(disable : 4275)
-        #pragma warning(disable : 4996)
-#       endif
+        
 
 #   else //Linux and MAC OSX
 #       if __GNUC__ >= 4

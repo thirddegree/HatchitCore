@@ -14,8 +14,8 @@
 
 #pragma once
 
-#include <ht_platform.h> //HT_API
-#include <string> //std::string typedef
+#include <ht_platform.h>
+#include <string>
 
 /** \file ht_os.h
 * Operating System Utilities

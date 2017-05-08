@@ -36,7 +36,7 @@ namespace Hatchit {
         {
 #ifdef HT_SYS_WINDOWS
             char errString[HT_STRINGBUFFSIZE];
-            strerror_s(errString, HT_STRINGBUFFSIZE, error);
+            //strerror_s(errString, HT_STRINGBUFFSIZE, error);
             m_errorString = errString;
 #else
             m_errorString = strerror(error);

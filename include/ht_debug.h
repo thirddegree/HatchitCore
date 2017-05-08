@@ -29,7 +29,6 @@
 #include <memory>           // For std::unique_ptr
 #include <functional>       // For std::function
 #include <ht_platform.h>    // For HT_API
-#include <format.h>         // For fmt::sprintf
 
 /**
  * \def HT_STRINGIFY(x)
@@ -165,7 +164,12 @@ namespace Hatchit {
              */
             static void SetSeverityThreshold(LogSeverity threshold);
 
+
+            static void CloseOutputStream();
+
         private:
+            static Debug& instance();
+
             /**
              * \brief Creates a full log message, including severity and a timestamp.
              *
@@ -187,13 +191,13 @@ namespace Hatchit {
              */
             static void InitializeOutputStream();
 
+
             /**
              * \brief Logs the given message.
              *
              * \param message The formatted message.
-             * \param tryOpenFile True to try to open the output file, false to not.
              */
-            static void LogMessage(const std::string& message, bool tryOpenFile);
+            static void LogMessage(const std::string& message);
 
             /**
              * \brief Checks the given severity level and determines whether
@@ -205,7 +209,7 @@ namespace Hatchit {
 
             static const std::string s_severityStrings[5];
             static LogCallback s_logCallback;
-            static std::unique_ptr<std::ofstream> s_outputStream;
+            static std::ofstream s_outputStream;
             static Debug::LogSeverity s_severityThreshold;
             static bool s_canLogToFile;
         };

@@ -18,8 +18,6 @@
 #include <ht_platform.h>
 #include <ht_file_interface.h>
 #include <fstream>
-#include <string>
-#include <cstddef>
 
 namespace Hatchit {
 

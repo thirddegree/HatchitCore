@@ -2,6 +2,10 @@
 
 #include <ht_debug.h>
 
+#define FMT_SHARED
+#include <fmt/format.h>
+#include <fmt/printf.h>
+
 namespace Hatchit {
 
     namespace Core {
@@ -24,7 +28,7 @@ namespace Hatchit {
             std::string message = fmt::sprintf(fmt_message, args ...);
             message = Debug::CreateLogMessage(severity, message);
 
-            LogMessage(message, true);
+            LogMessage(message);
         }
 
     }
